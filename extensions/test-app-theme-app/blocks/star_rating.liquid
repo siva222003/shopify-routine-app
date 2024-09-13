@@ -1,12 +1,18 @@
 {% assign avg_rating = block.settings.product.metafields.demo.avg_rating.value | round %}
+
 <span style="color:{{ block.settings.colour }}">
   {% render 'stars', rating: avg_rating %}
 </span>
+
 {% if avg_rating >= 4 %}
   <br>
   <img src="{{ "thumbs-up.png" | asset_img_url: '15x' }}" height="15" width="15" loading="lazy">
   {{ 'ratings.home.recommendationText' | t }}
 {% endif %}
+
+<button onclick="test()">Test</button>
+
+<h1 id="main"></h1>
 
 {% schema %}
 {
@@ -18,3 +24,26 @@
   ]
 }
 {% endschema %}
+
+<script>
+  async function test() {
+    const main = document.getElementById('main');
+
+    main.innerHTML = 'Loading...';
+
+    const response = await fetch('https://quickstart-03878ee5.myshopify.com/apps/amrutam-routine', {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+
+    const data = await response.json();
+
+    main.innerHTML = data.message;
+
+    console.log(data);
+  }
+
+  test();
+</script>

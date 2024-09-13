@@ -3,7 +3,7 @@
 client_id = "9388a5774685dae18ad95269e9767d2a"
 name = "first-app"
 handle = "first-app-1303"
-application_url = "https://black-inside-seven-mar.trycloudflare.com"
+application_url = "https://the-lightweight-aud-perfectly.trycloudflare.com"
 embedded = true
 
 [build]
@@ -17,9 +17,9 @@ scopes = "write_products"
 
 [auth]
 redirect_urls = [
-  "https://black-inside-seven-mar.trycloudflare.com/auth/callback",
-  "https://black-inside-seven-mar.trycloudflare.com/auth/shopify/callback",
-  "https://black-inside-seven-mar.trycloudflare.com/api/auth/callback"
+  "https://the-lightweight-aud-perfectly.trycloudflare.com/auth/callback",
+  "https://the-lightweight-aud-perfectly.trycloudflare.com/auth/shopify/callback",
+  "https://the-lightweight-aud-perfectly.trycloudflare.com/api/auth/callback"
 ]
 
 [webhooks]
