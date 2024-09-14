@@ -1,21 +1,20 @@
 import {
-  Box,
   Card,
   Layout,
-  Link,
-  List,
   Page,
-  Text,
   BlockStack,
   FormLayout,
   Button,
-  Checkbox,
   TextField,
-  Select,
 } from "@shopify/polaris";
 import { TitleBar } from "@shopify/app-bridge-react";
-import { Form, useActionData, useSubmit } from "@remix-run/react";
-import { ActionFunctionArgs, json } from "@remix-run/node";
+import { useActionData, useSubmit } from "@remix-run/react";
+import {
+  ActionFunctionArgs,
+  json,
+  unstable_createFileUploadHandler,
+  unstable_parseMultipartFormData,
+} from "@remix-run/node";
 import { FormEvent, useCallback, useEffect, useState } from "react";
 import prisma from "../db.server";
 import ImageInput from "~/components/add-routine/ImageInput";
@@ -23,11 +22,17 @@ import ChannelsInput from "~/components/add-routine/ChannelsInput";
 import DurationInput from "~/components/add-routine/DurationInput";
 import { useForm } from "@rvf/remix";
 import { addRoutineValidator } from "~/utils/validators";
+import CategoryInput from "~/components/add-routine/CategoryInput";
+import RoutineInput from "~/components/add-routine/RoutineInput";
 
 export async function action({ request }: ActionFunctionArgs) {
-  const body = await request.formData();
+  const formData = await request.formData();
 
-  const final = Object.fromEntries(body.entries());
+  const final = Object.fromEntries(formData.entries());
+
+  const channels = JSON.parse(formData.get("channels") as string);
+
+  final.channels = channels;
 
   try {
     // const routine = await prisma.routine.create({
@@ -36,7 +41,7 @@ export async function action({ request }: ActionFunctionArgs) {
 
     return json({
       success: true,
-      final,
+      data: final,
     });
   } catch (error) {
     return json({ success: false, error });
@@ -45,6 +50,10 @@ export async function action({ request }: ActionFunctionArgs) {
 
 export default function AdditionalPage() {
   const [file, setFile] = useState<File | null>(null);
+
+  const [selectedOptions, setSelectedOptions] = useState<string[]>([]);
+
+  const [isChannelsError, setChannelsError] = useState<string | null>(null);
 
   const form = useForm({
     validator: addRoutineValidator,
@@ -60,14 +69,19 @@ export default function AdditionalPage() {
     event.preventDefault();
     const isValid = await form.validate();
 
+    if (selectedOptions.length === 0) {
+      setChannelsError("Please select at least one channel");
+    }
+
+    console.log(selectedOptions);
+
     if (Object.keys(isValid).length === 0) {
-      
       const formElement = event.target as HTMLFormElement;
       const formData = new FormData(formElement);
 
-      formData.append("image", "image");
+      formData.append("channels", JSON.stringify(selectedOptions));
 
-      submit(formData, { method: "post" });
+      submit(formData, { method: "post", encType: "multipart/form-data" });
     }
   };
 
@@ -78,68 +92,20 @@ export default function AdditionalPage() {
         <Layout.Section>
           <form {...form.getFormProps()} onSubmit={handleSubmit}>
             <FormLayout>
-              <Card>
-                <TextField
-                  autoComplete="off"
-                  name="routineName"
-                  label="Routine Name"
-                  type="text"
-                  value={form.value("routineName") || ""}
-                  onChange={(e) => form.setValue("routineName", e)}
-                  helpText={
-                    <span>
-                      We'll use this email address to inform you on future
-                      changes to Polaris.
-                    </span>
-                  }
-                  error={form.error("routineName") || undefined}
-                />
-              </Card>
+              <RoutineInput form={form} />
 
-              <Card>
-                <ImageInput file={file} setFile={setFile} />
-              </Card>
+              <ImageInput file={file} setFile={setFile} />
 
-              <Card>
-                <BlockStack gap="200">
-                  <TextField
-                    name="category"
-                    label="Category"
-                    type="text"
-                    autoComplete="off"
-                    value={form.value("category") || ""}
-                    onChange={(e) => form.setValue("category", e)}
-                    helpText={
-                      <span>
-                        We'll use this email address to inform you on future
-                        changes to Polaris.
-                      </span>
-                    }
-                    error={form.error("category") || undefined}
-                  />
-
-                  <TextField
-                    name="description"
-                    label="Description"
-                    type="text"
-                    autoComplete="off"
-                    value={form.value("description") || ""}
-                    onChange={(e) => form.setValue("description", e)}
-                    multiline={6}
-                    helpText={
-                      <span>
-                        We'll use this email address to inform you on future
-                        changes to Polaris.
-                      </span>
-                    }
-                    error={form.error("description") || undefined}
-                  />
-                </BlockStack>
-              </Card>
+              <CategoryInput form={form} />
 
               <DurationInput form={form} />
 
-              <ChannelsInput form={form} />
+              <ChannelsInput
+                form={form}
+                selectedOptions={selectedOptions}
+                setSelectedOptions={setSelectedOptions}
+                isChannelsError={isChannelsError}
+              />
 
               <div style={{ marginBottom: "20px" }}>
                 <Button variant="primary" size="large" submit>

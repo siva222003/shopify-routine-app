@@ -31,10 +31,14 @@ model Session {
   emailVerified Boolean?  @default(false)
 }
 
-model Routine {
-  id       Int    @id @default(dbgenerated("(abs(random()) % 1000000)"))
-  category String
-  type     String
-  product String
-  status String @default("Draft")
-}
+// model Routine {
+//   id          Int      @id @default(autoincrement()) // Auto-incremented ID
+//   routineName String // Name of the routine
+//   category    String // Routine category
+//   description String? // Optional description
+//   duration    Int // Duration as an integer
+//   unit        String // Unit of the duration, e.g., 'days'
+//   channels    String[] // Array of channels (using String[])
+//   createdAt   DateTime @default(now()) // Timestamp for creation
+//   updatedAt   DateTime @updatedAt // Automatically updated on modification
+// }

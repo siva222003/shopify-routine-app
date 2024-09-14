@@ -5,6 +5,7 @@ import {
   Banner,
   List,
   Text,
+  Card,
 } from "@shopify/polaris";
 import { useState, useCallback } from "react";
 
@@ -52,20 +53,22 @@ export default function ImageInput({ file, setFile }: ImageInputProps) {
   );
 
   return (
-    <BlockStack>
-      {errorMessage}
-      <div>
-        <DropZone
-          id="image-dropzone"
-          allowMultiple={false}
-          accept="image/*"
-          type="image"
-          onDrop={handleDrop}
-        >
-          {uploadedFiles}
-          {fileUpload}
-        </DropZone>
-      </div>
-    </BlockStack>
+    <Card>
+      <BlockStack>
+        {errorMessage}
+        <div>
+          <DropZone
+            id="image-dropzone"
+            allowMultiple={false}
+            accept="image/*"
+            type="image"
+            onDrop={handleDrop}
+          >
+            {uploadedFiles}
+            {fileUpload}
+          </DropZone>
+        </div>
+      </BlockStack>
+    </Card>
   );
 }

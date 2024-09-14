@@ -3,7 +3,7 @@
 client_id = "9388a5774685dae18ad95269e9767d2a"
 name = "first-app"
 handle = "first-app-1303"
-application_url = "https://cutting-email-kiss-act.trycloudflare.com"
+application_url = "https://undefined-thumbzilla-feature-contrary.trycloudflare.com"
 embedded = true
 
 [build]
@@ -17,9 +17,9 @@ scopes = "write_products"
 
 [auth]
 redirect_urls = [
-  "https://cutting-email-kiss-act.trycloudflare.com/auth/callback",
-  "https://cutting-email-kiss-act.trycloudflare.com/auth/shopify/callback",
-  "https://cutting-email-kiss-act.trycloudflare.com/api/auth/callback"
+  "https://undefined-thumbzilla-feature-contrary.trycloudflare.com/auth/callback",
+  "https://undefined-thumbzilla-feature-contrary.trycloudflare.com/auth/shopify/callback",
+  "https://undefined-thumbzilla-feature-contrary.trycloudflare.com/api/auth/callback"
 ]
 
 [webhooks]

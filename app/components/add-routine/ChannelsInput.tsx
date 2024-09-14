@@ -4,9 +4,17 @@ import { useState, useCallback, useMemo } from "react";
 
 interface Props {
   form: FormApi<FieldValues>;
+  selectedOptions: string[];
+  setSelectedOptions: React.Dispatch<React.SetStateAction<string[]>>;
+  isChannelsError: string | null;
 }
 
-export default function ChannelsInput({ form }: Props) {
+export default function ChannelsInput({
+  form,
+  selectedOptions,
+  setSelectedOptions,
+  isChannelsError,
+}: Props) {
   const deselectedOptions = useMemo(
     () => [
       { value: "email", label: "Email" },
@@ -16,7 +24,7 @@ export default function ChannelsInput({ form }: Props) {
     ],
     [],
   );
-  const [selectedOptions, setSelectedOptions] = useState<string[]>([]);
+
   const [inputValue, setInputValue] = useState("");
   const [options, setOptions] = useState(deselectedOptions);
 
@@ -76,6 +84,7 @@ export default function ChannelsInput({ form }: Props) {
       placeholder="Call, Email"
       verticalContent={verticalContentMarkup}
       autoComplete="off"
+      error={isChannelsError ? isChannelsError : undefined}
     />
   );
 
