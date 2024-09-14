@@ -20,7 +20,6 @@ export default function ChannelsInput({ form }: Props) {
   const [inputValue, setInputValue] = useState("");
   const [options, setOptions] = useState(deselectedOptions);
 
-
   const updateText = useCallback(
     (value: string) => {
       setInputValue(value);

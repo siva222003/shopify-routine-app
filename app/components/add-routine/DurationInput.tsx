@@ -6,21 +6,19 @@ import {
   Select,
   Card,
 } from "@shopify/polaris";
-import { useState, useCallback } from "react";
 
 interface Props {
   form: FormApi<FieldValues>;
 }
 
 export default function DurationInput({ form }: Props) {
-  const [weight, setWeight] = useState("");
-  const [unit, setUnit] = useState("");
+  const handleDurationChange = (value: string) => {
+    form.setValue("duration", value);
+  };
 
-  const handleWeightChange = useCallback(
-    (value: string) => setWeight(value),
-    [],
-  );
-  const handleUnitChange = useCallback((value: string) => setUnit(value), []);
+  const handleUnitChange = (value: string) => {
+    form.setValue("unit", value);
+  };
 
   const formGroupMarkup = (
     <BlockStack gap="100">
@@ -31,8 +29,8 @@ export default function DurationInput({ form }: Props) {
             name="duration"
             type="number"
             min={1}
-            value={weight}
-            onChange={handleWeightChange}
+            value={form.value("duration") || ""}
+            onChange={handleDurationChange}
             autoComplete="off"
             error={form.error("duration") || undefined}
           />
@@ -41,7 +39,7 @@ export default function DurationInput({ form }: Props) {
             placeholder="Select"
             name="unit"
             options={["days", "months", "years"]}
-            value={unit}
+            value={form.value("unit") || ""}
             onChange={handleUnitChange}
             error={form.error("unit") || undefined}
           />

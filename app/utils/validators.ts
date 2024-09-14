@@ -20,14 +20,13 @@ export const addRoutineValidator = withZod(
     description: z.string().min(10, {
       message: "Description must be at least 10 characters long",
     }),
-    duration: z.string().min(1, {
-      message: "Duration is required",
-    }),
-    unit: z.string().min(1, {
-      message: "Unit is required",
-    }),
-    channels: z.array(z.string()).min(1, {
-      message: "Channels are required",
-    }),
+    duration: z.coerce
+      .number({
+        required_error: "Duration is required",
+      })
+      .min(1, {
+        message: "Duration must be at least 1",
+      }),
+    unit: z.string({ message: "Unit is required" }),
   }),
 );

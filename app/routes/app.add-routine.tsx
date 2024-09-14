@@ -11,11 +11,12 @@ import {
   Button,
   Checkbox,
   TextField,
+  Select,
 } from "@shopify/polaris";
 import { TitleBar } from "@shopify/app-bridge-react";
-import { Form, useActionData } from "@remix-run/react";
+import { Form, useActionData, useSubmit } from "@remix-run/react";
 import { ActionFunctionArgs, json } from "@remix-run/node";
-import { useEffect, useState } from "react";
+import { FormEvent, useCallback, useEffect, useState } from "react";
 import prisma from "../db.server";
 import ImageInput from "~/components/add-routine/ImageInput";
 import ChannelsInput from "~/components/add-routine/ChannelsInput";
@@ -25,13 +26,8 @@ import { addRoutineValidator } from "~/utils/validators";
 
 export async function action({ request }: ActionFunctionArgs) {
   const body = await request.formData();
-  // const category = body.get("category") as string;
-  // const type = body.get("type") as string;
-  // const product = body.get("product") as string;
 
   const final = Object.fromEntries(body.entries());
-
-  console.log(final);
 
   try {
     // const routine = await prisma.routine.create({
@@ -40,7 +36,6 @@ export async function action({ request }: ActionFunctionArgs) {
 
     return json({
       success: true,
-      // routine,
       final,
     });
   } catch (error) {
@@ -49,32 +44,39 @@ export async function action({ request }: ActionFunctionArgs) {
 }
 
 export default function AdditionalPage() {
+  const [file, setFile] = useState<File | null>(null);
+
   const form = useForm({
     validator: addRoutineValidator,
   });
 
-  const [type, setType] = useState("");
-
-  const [category, setCategory] = useState("");
-  const [product, setProduct] = useState("");
   const actionData = useActionData<typeof action>();
 
   console.log(actionData);
 
-  // useEffect(() => {
-  //   if (actionData?.success) {
-  //     setCategory("");
-  //     setProduct("");
-  //     setType("");
-  //   }
-  // }, [actionData?.success]);
+  const submit = useSubmit();
+
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const isValid = await form.validate();
+
+    if (Object.keys(isValid).length === 0) {
+      
+      const formElement = event.target as HTMLFormElement;
+      const formData = new FormData(formElement);
+
+      formData.append("image", "image");
+
+      submit(formData, { method: "post" });
+    }
+  };
 
   return (
     <Page narrowWidth>
       <TitleBar title="Add Routine" />
       <Layout>
         <Layout.Section>
-          <Form method="post" {...form.getFormProps()}>
+          <form {...form.getFormProps()} onSubmit={handleSubmit}>
             <FormLayout>
               <Card>
                 <TextField
@@ -82,8 +84,8 @@ export default function AdditionalPage() {
                   name="routineName"
                   label="Routine Name"
                   type="text"
-                  value={type}
-                  onChange={setType}
+                  value={form.value("routineName") || ""}
+                  onChange={(e) => form.setValue("routineName", e)}
                   helpText={
                     <span>
                       We'll use this email address to inform you on future
@@ -95,7 +97,7 @@ export default function AdditionalPage() {
               </Card>
 
               <Card>
-                <ImageInput />
+                <ImageInput file={file} setFile={setFile} />
               </Card>
 
               <Card>
@@ -105,8 +107,8 @@ export default function AdditionalPage() {
                     label="Category"
                     type="text"
                     autoComplete="off"
-                    value={category}
-                    onChange={setCategory}
+                    value={form.value("category") || ""}
+                    onChange={(e) => form.setValue("category", e)}
                     helpText={
                       <span>
                         We'll use this email address to inform you on future
@@ -121,8 +123,8 @@ export default function AdditionalPage() {
                     label="Description"
                     type="text"
                     autoComplete="off"
-                    value={product}
-                    onChange={setProduct}
+                    value={form.value("description") || ""}
+                    onChange={(e) => form.setValue("description", e)}
                     multiline={6}
                     helpText={
                       <span>
@@ -140,12 +142,12 @@ export default function AdditionalPage() {
               <ChannelsInput form={form} />
 
               <div style={{ marginBottom: "20px" }}>
-                <Button variant="primary" size="large" submit={true}>
+                <Button variant="primary" size="large" submit>
                   Submit
                 </Button>
               </div>
             </FormLayout>
-          </Form>
+          </form>
         </Layout.Section>
       </Layout>
     </Page>
