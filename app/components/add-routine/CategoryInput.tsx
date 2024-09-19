@@ -1,8 +1,9 @@
 import { FieldValues, FormApi } from "@rvf/remix";
 import { BlockStack, Card, TextField } from "@shopify/polaris";
+import { DefaultRoutine } from "~/types";
 
 interface Props {
-  form: FormApi<FieldValues>;
+  form: FormApi<DefaultRoutine>;
 }
 
 const CategoryInput = ({ form }: Props) => {

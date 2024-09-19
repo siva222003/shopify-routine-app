@@ -9,12 +9,13 @@ generator client {
 // enough when changing adapters.
 // See https://www.prisma.io/docs/orm/reference/prisma-schema-reference#string for more information
 datasource db {
-  provider = "sqlite"
-  url      = "file:dev.sqlite"
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
 }
 
 model Session {
-  id            String    @id
+  session_id    String    @id @default(auto()) @map("_id") @db.ObjectId
+  id            String    @unique
   shop          String
   state         String
   isOnline      Boolean   @default(false)
@@ -31,14 +32,31 @@ model Session {
   emailVerified Boolean?  @default(false)
 }
 
-// model Routine {
-//   id          Int      @id @default(autoincrement()) // Auto-incremented ID
-//   routineName String // Name of the routine
-//   category    String // Routine category
-//   description String? // Optional description
-//   duration    Int // Duration as an integer
-//   unit        String // Unit of the duration, e.g., 'days'
-//   channels    String[] // Array of channels (using String[])
-//   createdAt   DateTime @default(now()) // Timestamp for creation
-//   updatedAt   DateTime @updatedAt // Automatically updated on modification
-// }
+model Routine {
+  id          String     @id @default(auto()) @map("_id") @db.ObjectId
+  routineName String
+  category    String
+  description String
+  duration    String
+  channels    String[]
+  draft       Boolean    @default(false)
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+  reminders   Reminder[]
+}
+
+model Reminder {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  product     Json
+  description String
+  dosageUnit  String
+  dosageQty   String
+  daily       Boolean
+  custom      String[]
+  timeRange   String
+  time        String
+  routineId   String   @db.ObjectId
+  routine     Routine  @relation(fields: [routineId], references: [id])
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}

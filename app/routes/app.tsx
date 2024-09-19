@@ -26,7 +26,7 @@ export default function App() {
           Home
         </Link>
         <Link to="/app/add-routine">Add Routine</Link>
-        <Link to="/app/routine-list">Routine List</Link>
+        <Link to="/app/routines">Routine List</Link>
       </NavMenu>
       <Outlet />
     </AppProvider>

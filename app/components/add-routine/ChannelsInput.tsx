@@ -1,19 +1,20 @@
 import { FieldValues, FormApi } from "@rvf/remix";
 import { BlockStack, Tag, Autocomplete, InlineError } from "@shopify/polaris";
 import { useState, useCallback, useMemo } from "react";
+import { DefaultRoutine } from "~/types";
 
 interface Props {
-  form: FormApi<FieldValues>;
   selectedOptions: string[];
   setSelectedOptions: React.Dispatch<React.SetStateAction<string[]>>;
   isChannelsError: string | null;
+  setChannelsError: React.Dispatch<React.SetStateAction<string | null>>;
 }
 
 export default function ChannelsInput({
-  form,
   selectedOptions,
   setSelectedOptions,
   isChannelsError,
+  setChannelsError,
 }: Props) {
   const deselectedOptions = useMemo(
     () => [
@@ -95,7 +96,17 @@ export default function ChannelsInput({
         options={options}
         selected={selectedOptions}
         textField={textField}
-        onSelect={setSelectedOptions}
+        onSelect={(value) => {
+          if (isChannelsError) {
+            setChannelsError(null);
+          }
+
+          setSelectedOptions(value);
+
+          if (value.length === 0) {
+            setChannelsError("Please select at least one channel");
+          }
+        }}
         listTitle="Suggested Tags"
       />
     </div>

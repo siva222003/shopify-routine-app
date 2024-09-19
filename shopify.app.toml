@@ -3,7 +3,7 @@
 client_id = "9388a5774685dae18ad95269e9767d2a"
 name = "first-app"
 handle = "first-app-1303"
-application_url = "https://undefined-thumbzilla-feature-contrary.trycloudflare.com"
+application_url = "https://albany-equity-gentleman-talks.trycloudflare.com"
 embedded = true
 
 [build]
@@ -17,9 +17,9 @@ scopes = "write_products"
 
 [auth]
 redirect_urls = [
-  "https://undefined-thumbzilla-feature-contrary.trycloudflare.com/auth/callback",
-  "https://undefined-thumbzilla-feature-contrary.trycloudflare.com/auth/shopify/callback",
-  "https://undefined-thumbzilla-feature-contrary.trycloudflare.com/api/auth/callback"
+  "https://albany-equity-gentleman-talks.trycloudflare.com/auth/callback",
+  "https://albany-equity-gentleman-talks.trycloudflare.com/auth/shopify/callback",
+  "https://albany-equity-gentleman-talks.trycloudflare.com/api/auth/callback"
 ]
 
 [webhooks]
@@ -28,6 +28,11 @@ api_version = "2024-07"
   [[webhooks.subscriptions]]
   topics = [ "app/uninstalled" ]
   uri = "/webhooks"
+
+[app_proxy]
+url = "https://albany-equity-gentleman-talks.trycloudflare.com/app"
+subpath = "amrutam-routine"
+prefix = "apps"
 
 [pos]
 embedded = false

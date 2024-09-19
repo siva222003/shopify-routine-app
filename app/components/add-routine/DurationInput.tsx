@@ -6,9 +6,10 @@ import {
   Select,
   Card,
 } from "@shopify/polaris";
+import { DefaultRoutine } from "~/types";
 
 interface Props {
-  form: FormApi<FieldValues>;
+  form: FormApi<DefaultRoutine>;
 }
 
 export default function DurationInput({ form }: Props) {
@@ -38,7 +39,7 @@ export default function DurationInput({ form }: Props) {
             label="Unit"
             placeholder="Select"
             name="unit"
-            options={["days", "months", "years"]}
+            options={["days", "weeks", "months", "years"]}
             value={form.value("unit") || ""}
             onChange={handleUnitChange}
             error={form.error("unit") || undefined}
