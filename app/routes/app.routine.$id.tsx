@@ -198,6 +198,27 @@ export default function Routine() {
                 </BlockStack>
               </Card>
 
+              <Card roundedAbove="sm">
+                <BlockStack gap="200">
+                  <InlineGrid columns="1fr auto">
+                    <Text as="h2" variant="headingSm">
+                      Weekly Benfits
+                    </Text>
+                    <Button
+                      onClick={() => navigate(`/app/${id}/weekly-benfits`)}
+                      accessibilityLabel="Add variant"
+                      icon={PlusIcon}
+                    >
+                      Add
+                    </Button>
+                  </InlineGrid>
+                  <Text as="p" variant="bodyMd">
+                    Add weekly benefits of this Routine so that users can tally
+                    the progress
+                  </Text>
+                </BlockStack>
+              </Card>
+
               <div style={{ marginBottom: "20px", marginTop: "20px" }}>
                 <Button
                   loading={isLoading}

@@ -1,21 +1,22 @@
 import { MediaCard } from "@shopify/polaris";
 import React from "react";
+import { AddProductType } from "~/types";
 
 interface Props {
-  setSelectedProduct: React.Dispatch<React.SetStateAction<any>>;
-  selectedProduct: any;
+  setProduct: React.Dispatch<React.SetStateAction<AddProductType>>;
+  product: AddProductType;
 }
 
-export default function ProductCard({
-  setSelectedProduct,
-  selectedProduct,
-}: Props) {
+export default function ProductCard({ setProduct, product }: Props) {
   return (
     <MediaCard
-      title={selectedProduct.title}
-      description={selectedProduct.descriptionHtml}
+      title={product.selectedProduct.title}
+      description={product.selectedProduct.descriptionHtml}
       popoverActions={[
-        { content: "Dismiss", onAction: () => setSelectedProduct(null) },
+        {
+          content: "Dismiss",
+          onAction: () => setProduct({ ...product, selectedProduct: null }),
+        },
       ]}
       size="small"
     >
@@ -28,7 +29,7 @@ export default function ProductCard({
           objectPosition: "center",
           margin: "none",
         }}
-        src={selectedProduct?.images[0].originalSrc}
+        src={product.selectedProduct?.images[0].originalSrc}
       />
     </MediaCard>
   );

@@ -26,7 +26,7 @@ export default function ChooseReminder() {
                 Product Based
               </Text>
               <Button
-                onClick={() => navigate(`/app/${id}/add-reminder`)}
+                onClick={() => navigate(`/app/${id}/add-product`)}
                 accessibilityLabel="Add variant"
                 icon={PlusIcon}
               >
@@ -48,7 +48,7 @@ export default function ChooseReminder() {
                 Activity Based
               </Text>
               <Button
-                onClick={() => {}}
+                onClick={() => navigate(`/app/${id}/add-activity`)}
                 accessibilityLabel="Add variant"
                 icon={PlusIcon}
               >

@@ -11,27 +11,21 @@ import {
   Select,
 } from "@shopify/polaris";
 import { useCallback } from "react";
-import ProductCard from "../ui/ProductCard";
 import { getError } from "~/utils/validated-from";
-import { AddProductType } from "~/types";
+import { AddActivityType } from "~/types";
 
 interface Props {
   setCurrentStep: React.Dispatch<React.SetStateAction<number>>;
-  product: AddProductType;
-  setProduct: React.Dispatch<React.SetStateAction<AddProductType>>;
+  activity: AddActivityType;
+  setActivity: React.Dispatch<React.SetStateAction<AddActivityType>>;
 }
 
-const AddProduct = ({ setCurrentStep, product, setProduct }: Props) => {
+const AddActivity = ({ setCurrentStep, activity, setActivity }: Props) => {
   const handleChange = useCallback(
     (_: boolean, newValue: string) =>
-      setProduct({ ...product, intakeFrequency: newValue }),
+      setActivity({ ...activity, intakeFrequency: newValue }),
     [],
   );
-
-  const fetchProducts = async () => {
-    const selected = await shopify.resourcePicker({ type: "product" });
-    setProduct({ ...product, selectedProduct: selected && selected[0] });
-  };
 
   const navigate = useNavigate();
   const { id } = useParams();
@@ -39,40 +33,54 @@ const AddProduct = ({ setCurrentStep, product, setProduct }: Props) => {
   return (
     <>
       <FormLayout>
-        {product.selectedProduct ? (
-          <ProductCard setProduct={setProduct} product={product} />
-        ) : (
-          <Button size="large" onClick={fetchProducts}>
-            Select Product
-          </Button>
-        )}
+        <FormLayout.Group condensed>
+          <TextField
+            autoComplete="off"
+            name="activityName"
+            label="Activity Name"
+            type="text"
+            value={activity.activityName}
+            onChange={(value) =>
+              setActivity({ ...activity, activityName: value })
+            }
+            // helpText={
+            //   <span>
+            //     We'll use this email address to inform you on future changes to
+            //     Polaris.
+            //   </span>
+            // }
+            // error={form.error("routineName") || undefined}
+          />
 
-        <Select
-          label="Product Type"
-          placeholder="Select"
-          name="productType"
-          options={["consumable", "application"]}
-          value={product.productType}
-          onChange={(value) => setProduct({ ...product, productType: value })}
-        />
+          <Select
+            label="Activity Type"
+            placeholder="Select"
+            name="activityType"
+            options={["physical", "mental"]}
+            value={activity.activityType}
+            onChange={(value) =>
+              setActivity({ ...activity, activityType: value })
+            }
+          />
+        </FormLayout.Group>
 
         <FormLayout.Group condensed>
           <TextField
-            label="Dosage Quantity"
-            name="dosageQty"
+            label="Goal"
+            name="goal"
             type="number"
             min={1}
-            value={product.dosageQty}
-            onChange={(value) => setProduct({ ...product, dosageQty: value })}
+            value={activity.goal}
+            onChange={(value) => setActivity({ ...activity, goal: value })}
             autoComplete="off"
           />
           <Select
-            label="Dosage Unit"
+            label="Unit"
             placeholder="Select"
-            name="dosageUnit"
+            name="goalUnit"
             options={["puff", "inhale"]}
-            value={product.dosageUnit}
-            onChange={(value) => setProduct({ ...product, dosageUnit: value })}
+            value={activity.goalUnit}
+            onChange={(value) => setActivity({ ...activity, goalUnit: value })}
           />
         </FormLayout.Group>
 
@@ -80,7 +88,7 @@ const AddProduct = ({ setCurrentStep, product, setProduct }: Props) => {
           <RadioButton
             label="Daily"
             helpText="Users have to take this routine every day."
-            checked={product.intakeFrequency === "daily"}
+            checked={activity.intakeFrequency === "daily"}
             id="daily"
             name="daily"
             onChange={handleChange}
@@ -90,17 +98,17 @@ const AddProduct = ({ setCurrentStep, product, setProduct }: Props) => {
             helpText="Users can select the days they want to take this routine."
             id="custom"
             name="daily"
-            checked={product.intakeFrequency === "custom"}
+            checked={activity.intakeFrequency === "custom"}
             onChange={handleChange}
           />
         </BlockStack>
 
-        {product.intakeFrequency === "custom" && (
+        {activity.intakeFrequency === "custom" && (
           <Card>
             <OptionList
               title="Select days"
               onChange={(selected) =>
-                setProduct({ ...product, selectedDays: selected })
+                setActivity({ ...activity, selectedDays: selected })
               }
               allowMultiple
               options={[
@@ -112,7 +120,7 @@ const AddProduct = ({ setCurrentStep, product, setProduct }: Props) => {
                 { value: "saturday", label: "Saturday" },
                 { value: "sunday", label: "Sunday" },
               ]}
-              selected={product.selectedDays}
+              selected={activity.selectedDays}
             />
           </Card>
         )}
@@ -146,4 +154,4 @@ const AddProduct = ({ setCurrentStep, product, setProduct }: Props) => {
   );
 };
 
-export default AddProduct;
+export default AddActivity;

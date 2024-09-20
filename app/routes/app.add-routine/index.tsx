@@ -47,9 +47,9 @@ export async function action({ request }: ActionFunctionArgs) {
   };
 
   try {
-    // const response = await prisma.routine.create({
-    //   data,
-    // });
+    const response = await prisma.routine.create({
+      data,
+    });
 
     return json({
       success: true,

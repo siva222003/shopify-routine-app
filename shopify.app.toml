@@ -3,7 +3,7 @@
 client_id = "9388a5774685dae18ad95269e9767d2a"
 name = "first-app"
 handle = "first-app-1303"
-application_url = "https://albany-equity-gentleman-talks.trycloudflare.com"
+application_url = "https://dee-destiny-headline-html.trycloudflare.com"
 embedded = true
 
 [build]
@@ -17,9 +17,9 @@ scopes = "write_products"
 
 [auth]
 redirect_urls = [
-  "https://albany-equity-gentleman-talks.trycloudflare.com/auth/callback",
-  "https://albany-equity-gentleman-talks.trycloudflare.com/auth/shopify/callback",
-  "https://albany-equity-gentleman-talks.trycloudflare.com/api/auth/callback"
+  "https://dee-destiny-headline-html.trycloudflare.com/auth/callback",
+  "https://dee-destiny-headline-html.trycloudflare.com/auth/shopify/callback",
+  "https://dee-destiny-headline-html.trycloudflare.com/api/auth/callback"
 ]
 
 [webhooks]
@@ -30,7 +30,7 @@ api_version = "2024-07"
   uri = "/webhooks"
 
 [app_proxy]
-url = "https://albany-equity-gentleman-talks.trycloudflare.com/app"
+url = "https://dee-destiny-headline-html.trycloudflare.com/app"
 subpath = "amrutam-routine"
 prefix = "apps"
 

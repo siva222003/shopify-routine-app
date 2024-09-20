@@ -33,30 +33,54 @@ model Session {
 }
 
 model Routine {
-  id          String     @id @default(auto()) @map("_id") @db.ObjectId
-  routineName String
-  category    String
-  description String
-  duration    String
-  channels    String[]
-  draft       Boolean    @default(false)
-  createdAt   DateTime   @default(now())
-  updatedAt   DateTime   @updatedAt
-  reminders   Reminder[]
+  id                String             @id @default(auto()) @map("_id") @db.ObjectId
+  routineName       String
+  category          String
+  description       String
+  duration          String
+  channels          String[]
+  draft             Boolean            @default(false)
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @updatedAt
+  productReminders  ProductReminder[]
+  activityReminders ActivityReminder[]
 }
 
-model Reminder {
-  id          String   @id @default(auto()) @map("_id") @db.ObjectId
-  product     Json
-  description String
-  dosageUnit  String
-  dosageQty   String
-  daily       Boolean
-  custom      String[]
-  timeRange   String
-  time        String
-  routineId   String   @db.ObjectId
-  routine     Routine  @relation(fields: [routineId], references: [id])
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+type ProductTimeSlots {
+  mealType String
+  mealTime String
+  time     String
+}
+
+model ProductReminder {
+  id           String             @id @default(auto()) @map("_id") @db.ObjectId
+  product      Json
+  productType  String
+  dosageUnit   String
+  dosageQty    String
+  daily        Boolean
+  customDays   String[]
+  timeRange    String
+  time         ProductTimeSlots[]
+  durationQty  String
+  durationUnit String
+  routineId    String             @db.ObjectId
+  routine      Routine            @relation(fields: [routineId], references: [id], onDelete: Cascade)
+  createdAt    DateTime           @default(now())
+  updatedAt    DateTime           @updatedAt
+}
+
+model ActivityReminder {
+  id           String   @id @default(auto()) @map("_id") @db.ObjectId
+  activityName String
+  activityType String
+  goal         String
+  goalUnit     String
+  daily        Boolean
+  customDays   String[]
+  durationQty  String
+  durationUnit String
+  time         String[]
+  routine      Routine  @relation(fields: [routineId], references: [id], onDelete: Cascade)
+  routineId    String   @db.ObjectId
 }
