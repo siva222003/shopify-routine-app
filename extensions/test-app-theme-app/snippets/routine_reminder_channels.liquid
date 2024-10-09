@@ -1,0 +1,177 @@
+<div x-show="tab===3" x-transition class="mx-10" x-cloak>
+  <h1 class="font-[500] my-10 text-3xl text-[#3A643B]">Set the reminder channels to get notified about the routine.</h1>
+
+  <div id="reminder-channels-grid" class="grid grid-cols-3 gap-14 my-4">
+    <div class="flex flex-col gap-10 p-6 justify-center border rounded-2xl">
+      <div class="flex justify-between">
+        <h2 class="text-[1.4rem] font-[500]">SMS</h2>
+
+        <label class="inline-flex items-center cursor-pointer">
+          <input type="checkbox" value="" class="sr-only peer">
+          <div
+            class="relative w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-[#3A643B]"
+          ></div>
+        </label>
+      </div>
+
+      <div class="relative">
+        <input
+          type="email"
+          id="hs-floating-input-email"
+          class="peer p-4 block w-full bg-transparent rounded-lg text-[1.4rem] placeholder:text-transparent !focus:border-[#3A643B] !focus:ring-[#3A643B] disabled:opacity-50 disabled:pointer-events-none border border-[#CED8E0] dark:text-neutral-700 !dark:focus:ring-[#3A643B] focus:pt-6 focus:pb-2 [&:not(:placeholder-shown)]:pt-6 [&:not(:placeholder-shown)]:pb-2 autofill:pt-6 autofill:pb-2"
+          placeholder="you@email.com"
+        >
+        <label
+          for="hs-floating-input-email"
+          class="absolute top-0 start-0 p-4 h-full text-[1.4rem] truncate pointer-events-none transition ease-in-out duration-100 border border-transparent origin-[0_0] peer-disabled:opacity-50 peer-disabled:pointer-events-none peer-focus:scale-90 peer-focus:translate-x-0.5 peer-focus:-translate-y-1.5 peer-focus:text-gray-500 dark:peer-focus:text-neutral-500 peer-[:not(:placeholder-shown)]:scale-90 peer-[:not(:placeholder-shown)]:translate-x-0.5 peer-[:not(:placeholder-shown)]:-translate-y-1.5 peer-[:not(:placeholder-shown)]:text-gray-500 dark:peer-[:not(:placeholder-shown)]:text-neutral-500 dark:text-neutral-500"
+          >Mobile Number</label
+        >
+      </div>
+    </div>
+
+    <div class="flex flex-col gap-10 p-6 justify-center border rounded-2xl">
+      <div class="flex justify-between">
+        <h2 class="text-[1.4rem] font-[500]">WhatsApp</h2>
+
+        <label class="inline-flex items-center cursor-pointer">
+          <input type="checkbox" value="" class="sr-only peer">
+          <div
+            class="relative w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-[#3A643B]"
+          ></div>
+        </label>
+      </div>
+
+      <div class="relative">
+        <input
+          type="email"
+          id="hs-floating-input-email"
+          class="peer p-4 block w-full bg-transparent rounded-lg text-[1.4rem] placeholder:text-transparent focus:border-[#3A643B] focus:ring-[#3A643B] disabled:opacity-50 disabled:pointer-events-none border border-[#CED8E0] dark:text-neutral-700 dark:focus:ring-[#3A643B] focus:pt-6 focus:pb-2 [&:not(:placeholder-shown)]:pt-6 [&:not(:placeholder-shown)]:pb-2 autofill:pt-6 autofill:pb-2"
+          placeholder="you@email.com"
+        >
+        <label
+          for="hs-floating-input-email"
+          class="absolute top-0 start-0 p-4 h-full text-[1.4rem] truncate pointer-events-none transition ease-in-out duration-100 border border-transparent origin-[0_0] peer-disabled:opacity-50 peer-disabled:pointer-events-none peer-focus:scale-90 peer-focus:translate-x-0.5 peer-focus:-translate-y-1.5 peer-focus:text-gray-500 dark:peer-focus:text-neutral-500 peer-[:not(:placeholder-shown)]:scale-90 peer-[:not(:placeholder-shown)]:translate-x-0.5 peer-[:not(:placeholder-shown)]:-translate-y-1.5 peer-[:not(:placeholder-shown)]:text-gray-500 dark:peer-[:not(:placeholder-shown)]:text-neutral-500 dark:text-neutral-500"
+          >WhatsApp Number
+        </label>
+      </div>
+    </div>
+
+    <div class="flex flex-col gap-10 p-6 justify-center border rounded-2xl">
+      <div class="flex justify-between">
+        <h2 class="text-[1.4rem] font-[500]">Call</h2>
+
+        <label class="inline-flex items-center cursor-pointer">
+          <input type="checkbox" value="" class="sr-only peer">
+          <div
+            class="relative w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-[#3A643B]"
+          ></div>
+        </label>
+      </div>
+
+      <div class="relative">
+        <input
+          type="email"
+          id="hs-floating-input-email"
+          class="peer p-4 block w-full bg-transparent rounded-lg text-[1.4rem] placeholder:text-transparent focus:border-[#3A643B] focus:ring-[#3A643B] disabled:opacity-50 disabled:pointer-events-none border border-[#CED8E0] dark:text-neutral-700 dark:focus:ring-[#3A643B] focus:pt-6 focus:pb-2 [&:not(:placeholder-shown)]:pt-6 [&:not(:placeholder-shown)]:pb-2 autofill:pt-6 autofill:pb-2"
+          placeholder="you@email.com"
+        >
+        <label
+          for="hs-floating-input-email"
+          class="absolute top-0 start-0 p-4 h-full text-[1.4rem] truncate pointer-events-none transition ease-in-out duration-100 border border-transparent origin-[0_0] peer-disabled:opacity-50 peer-disabled:pointer-events-none peer-focus:scale-90 peer-focus:translate-x-0.5 peer-focus:-translate-y-1.5 peer-focus:text-gray-500 dark:peer-focus:text-neutral-500 peer-[:not(:placeholder-shown)]:scale-90 peer-[:not(:placeholder-shown)]:translate-x-0.5 peer-[:not(:placeholder-shown)]:-translate-y-1.5 peer-[:not(:placeholder-shown)]:text-gray-500 dark:peer-[:not(:placeholder-shown)]:text-neutral-500 dark:text-neutral-500"
+          >Mobile Number</label
+        >
+      </div>
+    </div>
+
+    <div class="flex flex-col gap-10 p-6 justify-center border rounded-2xl">
+      <div class="flex justify-between">
+        <h2 class="text-[1.4rem] font-[500]">Email</h2>
+
+        <label class="inline-flex items-center cursor-pointer">
+          <input type="checkbox" value="" class="sr-only peer">
+          <div
+            class="relative w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-[#3A643B]"
+          ></div>
+        </label>
+      </div>
+
+      <div class="relative">
+        <input
+          type="email"
+          id="hs-floating-input-email"
+          class="peer p-4 block w-full bg-transparent rounded-lg text-[1.4rem] placeholder:text-transparent focus:border-[#3A643B] focus:ring-[#3A643B] disabled:opacity-50 disabled:pointer-events-none border border-[#CED8E0] dark:text-neutral-700 dark:focus:ring-[#3A643B] focus:pt-6 focus:pb-2 [&:not(:placeholder-shown)]:pt-6 [&:not(:placeholder-shown)]:pb-2 autofill:pt-6 autofill:pb-2"
+          placeholder="you@email.com"
+        >
+        <label
+          for="hs-floating-input-email"
+          class="absolute top-0 start-0 p-4 h-full text-[1.4rem] truncate pointer-events-none transition ease-in-out duration-100 border border-transparent origin-[0_0] peer-disabled:opacity-50 peer-disabled:pointer-events-none peer-focus:scale-90 peer-focus:translate-x-0.5 peer-focus:-translate-y-1.5 peer-focus:text-gray-500 dark:peer-focus:text-neutral-500 peer-[:not(:placeholder-shown)]:scale-90 peer-[:not(:placeholder-shown)]:translate-x-0.5 peer-[:not(:placeholder-shown)]:-translate-y-1.5 peer-[:not(:placeholder-shown)]:text-gray-500 dark:peer-[:not(:placeholder-shown)]:text-neutral-500 dark:text-neutral-500"
+          >Email ID</label
+        >
+      </div>
+    </div>
+
+    <div class="flex flex-col gap-10 p-6 justify-center border rounded-2xl">
+      <div class="flex justify-between">
+        <h2 class="text-[1.4rem] font-[500]">Google Calendar</h2>
+
+        <label class="inline-flex items-center cursor-pointer">
+          <input type="checkbox" value="" class="sr-only peer">
+          <div
+            class="relative w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-[#3A643B]"
+          ></div>
+        </label>
+      </div>
+
+      <div class="relative">
+        {% comment %}
+          <input
+            type="email"
+            id="hs-floating-input-email"
+            class="peer p-4 block w-full bg-transparent rounded-lg text-[1.4rem] placeholder:text-transparent focus:border-[#3A643B] focus:ring-[#3A643B] disabled:opacity-50 disabled:pointer-events-none border border-[#CED8E0] dark:text-neutral-700 dark:focus:ring-[#3A643B] focus:pt-6 focus:pb-2 [&:not(:placeholder-shown)]:pt-6 [&:not(:placeholder-shown)]:pb-2 autofill:pt-6 autofill:pb-2"
+            placeholder="you@email.com"
+          >
+          <label
+            for="hs-floating-input-email"
+            class="absolute top-0 start-0 p-4 h-full text-[1.4rem] truncate pointer-events-none transition ease-in-out duration-100 border border-transparent origin-[0_0] peer-disabled:opacity-50 peer-disabled:pointer-events-none peer-focus:scale-90 peer-focus:translate-x-0.5 peer-focus:-translate-y-1.5 peer-focus:text-gray-500 dark:peer-focus:text-neutral-500 peer-[:not(:placeholder-shown)]:scale-90 peer-[:not(:placeholder-shown)]:translate-x-0.5 peer-[:not(:placeholder-shown)]:-translate-y-1.5 peer-[:not(:placeholder-shown)]:text-gray-500 dark:peer-[:not(:placeholder-shown)]:text-neutral-500 dark:text-neutral-500"
+            >Google Calendar</label
+          >
+        {% endcomment %}
+
+        <button @click="addGoogleAccount()" class="px-4 py-3 rounded-full w-fit bg-[#fff7e2] text-[#3A643B] ">
+          Add Account
+        </button>
+      </div>
+    </div>
+
+    <div class="flex flex-col gap-10 p-6 justify-center border rounded-2xl">
+      <div class="flex justify-between">
+        <h2 class="text-[1.4rem] font-[500]">Web Notidications</h2>
+
+        <label class="inline-flex items-center cursor-pointer">
+          <input type="checkbox" value="" class="sr-only peer">
+          <div
+            class="relative w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-[#3A643B]"
+          ></div>
+        </label>
+      </div>
+
+      <div class="relative">
+        {% comment %}
+          <input
+            type="email"
+            id="hs-floating-input-email"
+            class="peer p-4 block w-full bg-transparent rounded-lg text-[1.4rem] placeholder:text-transparent focus:border-[#3A643B] focus:ring-[#3A643B] disabled:opacity-50 disabled:pointer-events-none border border-[#CED8E0] dark:text-neutral-700 dark:focus:ring-[#3A643B] focus:pt-6 focus:pb-2 [&:not(:placeholder-shown)]:pt-6 [&:not(:placeholder-shown)]:pb-2 autofill:pt-6 autofill:pb-2"
+            placeholder="you@email.com"
+          >
+          <label
+            for="hs-floating-input-email"
+            class="absolute top-0 start-0 p-4 h-full text-[1.4rem] truncate pointer-events-none transition ease-in-out duration-100 border border-transparent origin-[0_0] peer-disabled:opacity-50 peer-disabled:pointer-events-none peer-focus:scale-90 peer-focus:translate-x-0.5 peer-focus:-translate-y-1.5 peer-focus:text-gray-500 dark:peer-focus:text-neutral-500 peer-[:not(:placeholder-shown)]:scale-90 peer-[:not(:placeholder-shown)]:translate-x-0.5 peer-[:not(:placeholder-shown)]:-translate-y-1.5 peer-[:not(:placeholder-shown)]:text-gray-500 dark:peer-[:not(:placeholder-shown)]:text-neutral-500 dark:text-neutral-500"
+            >Google Calendar</label
+          >
+        {% endcomment %}
+
+        <button class="px-4 py-3 rounded-full w-fit bg-[#fff7e2] text-[#3A643B] ">Enable</button>
+      </div>
+    </div>
+  </div>
+</div>

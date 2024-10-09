@@ -1,0 +1,72 @@
+<div x-show="tab===2" x-transition x-cloak>
+  <div class="flex my-10 justify-between items-center">
+    <h1 class="font-[500] text-3xl text-[#3A643B]">Do you have these products to perform this routine?</h1>
+    <select
+      @change="cartSelectChange($event)"
+      class="py-6 w-fit px-4 placeholder:text-[1.3rem]  block border-gray-200 rounded-full text-[1.4rem] disabled:opacity-50 disabled:pointer-events-none dark:text-neutral-400 dark:placeholder-neutral-500 focus:ring-0"
+    >
+      <option class="text-[1.5rem]" disabled selected="">Select</option>
+      <option class="text-[1.5rem]">I have every product</option>
+      <option class="text-[1.5rem]">I have some products</option>
+      <option class="text-[1.5rem]">I have no product</option>
+    </select>
+  </div>
+
+  <div id="cart-products-grid" class="grid grid-cols-1 my-4 border rounded-xl gap-0">
+    <template x-for="product in products">
+      <div
+        @click="addSelectedProduct(product)"
+        class="flex gap-6 p-4 cursor-pointer"
+        :class="selectedProducts.includes(product) ? 'border-[#3A643B] border' : ''"
+      >
+        <img
+          height="100"
+          width="100"
+          src="{{ 'product.svg' | asset_url }}"
+          class="w-[17rem] h-[17rem] object-cover min-w-[17rem] min-h-[17rem] "
+          alt=""
+        >
+
+        <div class="flex flex-col gap-4">
+          <h1 class="font-[500]">Amrutam Aloe Vera Gel 400grams (2)</h1>
+          <p class="text-[13px] text-[#aaaaaa] max-w-4xl">
+            Lorem ipsum dolor sit amet consectetur adipisicing elit. Commodi itaque harum modi labore tenetur excepturi
+            delectus voluptates quidem eos quos!
+          </p>
+
+          <p class="text-[13px] font-[500]">Quantity</p>
+        </div>
+
+        <div
+          x-show="cartSelectOption === 'I have some products' || cartSelectOption === 'I have no product'"
+          class="flex items-center ml-auto mr-4"
+        >
+          <div class="inline-flex items-center">
+            <label class="flex items-center cursor-pointer relative">
+              <input
+                type="checkbox"
+                :checked="selectedProducts.includes(product)"
+                class="peer !h-8 !w-8 !mr-0 cursor-pointer transition-all appearance-none rounded-full shadow hover:shadow-md  checked:bg-[#3A643B] border border-gray-400"
+                id="check"
+              >
+              <span class="absolute text-white opacity-0 peer-checked:opacity-100 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 pointer-events-none">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="h-3.5 w-3.5"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                  stroke="currentColor"
+                  stroke-width="1"
+                >
+                  <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                </svg>
+              </span>
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <div class="w-full border my-2"></div>
+    </template>
+  </div>
+</div>

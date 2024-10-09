@@ -44,11 +44,12 @@ model Routine {
   updatedAt         DateTime           @updatedAt
   productReminders  ProductReminder[]
   activityReminders ActivityReminder[]
+  WeeklyBenfits     WeeklyBenfits[]
 }
 
 type ProductTimeSlots {
-  mealType String
-  mealTime String
+  mealType String?
+  mealTime String?
   time     String
 }
 
@@ -60,8 +61,7 @@ model ProductReminder {
   dosageQty    String
   daily        Boolean
   customDays   String[]
-  timeRange    String
-  time         ProductTimeSlots[]
+  times        ProductTimeSlots[]
   durationQty  String
   durationUnit String
   routineId    String             @db.ObjectId
@@ -80,7 +80,21 @@ model ActivityReminder {
   customDays   String[]
   durationQty  String
   durationUnit String
-  time         String[]
+  times        String[]
   routine      Routine  @relation(fields: [routineId], references: [id], onDelete: Cascade)
   routineId    String   @db.ObjectId
+}
+
+type Benfit {
+  weekRange String
+  benefits  String[]
+}
+
+model WeeklyBenfits {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  benefits  Benfit[]
+  routine   Routine  @relation(fields: [routineId], references: [id], onDelete: Cascade)
+  routineId String   @db.ObjectId
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }

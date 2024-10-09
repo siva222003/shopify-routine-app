@@ -1,0 +1,15 @@
+div:empty {
+  display: block !important;
+}
+
+/* input[type="checkbox"] {
+  width: max-content !important;
+} */
+
+[x-cloak] {
+  display: none !important;
+}
+
+/* html {
+  scroll-behavior: smooth;
+} */
