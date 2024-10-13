@@ -29,7 +29,7 @@ export default function AddMeals({
   initialSlotsState,
 }: Props) {
   const [durationQty, setDurationQty] = useState("1");
-  const [durationUnit, setDurationUnit] = useState("days");
+  const [durationUnit, setDurationUnit] = useState("Week(s)");
 
   const options = [
     { label: "Breakfast", value: "breakfast" },
@@ -62,7 +62,7 @@ export default function AddMeals({
             label="Unit"
             placeholder="Select"
             name="durationUnit"
-            options={["days", "weeks", "months", "years"]}
+            options={["Day(s)", "Week(s)"]}
             value={durationUnit}
             onChange={setDurationUnit}
           />

@@ -56,7 +56,7 @@ const AddActivity = ({ setCurrentStep, activity, setActivity }: Props) => {
             label="Activity Type"
             placeholder="Select"
             name="activityType"
-            options={["physical", "mental"]}
+            options={["Physical", "Mental"]}
             value={activity.activityType}
             onChange={(value) =>
               setActivity({ ...activity, activityType: value })
@@ -112,13 +112,13 @@ const AddActivity = ({ setCurrentStep, activity, setActivity }: Props) => {
               }
               allowMultiple
               options={[
-                { value: "monday", label: "Monday" },
-                { value: "tuesday", label: "Tuesday" },
-                { value: "wednesday", label: "Wednesday" },
-                { value: "thursday", label: "Thursday" },
-                { value: "friday", label: "Friday" },
-                { value: "saturday", label: "Saturday" },
-                { value: "sunday", label: "Sunday" },
+                { value: "Monday", label: "Monday" },
+                { value: "Tuesday", label: "Tuesday" },
+                { value: "Wednesday", label: "Wednesday" },
+                { value: "Thursday", label: "Thursday" },
+                { value: "Friday", label: "Friday" },
+                { value: "Saturday", label: "Saturday" },
+                { value: "Sunday", label: "Sunday" },
               ]}
               selected={activity.selectedDays}
             />

@@ -33,10 +33,10 @@ export default function AddMeals({
   const [durationUnit, setDurationUnit] = useState("days");
 
   const options = [
-    { label: "Breakfast", value: "breakfast" },
-    { label: "Lunch", value: "lunch" },
-    { label: "Snacks", value: "snacks" },
-    { label: "Dinner", value: "dinner" },
+    { label: "Breakfast", value: "Breakfast" },
+    { label: "Brunch", value: "Brunch" },
+    { label: "Lunch", value: "Lunch" },
+    { label: "Dinner", value: "Dinner" },
   ];
 
   const handleAddSlot = () => {
@@ -145,13 +145,13 @@ export default function AddMeals({
                 <InlineStack gap="400">
                   <RadioButton
                     label="Before Meal"
-                    checked={slot.mealTime === "before"}
+                    checked={slot.mealTime === "beforeMeal"}
                     name="mealTime"
-                    value="before"
+                    value="beforeMeal"
                     onChange={(e) => {
                       setSlots((prev) => {
                         const newSlots = [...prev];
-                        newSlots[index].mealTime = "before";
+                        newSlots[index].mealTime = "beforeMeal";
                         return newSlots;
                       });
                     }}
@@ -159,12 +159,12 @@ export default function AddMeals({
                   <RadioButton
                     label="After Meal"
                     name="mealTime"
-                    value="after"
-                    checked={slot.mealTime === "after"}
+                    value="afterMeal"
+                    checked={slot.mealTime === "afterMeal"}
                     onChange={(e) => {
                       setSlots((prev) => {
                         const newSlots = [...prev];
-                        newSlots[index].mealTime = "after";
+                        newSlots[index].mealTime = "afterMeal";
                         return newSlots;
                       });
                     }}

@@ -98,7 +98,7 @@ export async function action({ request }) {
     auth,
     summary,
     description,
-    reminderDateTime
+    reminderDateTime,
   ) {
     try {
       const calendar = google.calendar({ version: "v3", auth });
@@ -140,14 +140,14 @@ export async function action({ request }) {
       const reminderSummary = "Task Reminder";
       const reminderDescription = "Don't forget to finish your task!";
       const reminderDateTime = new Date(
-        new Date().getTime() + 10000
+        new Date().getTime() + 10000,
       ).toISOString(); // Reminder set for 10 seconds from now
 
       const response = await createReminderEvent(
         auth,
         reminderSummary,
         reminderDescription,
-        reminderDateTime
+        reminderDateTime,
       );
 
       return response;

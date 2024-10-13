@@ -109,7 +109,9 @@ document.addEventListener("alpine:init", () => {
 
         const data = await response.json();
 
-        this.routine = data.routine;
+        this.routine = data.data;
+
+        console.log(data.data);
 
         this.products = data.routine.productReminders.map(
           (reminder) => reminder.product,

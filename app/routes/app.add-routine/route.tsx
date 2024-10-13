@@ -7,7 +7,13 @@ import {
   InlineStack,
 } from "@shopify/polaris";
 import { TitleBar } from "@shopify/app-bridge-react";
-import { useActionData, useNavigation, useSubmit } from "@remix-run/react";
+import {
+  Link,
+  useActionData,
+  useLoaderData,
+  useNavigation,
+  useSubmit,
+} from "@remix-run/react";
 import {
   ActionFunctionArgs,
   json,
@@ -25,6 +31,23 @@ import CategoryInput from "~/components/add-routine/CategoryInput";
 import RoutineInput from "~/components/add-routine/RoutineInput";
 import DraftInput from "~/components/add-routine/DraftInput";
 import { Prisma } from "@prisma/client";
+import axios from "axios";
+import { api } from "~/utils/axios";
+
+export async function loader() {
+  try {
+    const categories = await api.get("/admin/category");
+    return {
+      success: true,
+      categories: categories.data.data.docs,
+    };
+  } catch (error) {
+    return {
+      success: false,
+      error: error,
+    };
+  }
+}
 
 export async function action({ request }: ActionFunctionArgs) {
   const formData = await request.formData();
@@ -33,9 +56,9 @@ export async function action({ request }: ActionFunctionArgs) {
 
   const channels = JSON.parse(formData.get("channels") as string);
 
-  final.duration = (final.duration as string) + " " + (final.unit as string);
+  // final.duration = (final.duration as string) + " " + (final.unit as string);
 
-  delete final.unit;
+  // delete final.unit;
 
   const data: Prisma.RoutineCreateInput = {
     routineName: final.routineName as string,
@@ -46,14 +69,34 @@ export async function action({ request }: ActionFunctionArgs) {
     draft: final.draft === "true" ? true : false,
   };
 
+  //Data for the routine api
+
+  const routineData = {
+    name: data.routineName,
+    visibility: "Public",
+    description: data.description,
+    image:
+      "https://amrutam.co.in/cdn/shop/products/EyeKey-Malt-1-scaled_24e2b45f-c713-4ab1-bfcb-b72ba99b4600.jpg?v=1655351259&width=1000",
+    duration: {
+      number: final.duration as string,
+      unit: final.unit as string,
+    },
+    category: data.category,
+    channel: data.channels,
+    draft: data.draft,
+    isTemplate: true,
+  };
+
   try {
-    const response = await prisma.routine.create({
-      data,
-    });
+    // const response = await prisma.routine.create({
+    //   data,
+    // });
+
+    const response = await api.post("/admin/reminderlist", routineData);
 
     return json({
       success: true,
-      data: data,
+      data: response.data,
     });
   } catch (error) {
     return json({ success: false, error });
@@ -61,6 +104,8 @@ export async function action({ request }: ActionFunctionArgs) {
 }
 
 export default function AdditionalPage() {
+  const { categories } = useLoaderData<any>();
+
   const navigation = useNavigation();
 
   const isLoading = navigation.state === "submitting";
@@ -85,7 +130,7 @@ export default function AdditionalPage() {
 
   const actionData = useActionData<typeof action>();
 
-  console.log(actionData);
+  console.log({ actionData });
 
   const submit = useSubmit();
 
@@ -127,7 +172,7 @@ export default function AdditionalPage() {
 
               <ImageInput file={file} setFile={setFile} />
 
-              <CategoryInput form={form} />
+              <CategoryInput form={form} catgories={categories} />
 
               <DurationInput form={form} />
 

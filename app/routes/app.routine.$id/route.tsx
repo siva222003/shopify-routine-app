@@ -11,6 +11,7 @@ import {
 } from "@shopify/polaris";
 import { TitleBar } from "@shopify/app-bridge-react";
 import {
+  Link,
   useActionData,
   useLoaderData,
   useNavigate,
@@ -36,19 +37,18 @@ import CategoryInput from "~/components/add-routine/CategoryInput";
 import RoutineInput from "~/components/add-routine/RoutineInput";
 import DraftInput from "~/components/add-routine/DraftInput";
 import { Prisma } from "@prisma/client";
-import { PlusIcon } from "@shopify/polaris-icons";
+import { DeleteIcon, PlusIcon } from "@shopify/polaris-icons";
+import { api } from "~/utils/axios";
 
 export async function loader({ params }: LoaderFunctionArgs) {
   try {
-    const response = await prisma.routine.findUnique({
-      where: {
-        id: params.id,
-      },
-    });
+    const response = await api.get(`admin/reminderlist/${params.id}`);
+    const categories = await api.get("/admin/category");
 
     return json({
       success: true,
-      data: response,
+      data: response.data.data,
+      categories: categories.data.data.docs,
     });
   } catch (error) {
     return json({ success: false, data: null });
@@ -94,31 +94,25 @@ export async function action({ request, params }: ActionFunctionArgs) {
 
 export default function Routine() {
   const navigation = useNavigation();
-
   const navigate = useNavigate();
-
-  const { data } = useLoaderData<typeof loader>();
-
+  const { data, categories } = useLoaderData<typeof loader>();
+  console.log(data);
   const actionData = useActionData<typeof action>();
-
   const isLoading = navigation.state === "submitting";
-
   const [file, setFile] = useState<File | null>(null);
-
   const [selectedOptions, setSelectedOptions] = useState<string[]>(
-    data?.channels || [],
+    data?.channel || [],
   );
-
   const [isChannelsError, setChannelsError] = useState<string | null>(null);
 
   const form = useForm({
     validator: addRoutineValidator,
     defaultValues: {
-      routineName: data?.routineName!,
-      category: data?.category!,
+      routineName: data?.name!,
+      category: data?.category._id!,
       description: data?.description!,
-      duration: data?.duration.split(" ")[0]!,
-      unit: data?.duration.split(" ")[1]!,
+      duration: data?.duration.number!,
+      unit: data?.duration.unit!,
     },
   });
 
@@ -162,62 +156,82 @@ export default function Routine() {
           <form {...form.getFormProps()} onSubmit={handleSubmit}>
             <FormLayout>
               <RoutineInput form={form} />
-
               <ImageInput file={file} setFile={setFile} />
-
-              <CategoryInput form={form} />
-
+              <CategoryInput form={form} catgories={categories} />
               <DurationInput form={form} />
-
               <ChannelsInput
                 selectedOptions={selectedOptions}
                 setSelectedOptions={setSelectedOptions}
                 isChannelsError={isChannelsError}
                 setChannelsError={setChannelsError}
               />
-
               <DraftInput draftValue={data?.draft} />
+              {data?.productReminders && data?.productReminders.length > 0 && (
+                <Text as="h2" variant="headingMd">
+                  Product Reminders
+                </Text>
+              )}
+              {data?.productReminders.map((reminder) => {
+                return (
+                    <Card roundedAbove="sm" key={reminder.id}>
+                      <BlockStack gap="200">
+                        <InlineGrid columns="1fr auto">
+                          <Text as="h2" variant="headingSm">
+                            {reminder.name}
+                          </Text>
+                          <Button
+                            onClick={() => navigate(`/app/${id}/reminder`)}
+                            accessibilityLabel="Add variant"
+                            icon={PlusIcon}
+                          >
+                            Edit
+                          </Button>
+                        </InlineGrid>
+                        <Text as="p" variant="bodyMd">
+                          {reminder.productType}
+                        </Text>
+                      </BlockStack>
+                    </Card>
+                
+           
+                );
+              })}
 
-              <Card roundedAbove="sm">
-                <BlockStack gap="200">
-                  <InlineGrid columns="1fr auto">
-                    <Text as="h2" variant="headingSm">
-                      Reminders
-                    </Text>
-                    <Button
-                      onClick={() => navigate(`/app/${id}/reminder`)}
-                      accessibilityLabel="Add variant"
-                      icon={PlusIcon}
-                    >
-                      Add
-                    </Button>
-                  </InlineGrid>
-                  <Text as="p" variant="bodyMd">
-                    Add items for your routine.
+              {data?.activityReminders &&
+                data?.activityReminders.length > 0 && (
+                  <Text as="h2" variant="headingMd">
+                    Activity Reminders
                   </Text>
-                </BlockStack>
-              </Card>
+                )}
+              {data?.activityReminders.map((reminder) => {
+                return (
+                  <Card roundedAbove="sm" key={reminder.id}>
+                    <BlockStack gap="200">
+                      <InlineGrid columns="1fr auto">
+                        <Text as="h2" variant="headingSm">
+                          {reminder.name}
+                        </Text>
+                        <Button
+                          onClick={() => navigate(`/app/${id}/reminder`)}
+                          accessibilityLabel="Add variant"
+                          icon={PlusIcon}
+                        >
+                          Edit
+                        </Button>
+                      </InlineGrid>
+                      <Text as="p" variant="bodyMd">
+                        {reminder.activityType}
+                      </Text>
+                    </BlockStack>
+                  </Card>
+                );
+              })}
 
-              <Card roundedAbove="sm">
-                <BlockStack gap="200">
-                  <InlineGrid columns="1fr auto">
-                    <Text as="h2" variant="headingSm">
-                      Weekly Benfits
-                    </Text>
-                    <Button
-                      onClick={() => navigate(`/app/${id}/weekly-benfits`)}
-                      accessibilityLabel="Add variant"
-                      icon={PlusIcon}
-                    >
-                      Add
-                    </Button>
-                  </InlineGrid>
-                  <Text as="p" variant="bodyMd">
-                    Add weekly benefits of this Routine so that users can tally
-                    the progress
-                  </Text>
-                </BlockStack>
-              </Card>
+              {
+                <Link to={`/app/${id}/reminder`}>
+                  <Button>Add Reminders</Button>
+                </Link>
+              }
 
               <div style={{ marginBottom: "20px", marginTop: "20px" }}>
                 <Button

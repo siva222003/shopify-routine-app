@@ -1,7 +1,7 @@
 import { ActionFunctionArgs, json } from "@remix-run/node";
 import { Form, useActionData, useNavigate, useSubmit } from "@remix-run/react";
 import { Button, Page } from "@shopify/polaris";
-import { FormEvent, useMemo, useRef, useState } from "react";
+import { FormEvent, useEffect, useMemo, useRef, useState } from "react";
 import AddTimeSlot from "~/components/edit-routine/product-reminder/AddProductTimeSlot";
 import AddProduct from "~/components/edit-routine/product-reminder/AddProduct";
 
@@ -9,6 +9,7 @@ import prisma from "../../db.server";
 import { ValidatedForm } from "@rvf/remix";
 import { addProductValidator } from "~/utils/validators";
 import { AddProductType, ProductReminderInitialSlots } from "~/types";
+import { api } from "~/utils/axios";
 
 export async function action({ request, params }: ActionFunctionArgs) {
   const formData = await request.formData();
@@ -52,29 +53,64 @@ export async function action({ request, params }: ActionFunctionArgs) {
     routineId: params.id as string,
   };
 
-  try {
-    const response = await prisma.productReminder.create({
-      data: {
-        product: final.product as any,
-        dosageQty: final.dosageQty as string,
-        dosageUnit: final.dosageUnit as string,
-        daily: final.daily === "daily",
-        productType: final.productType as string,
-        times,
-        durationQty: final.durationQty as string,
-        durationUnit: final.durationUnit as string,
-        customDays: final.customDays as any,
-        routineId: params.id as string,
-      },
+  //data for routine api
+
+  let timeSlotsConsumable = [];
+  let timeSlotsAppBased = [];
+
+  if (test.productType === "consumable") {
+    timeSlotsConsumable = test.times.map((slot) => {
+      return {
+        meal: slot.mealType,
+        timing: slot.mealTime,
+        time: slot.time,
+      };
     });
+  } else {
+    timeSlotsAppBased = test.times.map((slot) => {
+      return {
+        time: slot.time,
+      };
+    });
+  }
+
+  const data = {
+    name: test.product.title,
+    productId: test.product.id,
+    dosageQty: test.dosageQty,
+    dosageUnit: test.dosageUnit,
+    reminderListId: test.routineId,
+    frequency: test.customDays,
+    productType: test.productType,
+    timeSlotsConsumable,
+    timeSlotsAppBased,
+  };
+
+  try {
+    // const response = await prisma.productReminder.create({
+    //   data: {
+    //     product: final.product as any,
+    //     dosageQty: final.dosageQty as string,
+    //     dosageUnit: final.dosageUnit as string,
+    //     daily: final.daily === "daily",
+    //     productType: final.productType as string,
+    //     times,
+    //     durationQty: final.durationQty as string,
+    //     durationUnit: final.durationUnit as string,
+    //     customDays: final.customDays as any,
+    //     routineId: params.id as string,
+    //   },
+    // });
+
+    const response = await api.post("/admin/reminder", data);
 
     return json({
       success: true,
-      data: response,
+      data: response.data,
     });
   } catch (error) {
     console.log(error);
-    return json({ success: false, test });
+    return json({ success: false, data });
   }
 }
 
@@ -115,6 +151,14 @@ const AddProductReminder = () => {
   const navigate = useNavigate();
 
   const data = useActionData<typeof action>();
+
+  useEffect(() => {
+    if (data) {
+      if (data.success) {
+        shopify.toast.show("Product Reminder added successfully");
+      }
+    }
+  }, [data?.success]);
 
   console.log(data);
 

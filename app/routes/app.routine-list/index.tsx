@@ -1,4 +1,11 @@
-import { json, Outlet, useLoaderData, useNavigate } from "@remix-run/react";
+import {
+  json,
+  Outlet,
+  useActionData,
+  useLoaderData,
+  useNavigate,
+  useNavigation,
+} from "@remix-run/react";
 import {
   TextField,
   IndexTable,
@@ -15,16 +22,44 @@ import {
   Button,
 } from "@shopify/polaris";
 import type { IndexFiltersProps, TabProps } from "@shopify/polaris";
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 
-import prisma from "../../db.server";
 import RowActions from "~/components/routine-list/RowActions";
+import { api } from "~/utils/axios";
+import { LoaderFunctionArgs } from "@remix-run/node";
+
+export async function action({ request }: LoaderFunctionArgs) {
+  const formData = await request.formData();
+  const intent = formData.get("intent");
+  const id = formData.get("id");
+
+  try {
+    if (intent === "delete") {
+      await api.delete(`admin/reminderlist/${id}`);
+
+      return json({ success: true });
+    } else if (intent === "clone") {
+      await api.post(`admin/reminderlist/template/clone/${id}`);
+
+      return json({ success: true });
+    }
+  } catch (error) {
+    return json({ success: false });
+  }
+}
 
 export async function loader({}) {
   try {
-    const routines = await prisma.routine.findMany({});
+    // const routines = await prisma.routine.findMany({});
+    const routines = await api.get("admin/reminderlist?page=1");
 
-    return json({ success: true, routines });
+    // console.log(routines);
+
+    return json({
+      success: true,
+      // routines: routines,
+      routines: routines.data.data.docs,
+    });
   } catch (error) {
     console.error(error);
 
@@ -33,9 +68,21 @@ export async function loader({}) {
 }
 
 export default function IndexFiltersDefault() {
-  const navigate = useNavigate();
+  const navigation = useNavigation();
 
   const { routines } = useLoaderData<typeof loader>();
+
+  const actionData = useActionData<typeof action>();
+
+  useEffect(() => {
+    if (actionData) {
+      if (actionData.success) {
+        shopify.toast.show(
+          `Routine ${navigation.formData?.get("intent")}d  successfully`,
+        );
+      }
+    }
+  }, [actionData?.success]);
 
   function disambiguateLabel(key: string, value: any[]): any[] | string {
     switch (key) {
@@ -267,24 +314,61 @@ export default function IndexFiltersDefault() {
   const { selectedResources, allResourcesSelected, handleSelectionChange } =
     useIndexResourceState(routines);
 
+  // const rowMarkup = routines.map(
+  //   ({ id, routineName, draft, category, description, duration }, index) => (
+  //     <IndexTable.Row
+  //       id={id}
+  //       key={id}
+  //       selected={selectedResources.includes(id)}
+  //       position={index}
+  //       onClick={() => {
+  //         navigate(`/app/routine/${id}`);
+  //       }}
+  //     >
+  //       <IndexTable.Cell>
+  //         <img
+  //           src={"https://picsum.photos/50?random=" + String(index)}
+  //           alt={"product thumbnail" + routineName}
+  //         />
+  //       </IndexTable.Cell>
+  //       <IndexTable.Cell>{routineName}</IndexTable.Cell>
+  //       <IndexTable.Cell>
+  //         {draft ? (
+  //           <Badge tone="info">Draft</Badge>
+  //         ) : (
+  //           <Badge tone="success">Active</Badge>
+  //         )}
+  //       </IndexTable.Cell>
+  //       <IndexTable.Cell>{description}</IndexTable.Cell>
+  //       <IndexTable.Cell>{category}</IndexTable.Cell>
+  //       <IndexTable.Cell>{duration}</IndexTable.Cell>
+  //       <IndexTable.Cell>
+  //         <RowActions />
+  //       </IndexTable.Cell>
+  //     </IndexTable.Row>
+  //   ),
+  // );
+
   const rowMarkup = routines.map(
-    ({ id, routineName, draft, category, description, duration }, index) => (
+    ({ _id, name, draft, category, image, description, duration }, index) => (
       <IndexTable.Row
-        id={id}
-        key={id}
-        selected={selectedResources.includes(id)}
+        id={_id}
+        key={_id}
+        selected={selectedResources.includes(_id)}
         position={index}
-        onClick={() => {
-          navigate(`/app/routine/${id}`);
-        }}
+        // onClick={() => {
+        //   navigate(`/app/routine/${_id}`);
+        // }}
       >
         <IndexTable.Cell>
           <img
             src={"https://picsum.photos/50?random=" + String(index)}
-            alt={"product thumbnail" + routineName}
+            // src={image}
+            // className="h-[20px] w-[20px]"
+            alt={"product thumbnail" + name}
           />
         </IndexTable.Cell>
-        <IndexTable.Cell>{routineName}</IndexTable.Cell>
+        <IndexTable.Cell>{name}</IndexTable.Cell>
         <IndexTable.Cell>
           {draft ? (
             <Badge tone="info">Draft</Badge>
@@ -292,15 +376,18 @@ export default function IndexFiltersDefault() {
             <Badge tone="success">Active</Badge>
           )}
         </IndexTable.Cell>
-        <IndexTable.Cell>{description}</IndexTable.Cell>
-        <IndexTable.Cell>{category}</IndexTable.Cell>
-        <IndexTable.Cell>{duration}</IndexTable.Cell>
+        <IndexTable.Cell>{description.slice(0, 40)}...</IndexTable.Cell>
+        <IndexTable.Cell>{category?.name}</IndexTable.Cell>
         <IndexTable.Cell>
-          <RowActions />
+          {duration.number + " " + duration.unit}
+        </IndexTable.Cell>
+        <IndexTable.Cell>
+          <RowActions id={_id} />
         </IndexTable.Cell>
       </IndexTable.Row>
     ),
   );
+
   return (
     <Page title={"Routines"} fullWidth>
       <Card padding="0">

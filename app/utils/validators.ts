@@ -22,9 +22,7 @@ export const addRoutineValidator = withZod(
     routineName: z.string().min(5, {
       message: "Routine must be at least 5 characters long",
     }),
-    category: z.string().min(6, {
-      message: "Category must be at least 6 characters long",
-    }),
+    category: z.string({ message: "Category is required" }),
     description: z.string().min(10, {
       message: "Description must be at least 10 characters long",
     }),

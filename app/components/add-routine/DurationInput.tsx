@@ -39,7 +39,7 @@ export default function DurationInput({ form }: Props) {
             label="Unit"
             placeholder="Select"
             name="unit"
-            options={["days", "weeks", "months", "years"]}
+            options={["Day(s)", "Week(s)", "Month(s)"]}
             value={form.value("unit") || ""}
             onChange={handleUnitChange}
             error={form.error("unit") || undefined}

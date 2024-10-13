@@ -1,7 +1,7 @@
 import { ActionFunctionArgs, json } from "@remix-run/node";
 import { Form, useActionData, useNavigate, useSubmit } from "@remix-run/react";
 import { Button, Page } from "@shopify/polaris";
-import { FormEvent, useMemo, useRef, useState } from "react";
+import { FormEvent, useEffect, useMemo, useRef, useState } from "react";
 import AddTimeSlot from "~/components/edit-routine/activity-reminder/AddActivityTimeSlot";
 
 import prisma from "../../db.server";
@@ -9,6 +9,8 @@ import { ValidatedForm } from "@rvf/remix";
 import { addProductValidator } from "~/utils/validators";
 import { ActivityReminderInitialSlots, AddActivityType } from "~/types";
 import AddActivity from "~/components/edit-routine/activity-reminder/AddActivity";
+import { number } from "zod";
+import { api } from "~/utils/axios";
 
 export async function action({ request, params }: ActionFunctionArgs) {
   const formData = await request.formData();
@@ -21,28 +23,53 @@ export async function action({ request, params }: ActionFunctionArgs) {
 
   const times = JSON.parse(final.times as string);
 
+  //data for routine api
+
+  let timeslotActivityBased = times.map((time: string) => {
+    return {
+      time: time,
+    };
+  });
+
+  const data = {
+    name: final.activityName as string,
+    activityType: final.activityType as string,
+    goal: final.goal as string,
+    unit: final.goalUnit as string,
+    frequency: final.customDays,
+    duration: {
+      number: final.durationQty as string,
+      unit: final.durationUnit as string,
+    },
+    timeslotActivityBased,
+    reminderListId: params.id as string,
+  };
+
   try {
-    const routine = await prisma.activityReminder.create({
-      data: {
-        activityName: final.activityName as string,
-        activityType: final.activityType as string,
-        goal: final.goal as string,
-        goalUnit: final.goalUnit as string,
-        daily: final.daily === "daily",
-        times,
-        customDays: final.customDays as any,
-        durationQty: final.durationQty as string,
-        durationUnit: final.durationUnit as string,
-        routineId: params.id as string,
-      },
-    });
+    // const routine = await prisma.activityReminder.create({
+    //   data: {
+    //     activityName: final.activityName as string,
+    //     activityType: final.activityType as string,
+    //     goal: final.goal as string,
+    //     goalUnit: final.goalUnit as string,
+    //     daily: final.daily === "daily",
+    //     times,
+    //     customDays: final.customDays as any,
+    //     durationQty: final.durationQty as string,
+    //     durationUnit: final.durationUnit as string,
+    //     routineId: params.id as string,
+    //   },
+    // });
+
+    const response = await api.post("/admin/reminder-activity", data);
+
     return json({
       success: true,
-      data: routine,
+      data: response.data,
     });
   } catch (error) {
     console.log(final);
-    return json({ success: false, error });
+    return json({ success: false, data });
   }
 }
 
@@ -72,9 +99,17 @@ const AddActivityReminder = () => {
 
   const navigate = useNavigate();
 
-  const data = useActionData<typeof action>();
+  const actionData = useActionData<typeof action>();
 
-  console.log(data);
+  console.log(actionData);
+
+  useEffect(() => {
+    if (actionData) {
+      if (actionData.success) {
+        shopify.toast.show("Activity Reminder added successfully");
+      }
+    }
+  }, [actionData?.success]);
 
   const submit = useSubmit();
 

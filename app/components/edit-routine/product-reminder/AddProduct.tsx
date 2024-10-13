@@ -10,7 +10,7 @@ import {
   Button,
   Select,
 } from "@shopify/polaris";
-import { useCallback } from "react";
+import { useCallback, useEffect } from "react";
 import ProductCard from "../ui/ProductCard";
 import { getError } from "~/utils/validated-from";
 import { AddProductType } from "~/types";
@@ -51,7 +51,7 @@ const AddProduct = ({ setCurrentStep, product, setProduct }: Props) => {
           label="Product Type"
           placeholder="Select"
           name="productType"
-          options={["consumable", "application"]}
+          options={["consumable", "applicationBased"]}
           value={product.productType}
           onChange={(value) => setProduct({ ...product, productType: value })}
         />
@@ -104,13 +104,13 @@ const AddProduct = ({ setCurrentStep, product, setProduct }: Props) => {
               }
               allowMultiple
               options={[
-                { value: "monday", label: "Monday" },
-                { value: "tuesday", label: "Tuesday" },
-                { value: "wednesday", label: "Wednesday" },
-                { value: "thursday", label: "Thursday" },
-                { value: "friday", label: "Friday" },
-                { value: "saturday", label: "Saturday" },
-                { value: "sunday", label: "Sunday" },
+                { value: "Monday", label: "Monday" },
+                { value: "Tuesday", label: "Tuesday" },
+                { value: "Wednesday", label: "Wednesday" },
+                { value: "Thursday", label: "Thursday" },
+                { value: "Friday", label: "Friday" },
+                { value: "Saturday", label: "Saturday" },
+                { value: "Sunday", label: "Sunday" },
               ]}
               selected={product.selectedDays}
             />

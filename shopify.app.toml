@@ -3,7 +3,7 @@
 client_id = "9388a5774685dae18ad95269e9767d2a"
 name = "first-app"
 handle = "first-app-1303"
-application_url = "https://things-scholars-relevance-relationships.trycloudflare.com"
+application_url = "https://wonderful-twins-chance-collected.trycloudflare.com"
 embedded = true
 
 [build]
@@ -17,9 +17,9 @@ scopes = "read_orders,write_products"
 
 [auth]
 redirect_urls = [
-  "https://things-scholars-relevance-relationships.trycloudflare.com/auth/callback",
-  "https://things-scholars-relevance-relationships.trycloudflare.com/auth/shopify/callback",
-  "https://things-scholars-relevance-relationships.trycloudflare.com/api/auth/callback"
+  "https://wonderful-twins-chance-collected.trycloudflare.com/auth/callback",
+  "https://wonderful-twins-chance-collected.trycloudflare.com/auth/shopify/callback",
+  "https://wonderful-twins-chance-collected.trycloudflare.com/api/auth/callback"
 ]
 
 [webhooks]
@@ -30,7 +30,7 @@ api_version = "2024-07"
   uri = "/webhooks"
 
 [app_proxy]
-url = "https://things-scholars-relevance-relationships.trycloudflare.com/app"
+url = "https://wonderful-twins-chance-collected.trycloudflare.com/app"
 subpath = "amrutam-routine"
 prefix = "apps"
 
