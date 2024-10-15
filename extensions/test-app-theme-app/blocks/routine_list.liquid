@@ -1,50 +1,205 @@
-<link rel="stylesheet" href="{{ 'style.css' | asset_url }}">
+{% comment %}
+  <link rel="stylesheet" href="{{ 'style.css' | asset_url }}">
 
-<section x-data="routineList" class="py-12 bg-white sm:py-16 lg:py-20 px-16">
-  <div class="px-4 mx-auto sm:px-6 lg:px-8 ">
-    <div class="max-w-xl mx-auto text-center">
-      <h2 class="text-2xl font-bold text-gray-900 sm:text-6xl">Routines</h2>
-      <p class="mt-4 text-2xl font-normal leading-7 text-gray-600">
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Purus faucibus massa dignissim tempus.
-      </p>
-    </div>
-    <div class="grid grid-cols-2 gap-6 mt-10 lg:mt-16 lg:gap-7 lg:grid-cols-3">
-      <template x-for="routine in routines">
-        <a :href="`/pages/routine?id=${routine._id}`">
-          <div class="relative group">
-            <div class="overflow-hidden aspect-w-1 aspect-h-1">
-              <img
-                height="200"
-                width="200"
-                class="object-cover w-[100%] h-[100%] transition-all duration-300 group-hover:scale-125"
-                {% comment %} src="https://cdn.rareblocks.xyz/collection/clarity-ecommerce/images/item-cards/4/product-1.png" {% endcomment %}
-                :src="routine.image"
-                alt=""
-              >
-            </div>
-            <div class="absolute left-3 top-3">
-              <p class="sm:px-3 sm:py-1.5 px-1.5 py-1 text-[8px] sm:text-xs font-bold tracking-wide text-gray-900 uppercase bg-white rounded-[100%]">
-                New
-              </p>
-            </div>
+  <section x-data="routineList" class="py-12 bg-white sm:py-16 lg:py-20 px-16">
+    <div class="px-4 mx-auto sm:px-6 lg:px-8 ">
+      <div class="max-w-xl mx-auto text-center">
+        <h2 class="text-2xl font-bold text-gray-900 sm:text-6xl">Routines</h2>
+        <p class="mt-4 text-2xl font-normal leading-7 text-gray-600">
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Purus faucibus massa dignissim tempus.
+        </p>
+      </div>
+      <div class="grid grid-cols-2 gap-6 mt-10 lg:mt-16 lg:gap-7 lg:grid-cols-3">
+        <template x-for="routine in routines">
+          <a :href="`/pages/routine?id=${routine._id}`">
+            <div class="relative group">
+              <div class="overflow-hidden aspect-w-1 aspect-h-1">
+                <img
+                  height="200"
+                  width="200"
+                  class="object-cover w-[100%] h-[100%] transition-all duration-300 group-hover:scale-125"
+                  {% comment %} src="https://cdn.rareblocks.xyz/collection/clarity-ecommerce/images/item-cards/4/product-1.png" {% endcomment %}
+                  :src="routine.image"
+                  alt=""
+                >
+              </div>
+              <div class="absolute left-3 top-3">
+                <p class="sm:px-3 sm:py-1.5 px-1.5 py-1 text-[8px] sm:text-xs font-bold tracking-wide text-gray-900 uppercase bg-white rounded-[100%]">
+                  New
+                </p>
+              </div>
 
-            <div class="flex items-start justify-between mt-4 space-x-4">
-              <div>
-                <h3 class="text-xs font-bold text-gray-900 sm:text-sm md:text-base">
-                  <h1 x-text="routine.name">
-                    <span class="absolute inset-0" aria-hidden="true"></span>
-                  </h1>
-                </h3>
+              <div class="flex items-start justify-between mt-4 space-x-4">
+                <div>
+                  <h3 class="text-xs font-bold text-gray-900 sm:text-sm md:text-base">
+                    <h1 x-text="routine.name">
+                      <span class="absolute inset-0" aria-hidden="true"></span>
+                    </h1>
+                  </h3>
+                </div>
               </div>
             </div>
+          </a>
+        </template>
+      </div>
+    </div>
+
+    {% comment %} <button onclick="addProduct()" class="bg-red-500 text-white px-4 py-2 rounded-lg">Send</button> {% endcomment %}
+  </section>
+
+  <script src="{{ 'routine-list.js' | asset_url }}" defer="defer"></script>
+  <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.1/dist/cdn.min.js" defer="defer"></script>
+
+  {% schema %}
+  {
+    "name": "Routine List",
+    "target": "section"
+  }
+  {% endschema %}
+{% endcomment %}
+
+<link rel="stylesheet" href="{{ 'style.css' | asset_url }}">
+<link rel="stylesheet" href="{{ 'conflict.css' | asset_url }}">
+
+{% render 'routine_nav' %}
+
+<section class="font-poppins mx-80 " x-data="routineList">
+  {% comment %} Header {% endcomment %}
+  <div class="flex flex-col gap-2 my-8 items-center">
+    <h1 class="">Today's Routines</h1>
+    <p class="text-primaryGrey text-[12px]">You have 4 Routines remaining for the day</p>
+  </div>
+
+  {% comment %} Today's Reminders {% endcomment %}
+
+  <div @click="isMarkCompleteModalOpen = true" class="flex cursor-pointer flex-col gap-4">
+    <div class="flex items-center justify-between">
+      <div class="flex gap-4 my-8">
+        <img height="" width="" src="{{ 'today-reminder.svg' | asset_url }}" class="w-[58px] h-[58px]" alt="">
+
+        <div class="flex flex-col justify-center gap-4">
+          <h1 class="text-[16px] font-[500]">Drinking Water.</h1>
+
+          <div class="flex gap-6 ">
+            <h2 class="text-primaryGrey text-[13px] ">Consumable</h2>
+            <div class="flex gap-3 items-center  text-[13px]">
+              <img height="" width="" src="{{ 'reminder-clock.svg' | asset_url }}" alt="">
+              <h1>9:30 AM</h1>
+            </div>
           </div>
-        </a>
-      </template>
+        </div>
+      </div>
+
+      <div class="flex gap-3 items-center">
+        <h1 class="font-[600] text-xl">8 🌻</h1>
+
+        <img height="" width="" src="{{ 'right-arrow.svg' | asset_url }}" class="w-[18px]" alt="">
+      </div>
+    </div>
+
+    <div class="border-t"></div>
+
+    <div class="flex gap-4 my-8">
+      <img height="" width="" src="{{ 'today-reminder.svg' | asset_url }}" class="w-[58px] h-[58px]" alt="">
+
+      <div class="flex flex-col justify-center gap-4">
+        <h1 class="text-[16px] font-[500]">Amrutam Kuntal Care Hair S..</h1>
+
+        <div class="flex gap-6 ">
+          <h2 class="text-primaryGrey text-[13px] ">Application Based</h2>
+          <div class="flex gap-3 items-center  text-[13px]">
+            <img height="" width="" src="{{ 'reminder-clock.svg' | asset_url }}" alt="">
+            <h1>9:30 AM</h1>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="flex justify-between mb-6  items-center ">
+      <h3 class="text-primaryGrey  text-[12px]">More Routines (2)</h3>
+      <img height="" width="" src="{{ 'down-arrow.svg' | asset_url }}" class="" alt="">
+    </div>
+
+    <div class="border-t"></div>
+  </div>
+
+  {% comment %} My Routines {% endcomment %}
+
+  <h1 class="text-center my-[40px]">My Routines</h1>
+
+  <div class="grid grid-cols-4 gap-3 ">
+    <div class="flex flex-col gap-3 w-fit">
+      <img src="{{ 'img.svg' | asset_url }}" class="h-[220px] w-[220px]" alt="" width="" height="">
+      <div class="flex justify-between">
+        <h1 class="text-[13px] font-[500]">Skin Care Routine</h1>
+        {% comment %} <h1 class="text-xl"></h1> {% endcomment %}
+        <h1 class="font-[600] text-xl">3 🌻</h1>
+      </div>
+      <h1 class="text-[13px] text-primaryGrey">3 Reminder Items</h1>
+
+      <div class="w-full bg-[#F3F3F3] rounded-full h-2  dark:bg-[#F3F3F3]">
+        <div class="bg-primaryGreen h-2 rounded-full dark:bg-primaryGreen" style="width: 45%"></div>
+      </div>
+
+      <h1 class="text-[12px] font-[500]  text-primaryGrey">40% Finished</h1>
+    </div>
+    <div class="flex flex-col gap-3 w-fit">
+      <img src="{{ 'img.svg' | asset_url }}" class="h-[220px] w-[220px]" alt="" width="" height="">
+      <div class="flex justify-between">
+        <h1 class="text-[13px] font-[500]">Skin Care Routine</h1>
+        {% comment %} <h1 class="text-xl"></h1> {% endcomment %}
+        <h1 class="font-[600] text-xl">3 🌻</h1>
+      </div>
+      <h1 class="text-[13px] text-primaryGrey">3 Reminder Items</h1>
+
+      <div class="w-full bg-[#F3F3F3] rounded-full h-2  dark:bg-[#F3F3F3]">
+        <div class="bg-primaryGreen h-2 rounded-full dark:bg-primaryGreen" style="width: 45%"></div>
+      </div>
+
+      <h1 class="text-[12px] font-[500]  text-primaryGrey">40% Finished</h1>
+    </div>
+    <div class="flex flex-col gap-3 w-fit">
+      <img src="{{ 'img.svg' | asset_url }}" class="h-[220px] w-[220px]" alt="" width="" height="">
+      <div class="flex justify-between">
+        <h1 class="text-[13px] font-[500]">Skin Care Routine</h1>
+        {% comment %} <h1 class="text-xl"></h1> {% endcomment %}
+        <h1 class="font-[600] text-xl">3 🌻</h1>
+      </div>
+      <h1 class="text-[13px] text-primaryGrey">3 Reminder Items</h1>
+
+      <div class="w-full bg-[#F3F3F3] rounded-full h-2  dark:bg-[#F3F3F3]">
+        <div class="bg-primaryGreen h-2 rounded-full dark:bg-primaryGreen" style="width: 45%"></div>
+      </div>
+
+      <h1 class="text-[12px] font-[500]  text-primaryGrey">40% Finished</h1>
+    </div>
+    <div class="flex flex-col gap-3 w-fit">
+      <img src="{{ 'img.svg' | asset_url }}" class="h-[220px] w-[220px]" alt="" width="" height="">
+      <div class="flex justify-between">
+        <h1 class="text-[13px] font-[500]">Skin Care Routine</h1>
+        {% comment %} <h1 class="text-xl"></h1> {% endcomment %}
+        <h1 class="font-[600] text-xl">3 🌻</h1>
+      </div>
+      <h1 class="text-[13px] text-primaryGrey">3 Reminder Items</h1>
+
+      <div class="w-full bg-[#F3F3F3] rounded-full h-2  dark:bg-[#F3F3F3]">
+        <div class="bg-primaryGreen h-2 rounded-full dark:bg-primaryGreen" style="width: 45%"></div>
+      </div>
+
+      <h1 class="text-[12px] font-[500]  text-primaryGrey">40% Finished</h1>
     </div>
   </div>
 
-  {% comment %} <button onclick="addProduct()" class="bg-red-500 text-white px-4 py-2 rounded-lg">Send</button> {% endcomment %}
+  {% comment %} Modals {% endcomment %}
+
+  {% render 'mark_complete_modal' %}
+
+  {% render 'reminder_completed_modal' %}
 </section>
+
+<script>
+  const reminderClockUrl = "{{ 'reminder-clock.svg' | asset_url }}";
+</script>
 
 <script src="{{ 'routine-list.js' | asset_url }}" defer="defer"></script>
 <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.1/dist/cdn.min.js" defer="defer"></script>

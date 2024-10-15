@@ -1,16 +1,56 @@
-import { LoaderFunctionArgs } from "@remix-run/node";
-import React from "react";
+// import { LoaderFunctionArgs } from "@remix-run/node";
+// import React from "react";
+// import { api } from "~/utils/axios";
 
-export async function loader({ request, params }: LoaderFunctionArgs) {
-  return {
-    message: "Hello",
+// export async function loader({ request, params }: LoaderFunctionArgs) {
+//   const response = await api.get("/admin/reminderlist?page=1");
+
+//   return {
+//     routines: response.data.data.docs,
+//   };
+// }
+
+import React from "react";
+import jwt from "jsonwebtoken";
+import { ActionFunctionArgs, json } from "@remix-run/node";
+import { useActionData, useSubmit } from "@remix-run/react";
+
+export async function action({ request }: ActionFunctionArgs) {
+  const PAYLOAD = {
+    id: "7780717658279",
   };
+
+  const JWT_SECRET = "jwt-secret-for-Doc-Backend-App";
+
+  try {
+    const token = jwt.sign(PAYLOAD, JWT_SECRET, { expiresIn: "1h" });
+
+    return json({ success: true, token });
+  } catch (error) {
+    return json({ success: false, token: null, error });
+  }
 }
 
 const Bro = () => {
+  const submit = useSubmit();
+
+  const actionData = useActionData<typeof action>();
+
+  console.log({ actionData });
+
   return (
     <div>
       <h1>Hello</h1>
+
+      <button
+        onClick={() => {
+          submit(null, {
+            method: "POST",
+          });
+        }}
+      >
+        Submit
+      </button>
     </div>
   );
 };

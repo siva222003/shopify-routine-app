@@ -1,3 +1,4 @@
+import { useSubmit } from "@remix-run/react";
 import {
   DropZone,
   BlockStack,
@@ -7,7 +8,7 @@ import {
   Text,
   Card,
 } from "@shopify/polaris";
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 
 interface ImageInputProps {
   file: File | null;
@@ -27,16 +28,42 @@ export default function ImageInput({ file, setFile }: ImageInputProps) {
     [],
   );
 
+  const submit = useSubmit();
+
+  useEffect(() => {
+    if (!file) return;
+
+    if (rejectedFile) {
+      setRejectedFile(null);
+    }
+
+    console.log(file);
+
+    const formData = new FormData();
+
+    formData.append("image", file);
+    formData.append("intent", "upload");
+
+    submit(formData, {
+      method: "POST",
+      encType: "multipart/form-data",
+    });
+  }, [file]);
+
   const fileUpload = !file && <DropZone.FileUpload />;
   const uploadedFiles = file !== null && (
     <BlockStack>
       <BlockStack align="start">
-        <Thumbnail alt={file.name} source={window.URL.createObjectURL(file)} />
+        <Thumbnail
+          alt={file.name}
+          size="large"
+          source={window.URL.createObjectURL(file)}
+        />
         <div>
           {file.name}{" "}
-          <Text variant="bodySm" as="p">
+          {/* <Text variant="bodySm" as="p">
             {file.size} bytes
-          </Text>
+          </Text> */}
         </div>
       </BlockStack>
     </BlockStack>
@@ -46,7 +73,7 @@ export default function ImageInput({ file, setFile }: ImageInputProps) {
     <Banner title="The following images couldn’t be uploaded:" tone="critical">
       <List type="bullet">
         <List.Item>
-          {`"${file?.name}" is not supported. File type must be .gif, .jpg, .png or .svg.`}
+          {`"${rejectedFile?.name}" is not supported. File type must be .gif, .jpg, .png or .svg.`}
         </List.Item>
       </List>
     </Banner>
@@ -54,13 +81,13 @@ export default function ImageInput({ file, setFile }: ImageInputProps) {
 
   return (
     <Card>
-      <BlockStack>
+      <BlockStack gap={"300"}>
         {errorMessage}
         <div>
           <DropZone
             id="image-dropzone"
             allowMultiple={false}
-            accept="image/*"
+            accept=".jpg,.png,.gif,.svg"
             type="image"
             onDrop={handleDrop}
           >

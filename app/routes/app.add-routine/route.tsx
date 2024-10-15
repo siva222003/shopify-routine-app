@@ -1,27 +1,15 @@
-import {
-  Layout,
-  Page,
-  FormLayout,
-  Button,
-  Card,
-  InlineStack,
-} from "@shopify/polaris";
+import { Layout, Page, FormLayout, Button } from "@shopify/polaris";
 import { TitleBar } from "@shopify/app-bridge-react";
 import {
-  Link,
+  ClientActionFunctionArgs,
+  Form,
   useActionData,
   useLoaderData,
   useNavigation,
   useSubmit,
 } from "@remix-run/react";
-import {
-  ActionFunctionArgs,
-  json,
-  unstable_createFileUploadHandler,
-  unstable_parseMultipartFormData,
-} from "@remix-run/node";
+import { ActionFunctionArgs, json } from "@remix-run/node";
 import { FormEvent, useCallback, useEffect, useRef, useState } from "react";
-import prisma from "../../db.server";
 import ImageInput from "~/components/add-routine/ImageInput";
 import ChannelsInput from "~/components/add-routine/ChannelsInput";
 import DurationInput from "~/components/add-routine/DurationInput";
@@ -30,86 +18,105 @@ import { addRoutineValidator } from "~/utils/validators";
 import CategoryInput from "~/components/add-routine/CategoryInput";
 import RoutineInput from "~/components/add-routine/RoutineInput";
 import DraftInput from "~/components/add-routine/DraftInput";
-import { Prisma } from "@prisma/client";
-import axios from "axios";
 import { api } from "~/utils/axios";
+import { isRouteErrorResponse, useRouteError } from "@remix-run/react";
+import { fetchCategories, uploadImage } from "./api";
 
 export async function loader() {
-  try {
-    const categories = await api.get("/admin/category");
-    return {
-      success: true,
-      categories: categories.data.data.docs,
-    };
-  } catch (error) {
-    return {
-      success: false,
-      error: error,
-    };
-  }
+  const categories = await fetchCategories();
+
+  return categories;
 }
 
 export async function action({ request }: ActionFunctionArgs) {
+  // const formData = await request.formData();
+
+  // const final = Object.fromEntries(formData.entries());
+
+  // const channels = JSON.parse(formData.get("channels") as string);
+
+  // // final.duration = (final.duration as string) + " " + (final.unit as string);
+
+  // // delete final.unit;
+
+  // const data = {
+  //   routineName: final.routineName as string,
+  //   category: final.category as string,
+  //   description: final.description as string,
+  //   duration: final.duration as string,
+  //   channels: channels,
+  //   draft: final.draft === "true" ? true : false,
+  // };
+
+  // //Data for the routine api
+
+  // const routineData = {
+  //   name: data.routineName,
+  //   visibility: "Public",
+  //   description: data.description,
+  //   image:
+  //     "https://amrutam.co.in/cdn/shop/products/EyeKey-Malt-1-scaled_24e2b45f-c713-4ab1-bfcb-b72ba99b4600.jpg?v=1655351259&width=1000",
+  //   duration: {
+  //     number: final.duration as string,
+  //     unit: final.unit as string,
+  //   },
+  //   category: data.category,
+  //   channel: data.channels,
+  //   draft: data.draft,
+  //   isTemplate: true,
+  // };
+
+  // try {
+  //   const response = await api.post("/admin/reminderlist", routineData);
+
+  //   return json({
+  //     success: true,
+  //     data: response.data,
+  //   });
+  // } catch (error) {
+  //   return json({ success: false, error });
+  // }
+
   const formData = await request.formData();
+  const intent = formData.get("intent");
 
-  const final = Object.fromEntries(formData.entries());
+  const file = formData.get("image") as File;
 
-  const channels = JSON.parse(formData.get("channels") as string);
-
-  // final.duration = (final.duration as string) + " " + (final.unit as string);
-
-  // delete final.unit;
-
-  const data: Prisma.RoutineCreateInput = {
-    routineName: final.routineName as string,
-    category: final.category as string,
-    description: final.description as string,
-    duration: final.duration as string,
-    channels: channels,
-    draft: final.draft === "true" ? true : false,
-  };
-
-  //Data for the routine api
-
-  const routineData = {
-    name: data.routineName,
-    visibility: "Public",
-    description: data.description,
-    image:
-      "https://amrutam.co.in/cdn/shop/products/EyeKey-Malt-1-scaled_24e2b45f-c713-4ab1-bfcb-b72ba99b4600.jpg?v=1655351259&width=1000",
-    duration: {
-      number: final.duration as string,
-      unit: final.unit as string,
-    },
-    category: data.category,
-    channel: data.channels,
-    draft: data.draft,
-    isTemplate: true,
-  };
+  const newData = new FormData();
+  newData.append("file", file);
 
   try {
-    // const response = await prisma.routine.create({
-    //   data,
-    // });
-
-    const response = await api.post("/admin/reminderlist", routineData);
-
-    return json({
-      success: true,
-      data: response.data,
-    });
+    const response = await uploadImage(newData);
+    return json({ success: true, image: response, intent });
   } catch (error) {
     return json({ success: false, error });
   }
 }
 
-export default function AdditionalPage() {
-  const { categories } = useLoaderData<any>();
+export async function clientAction({
+  serverAction,
+  context,
+  request,
+}: ClientActionFunctionArgs) {
+  let data = await serverAction<any>();
+
+  if (data.success) {
+    if (data.intent === "upload") {
+      shopify.toast.show("Imgae Uploaded successfully");
+    } else {
+      shopify.toast.show("Routine added successfully");
+    }
+  }
+
+  return data;
+}
+
+export default function AddRoutine() {
+  const { categories } = useLoaderData<typeof loader>();
 
   const navigation = useNavigation();
 
-  const isLoading = navigation.state === "submitting";
-  const isPageLoading = navigation.state === "loading";
+  const isSubmitting = navigation.state === "submitting";
 
   const [file, setFile] = useState<File | null>(null);
 
@@ -130,9 +137,9 @@ export default function AdditionalPage() {
 
   const actionData = useActionData<typeof action>();
 
-  console.log({ actionData });
-
   const submit = useSubmit();
+
+  console.log(actionData);
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -146,27 +153,17 @@ export default function AdditionalPage() {
     if (Object.keys(isValid).length === 0) {
       const formElement = event.target as HTMLFormElement;
       const formData = new FormData(formElement);
-
       formData.append("channels", JSON.stringify(selectedOptions));
-
       submit(formData, { method: "post" });
     }
   };
-
-  useEffect(() => {
-    if (actionData) {
-      if (actionData.success) {
-        shopify.toast.show("Routine added successfully");
-      }
-    }
-  }, [actionData?.success]);
 
   return (
     <Page narrowWidth>
       <TitleBar title="Add Routine" />
       <Layout>
         <Layout.Section>
-          <form {...form.getFormProps()} onSubmit={handleSubmit}>
+          <Form {...form.getFormProps()} onSubmit={handleSubmit}>
             <FormLayout>
               <RoutineInput form={form} />
 
@@ -187,7 +184,7 @@ export default function AdditionalPage() {
 
               <div style={{ marginBottom: "20px", marginTop: "20px" }}>
                 <Button
-                  loading={isLoading}
+                  loading={isSubmitting}
                   variant="primary"
                   size="large"
                   submit
@@ -196,9 +193,35 @@ export default function AdditionalPage() {
                 </Button>
               </div>
             </FormLayout>
-          </form>
+          </Form>
         </Layout.Section>
       </Layout>
     </Page>
   );
+}
+
+export function ErrorBoundary() {
+  const error = useRouteError();
+
+  if (isRouteErrorResponse(error)) {
+    return (
+      <div>
+        <h1>
+          {error.status} {error.statusText}
+        </h1>
+        <p>{error.data}</p>
+      </div>
+    );
+  } else if (error instanceof Error) {
+    return (
+      <div>
+        <h1>Error</h1>
+        <p>{error.message}</p>
+        {/* <p>The stack trace is:</p> */}
+        {/* <pre>{error.stack}</pre> */}
+      </div>
+    );
+  } else {
+    return <h1>Unknown Error</h1>;
+  }
 }

@@ -42,7 +42,6 @@ export default function ChannelsInput({
       const resultOptions = deselectedOptions.filter((option) =>
         option.label.match(filterRegex),
       );
-
       setOptions(resultOptions);
     },
     [deselectedOptions],

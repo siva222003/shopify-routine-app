@@ -22,6 +22,7 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
   try {
     if (type === "all") {
       // const routines = await prisma.routine.findMany({});
+      // console.log({ loggedInCustomerId });
       const routines = await api.get("/admin/reminderlist?page=1");
 
       return json({ success: true, routines: routines.data.data.docs });
