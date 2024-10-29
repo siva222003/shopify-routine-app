@@ -1,7 +1,11 @@
 import { useEffect } from "react";
 import type { ActionFunctionArgs, LoaderFunctionArgs } from "@remix-run/node";
 import { json } from "@remix-run/node";
-import { useFetcher } from "@remix-run/react";
+import {
+  isRouteErrorResponse,
+  useFetcher,
+  useRouteError,
+} from "@remix-run/react";
 import {
   Page,
   Layout,
@@ -114,7 +118,7 @@ export default function Index() {
 
   return (
     <Page>
-      <TitleBar title="Remix app template">
+      <TitleBar title="Amrutam Routine App">
         <button variant="primary" onClick={generateProduct}>
           Generate a product
         </button>
@@ -334,3 +338,4 @@ export default function Index() {
     </Page>
   );
 }
+

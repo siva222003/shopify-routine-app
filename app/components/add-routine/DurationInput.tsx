@@ -1,4 +1,4 @@
-import { FieldValues, FormApi } from "@rvf/remix";
+import { FormApi } from "@rvf/remix";
 import {
   BlockStack,
   FormLayout,
@@ -6,19 +6,20 @@ import {
   Select,
   Card,
 } from "@shopify/polaris";
-import { DefaultRoutine } from "~/types";
+import { DefaultRoutine } from "~/routes/app.add-routine/validator";
 
 interface Props {
   form: FormApi<DefaultRoutine>;
 }
-
 export default function DurationInput({ form }: Props) {
   const handleDurationChange = (value: string) => {
-    form.setValue("duration", value);
+    const currentUnit = form.value("duration.unit") || "";
+    form.setValue("duration", { number: value, unit: currentUnit });
   };
 
   const handleUnitChange = (value: string) => {
-    form.setValue("unit", value);
+    const currentDuration = form.value("duration.number") || "";
+    form.setValue("duration", { number: currentDuration, unit: value });
   };
 
   const formGroupMarkup = (
@@ -27,22 +28,21 @@ export default function DurationInput({ form }: Props) {
         <FormLayout.Group condensed>
           <TextField
             label="Duration"
-            name="duration"
+            name="duration.number"
             type="number"
-            min={1}
-            value={form.value("duration") || ""}
+            value={form.value("duration.number") || ""}
             onChange={handleDurationChange}
             autoComplete="off"
-            error={form.error("duration") || undefined}
+            error={form.error("duration.number") || undefined}
           />
           <Select
             label="Unit"
             placeholder="Select"
-            name="unit"
+            name="duration.unit"
             options={["Day(s)", "Week(s)", "Month(s)"]}
-            value={form.value("unit") || ""}
+            value={form.value("duration.unit") || ""}
             onChange={handleUnitChange}
-            error={form.error("unit") || undefined}
+            error={form.error("duration.unit") || undefined}
           />
         </FormLayout.Group>
       </FormLayout>

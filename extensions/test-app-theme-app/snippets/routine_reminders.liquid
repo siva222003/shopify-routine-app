@@ -1,11 +1,195 @@
-<div x-show="tab === 1" x-cloak x-transition>
-  <h1 class="font-[500]">List of Reminders (5)</h1>
+<div x-show="tab===1" class="xl:max-w-[90%] 2xl:max-w-[70%] mx-auto max-md:mx-3" x-cloak x-transition>
+  <h1 class="font-[500] my-[25px]">
+    List of Reminders (<span x-text="routine?.productReminders?.length + routine?.activityReminders?.length"></span>)
+  </h1>
 
-  <div id="reminders-grid" class="grid grid-cols-3 gap-6 my-4"></div>
-</div>
+  <div
+    id="reminders-grid"
+    class="grid grid-cols-3 my-4 max-md:grid-cols-1 max-xl:grid-cols-4 xl:grid-cols-3 max-md:gap-9 md:gap-9"
+  >
+    <template x-for="(reminder,index) in routine.productReminders" :key="index">
+      <div
+        @click="openProductReminderModal(reminder)"
+        style="border: 1px solid #e5e7eb"
+        class="flex gap-5 max-xl:col-span-2  items-center rounded-2xl p-2   xsm:p-6 cursor-pointer"
+      >
+        <img
+          :src="reminder.image"
+          class="xsm:h-[80px] xsm:w-[80px] h-[70px] w-[70px] self-start rounded-2xl"
+          alt=""
+          width=""
+          height=""
+        >
 
-<div x-show="tab === 1" x-cloak x-transition>
-  <h1 class="font-[500] my-10">Weekly Benefits</h1>
+        <div class=" flex-col  flex gap-[15px] w-fit">
+          <h1 class="font-[500] text-[14px] xsm:text-[15px]" x-text="reminder.name"></h1>
 
-  <div id="benfits-grid" class="grid grid-cols-2 gap-20 my-4"></div>
+          <div class="p-3 rounded-full bg-primaryCream w-fit">
+            <p
+              x-text="reminder.productType === 'applicationBased' ? 'Application' : 'Consumable'"
+              class="reminder-type-green  text-[13px]"
+            ></p>
+          </div>
+
+          <div class="flex gap-3 items-center text-primaryGrey">
+            <img
+              width=""
+              height=""
+              src="{{ 'reminder-calendar.svg' | asset_url }}"
+              class="text-primaryGrey"
+              alt=""
+            >
+
+            <!-- Display the first 3 days -->
+            <template x-if="(reminder?.frequency || []).length < 7">
+              <div class="flex items-center gap-3">
+                <template x-for="(day, index) in reminder.frequency.slice(0, 3)" :key="index">
+                  <div class="flex items-center gap-3">
+                    <p class="text-[12px]" x-text="day"></p>
+                    <template x-if="index < 2">
+                      <div style="border: 1px solid #A0A0A0; height: 14px;"></div>
+                    </template>
+                  </div>
+                </template>
+              </div>
+            </template>
+
+            <!-- Display more if the frequency is more than 3 and less than 7 -->
+            <template x-if="reminder?.frequency?.length > 3 && reminder?.frequency?.length < 7">
+              <p class="text-[12px]" x-text="`+ more`"></p>
+            </template>
+
+            <!-- For all 7 days -->
+
+            <template x-if="reminder?.frequency?.length === 7">
+              <div class="flex items-center gap-3">
+                <p class="text-[12px]" x-text="'Everyday'"></p>
+              </div>
+            </template>
+          </div>
+
+          <!-- Time Slots -->
+          <template x-if="reminder?.timeSlotsAppBased?.length > 0">
+            <div class="flex gap-3 items-center text-primaryGrey">
+              <img width="" height="" src="{{ 'reminder-clock-grey.svg' | asset_url }}" class="text-primaryGrey" alt="">
+              <template x-for="(timeSlot, slotIdx) in reminder?.timeSlotsAppBased" :key="slotIdx">
+                <div class="flex gap-3 items-center text-primaryGrey">
+                  <p class="text-[12px]" x-text="timeSlot.time"></p>
+                  <template x-if="slotIdx < reminder?.timeSlotsAppBased.length - 1">
+                    <div style="border: 1px solid #A0A0A0; height: 14px;"></div>
+                  </template>
+                </div>
+              </template>
+            </div>
+          </template>
+
+          <template x-if="reminder?.timeSlotsConsumable?.length > 0">
+            <div class="flex gap-3 items-center text-primaryGrey">
+              <img width="" height="" src="{{ 'reminder-clock-grey.svg' | asset_url }}" class="text-primaryGrey" alt="">
+              <template x-for="(timeSlot, slotIdx) in reminder?.timeSlotsConsumable" :key="slotIdx">
+                <div class="flex gap-3 items-center text-primaryGrey">
+                  <p class="text-[12px]" x-text="timeSlot.time"></p>
+                  <template x-if="slotIdx < reminder?.timeSlotsConsumable.length - 1">
+                    <div style="border: 1px solid #A0A0A0; height: 14px;"></div>
+                  </template>
+                </div>
+              </template>
+            </div>
+          </template>
+        </div>
+
+        <img
+          src="{{ 'right-arrow.svg' | asset_url }}"
+          class="overflow-hidden ml-auto text-[#787878] "
+          alt=""
+          width=""
+          height=""
+        >
+      </div>
+    </template>
+
+    <template x-for="(reminder,index) in routine.activityReminders" :key="index">
+      <div
+        @click="openActivityReminderModal(reminder)"
+        style="border: 1px solid #e5e7eb"
+        class="flex gap-5 max-xl:col-span-2  items-center rounded-2xl p-2   xsm:p-6 cursor-pointer"
+      >
+        <img
+          :src="reminder.image"
+          class="xsm:h-[80px] xsm:w-[80px] h-[70px] w-[70px] self-start rounded-2xl"
+          alt=""
+          width=""
+          height=""
+        >
+
+        <div class=" flex-col  flex gap-[15px] w-fit">
+          <h1 class="font-[500] text-[14px] xsm:text-[15px]" x-text="reminder.name"></h1>
+
+          <div class="p-3 rounded-full bg-primaryCream w-fit">
+            <p
+              x-text="reminder.activityType === 'mental' ? 'Mental' : 'Physical'"
+              class="reminder-type-green  text-[13px]"
+            ></p>
+          </div>
+
+          <div class="flex gap-3 items-center text-primaryGrey">
+            <img
+              width=""
+              height=""
+              src="{{ 'reminder-calendar.svg' | asset_url }}"
+              class="text-primaryGrey"
+              alt=""
+            >
+
+            <!-- Display the first 3 days -->
+            <template x-if="(reminder?.frequency || []).length < 7">
+              <template x-for="(day, index) in reminder.frequency.slice(0, 3)" :key="index">
+                <div class="flex items-center gap-3">
+                  <p class="text-[12px]" x-text="day"></p>
+                  <template x-if="index < 2">
+                    <div style="border: 1px solid #A0A0A0; height: 14px;"></div>
+                  </template>
+                </div>
+              </template>
+            </template>
+
+            <!-- Display more if the frequency is more than 3 and less than 7 -->
+            <template x-if="reminder?.frequency?.length > 3 && reminder?.frequency?.length < 7">
+              <p class="text-[12px]" x-text="`+ more`"></p>
+            </template>
+
+            <!-- For all 7 days -->
+            <template x-if="reminder?.frequency?.length === 7">
+              <div class="flex items-center gap-3">
+                <p class="text-[12px]" x-text="'Everyday'"></p>
+              </div>
+            </template>
+          </div>
+
+          <!-- Time Slots -->
+          <template x-if="reminder?.timeslotActivityBased?.length > 0">
+            <div class="flex gap-3 items-center text-primaryGrey">
+              <img width="" height="" src="{{ 'reminder-clock-grey.svg' | asset_url }}" class="text-primaryGrey" alt="">
+              <template x-for="(timeSlot, slotIdx) in reminder?.timeslotActivityBased" :key="slotIdx">
+                <div class="flex gap-3 items-center text-primaryGrey">
+                  <p class="text-[12px]" x-text="timeSlot.time"></p>
+                  <template x-if="slotIdx < reminder?.timeslotActivityBased.length - 1">
+                    <div style="border: 1px solid #A0A0A0; height: 14px;"></div>
+                  </template>
+                </div>
+              </template>
+            </div>
+          </template>
+        </div>
+
+        <img
+          src="{{ 'right-arrow.svg' | asset_url }}"
+          class="overflow-hidden ml-auto text-[#787878] "
+          alt=""
+          width=""
+          height=""
+        >
+      </div>
+    </template>
+  </div>
 </div>

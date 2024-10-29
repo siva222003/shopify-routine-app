@@ -1,238 +1,258 @@
-const fillReminders = () => {
-  const remindersGrid = document.querySelector("#reminders-grid");
-
-  remindersGrid.innerHTML = [1, 2, 3, 4, 5, 6]
-    .map(() => {
-      return `
-            <div class="border rounded-xl flex-col p-4 flex gap-[17px]">
-            <h1 class="font-[500] text-[15px]">Amrutam Nari Soundarya Malt</h1>
-
-            <div class="p-3 rounded-full bg-[#E9F1E0] w-fit">
-              <p class="text-[#A0A0A0] text-[13px]">Consumable</p>
-            </div>
-
-            <div class="flex gap-2 items-center text-[#A0A0A0]">
-              <img src=${reminderCalendarUrl} class="w-5 h-5" alt="" />
-
-              <p class="text-[12px]">Monday</p>
-
-              <div class="border-r border-[#A0A0A0] h-[80%]"></div>
-
-              <p class="text-[12px]">Wednesday</p>
-
-              <div class="border-r border-[#A0A0A0] h-[80%]"></div>
-
-              <p class="text-[12px]">Friday</p>
-            </div>
-
-            <div class="flex gap-2 items-center text-[#A0A0A0]">
-              <img src=${reminderClockUrl} class="w-5 h-5" alt="" />
-
-              <p class="text-[12px]">10AM</p>
-
-              <div class="border-r border-[#A0A0A0] h-[80%]"></div>
-
-              <p class="text-[12px]">3PM</p>
-
-              <div class="border-r border-[#A0A0A0] h-[80%]"></div>
-
-              <p class="text-[12px]">9PM</p>
-            </div>
-
-          </div>
-        `;
-    })
-    .join("");
-};
-fillReminders();
-
-const fillBenfits = () => {
-  const benfitsGrid = document.querySelector("#benfits-grid");
-
-  benfitsGrid.innerHTML = [1, 2, 3, 4]
-    .map(() => {
-      return `  
-           <div class="flex flex-col gap-4"> 
-
-            <h1 class="font-[500]">Week 0 - 1</h1>
-
-            <div class="border rounded-xl p-4">
-              <ul class="flex flex-col gap-8">
-                <li class="text-[13px]">
-                  <span class="font-[600]">Improved Hydration:</span> Your body will be better
-                  hydrated, which can lead to increased energy levels.
-                </li>
-
-                <div class="w-full border block"></div>
-
-                <li class="text-[13px]">
-                  <span class="font-[600]">Better Digestion:</span> Your digestive system will 
-                  function more efficiently, improving your overall well-being.
-                </li>
-              </ul>
-            </div>
-          </div>
-        `;
-    })
-    .join("");
-};
-
-fillBenfits();
-
 document.addEventListener("alpine:init", () => {
   Alpine.data("routine", () => ({
-    tab: 1,
-    routine: {},
-    products: [],
-    tempProducts: [],
-    selectedProducts: [],
-    cartModalOpen: false,
-    cartSelectOption: "",
+    tab: 1, //Tab to display
 
-    //Init function to fetch routine data
+    routine: {}, //Routine data
+
+    // Loading
+    isLoading: false,
+
+    // Products
+    products: [], // All products fetched from API
+    tempProducts: [], // Temporary products for filtering
+    selectedProducts: [], // Products selected by user
+
+    // Description
+    expanded: false, // Expanded status
+
+    //Weekly Benefits
+    weeklyBenefits: [
+      // Weekly benefits data
+      {
+        duration: "Week 0 - 1",
+        benefits: [
+          `Improved Hydration: Your body will be better hydrated, which can lead to increased energy levels.`,
+          `Healthy Skin: Proper hydration can promote healthier, more radiant skin by helping to flush out toxins.`,
+        ],
+      },
+      {
+        duration: "Week 1 - 2",
+        benefits: [
+          `Improved Hydration: Your body will be better hydrated, which can lead to increased energy levels.`,
+          `Healthy Skin: Proper hydration can promote healthier, more radiant skin by helping to flush out toxins.`,
+        ],
+      },
+    ],
+
+    // Reminder Modals
+    selectedReminder: null, // Store selected reminder data
+    productReminderModalOpen: false,
+    activityReminderModalOpen: false,
+
+    // Reminder Channels
+    index: [], // Index of selected channels
+    userReminderChannels: {
+      // User reminder channels
+      sms: "",
+      whatsapp: "",
+    },
+    isAddingChannels: false, // Adding channels status
+
+    // User routine start date
+    userRoutineStartDate: "",
+
+    // Routine Start Modal
+    routineStartModalOpen: false,
+
+    // Initialize routine data on Alpine init
     init() {
-      const getRoutine = async () => {
-        const urlParams = new URLSearchParams(window.location.search);
-        const id = urlParams.get("id");
+      this.getRoutine();
+    },
 
-        console.log("Fetching routine");
+    //Get Routine
+    async getRoutine() {
+      try {
+        const id = new URLSearchParams(window.location.search).get("id");
+
+        if (!id) {
+          console.error("Routine ID not found");
+          return;
+        }
+
+        this.isLoading = true;
 
         const response = await fetch(
-          `https://quickstart-03878ee5.myshopify.com/apps/amrutam-routine/proxy/routines?type=single&id=${id}`,
-          {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-            },
-          },
+          `http://localhost:34217/routine?id=${id}`,
+          { method: "GET", headers: { "Content-Type": "application/json" } },
         );
 
         const data = await response.json();
-
-        this.routine = data.data;
-
-        console.log(data.data);
+        this.routine = data.routine;
 
         this.products = data.routine.productReminders.map(
-          (reminder) => reminder.product,
+          ({ variationId, name, image }) => ({
+            name,
+            image,
+            variationId,
+            quantity: 1,
+          }),
         );
 
-        this.tempProducts = this.products;
-      };
+        this.userReminderChannels = data.routine.channel.map((channel) => ({
+          id: channel.id,
+          name: channel.name,
+          checked: false,
+        }));
 
-      getRoutine();
+        this.isLoading = false;
+
+        console.log("Routine data:", data);
+      } catch (error) {
+        console.error("Error fetching routine:", error);
+      } finally {
+        this.isLoading = false;
+      }
     },
 
-    changeTab(tab, fromModal = false) {
-      if (this.tab === 2 && tab === 3 && !fromModal) {
-        if (this.cartSelectOption === "") {
-          alert("Please select an option");
-          return;
-        }
-
-        if (this.cartSelectOption === "I have every product") {
-          this.tab = 2;
-          return;
-        }
-
-        if (this.cartSelectOption === "I have some products") {
-          this.cartModalOpen = true;
-          return;
-        }
-
-        if (this.cartSelectOption === "I have no product") {
-          this.cartModalOpen = true;
-          return;
-        }
-      }
-
-      if (fromModal) {
-        this.cartModalOpen = false;
-      }
-
+    //Change Tab
+    changeTab(tab) {
+      window.scrollTo(0, 0);
       this.tab = tab;
-      window.scrollTo({ top: 0 });
     },
 
-    //Function add selected product to array
-    addSelectedProduct(product) {
-      if (
-        this.cartSelectOption === "I have some products" ||
-        this.cartSelectOption === "I have no product"
-      ) {
-        if (this.selectedProducts.includes(product)) {
-          this.selectedProducts = this.selectedProducts.filter(
-            (selectedProduct) => selectedProduct !== product,
-          );
-        } else {
-          this.selectedProducts.push(product);
-        }
+    // Open product reminder modal and set selected reminder
+    openProductReminderModal(reminder) {
+      this.selectedReminder = reminder;
+      this.productReminderModalOpen = true;
+    },
 
-        console.log(this.selectedProducts);
+    // Open activity reminder modal and set selected reminder
+    openActivityReminderModal(reminder) {
+      this.selectedReminder = reminder;
+      this.activityReminderModalOpen = true;
+    },
+
+    //Select Product
+    selectProduct(product) {
+      const index = this.selectedProducts.findIndex(
+        (selectedProduct) =>
+          selectedProduct.variationId === product.variationId,
+      );
+
+      if (index === -1) {
+        this.selectedProducts.push(product);
+      } else {
+        this.selectedProducts.splice(index, 1);
       }
     },
 
-    //Function to add selected products to cart
-    addToCart() {
+    //Add To Cart Products
+    addToCart(products = []) {
       console.log("Adding to cart");
 
-      const cartItems = this.selectedProducts.map((product) => {
-        return {
-          id: parseInt(product.variants[0].id.split("/").pop(), 10),
-          quantity: 1,
-        };
-      });
+      let cartItems = [];
 
-      console.log(cartItems);
+      if (products.length > 0 && this.selectedProducts.length === 0) {
+        cartItems = products.map((product) => ({
+          id: 45946693550247,
+          quantity: product.quantity,
+        }));
+      } else if (this.selectedProducts.length > 0) {
+        cartItems = this.selectedProducts.map((product) => ({
+          id: 45946693550247,
+          quantity: this.products.find(
+            (item) => item.variationId === product.variationId,
+          ).quantity,
+        }));
+      } else {
+        console.log("No products selected");
+        return;
+      }
 
-      fetch(`https://quickstart-03878ee5.myshopify.com/cart/add.js`, {
+      fetch(window.Shopify.routes.root + `cart/add.js`, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          items: cartItems,
-        }),
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ items: cartItems }),
       })
-        .then((response) => {
-          return response.json();
-        })
+        .then((response) => response.json())
         .then((data) => {
-          console.log(data);
+          console.log("Cart response:", data);
+        })
+        .catch((error) => console.error("Error adding to cart:", error));
+    },
+
+    // Add reminder channels
+    async addChannels() {
+      try {
+        this.isAddingChannels = true;
+
+        const channel = {};
+
+        if (this.index.includes(0)) {
+          channel.sms = {
+            value: this.userReminderChannels.sms,
+            status: true,
+          };
+        }
+
+        if (this.index.includes(1)) {
+          channel.whatsapp = {
+            value: this.userReminderChannels.whatsapp,
+            status: true,
+          };
+        }
+
+        const response = await fetch(`http://localhost:34217/channel`, {
+          method: "POST",
+          body: JSON.stringify(channel),
         });
 
-      this.products = this.products.filter(
-        (product) => !this.selectedProducts.includes(product),
-      );
-    },
-
-    //Function to handle cart select change
-    cartSelectChange(e) {
-      this.cartSelectOption = e.target.value;
-      if (this.cartSelectOption === "I have every product") {
-        this.tab++;
+        const data = await response.json();
+        console.log("Channel data:", data);
+        this.isAddingChannels = false;
+      } catch (error) {
+        console.error("Error Adding Channels:", error);
+      } finally {
+        this.isAddingChannels = false;
       }
-      console.log(this.cartSelectOption);
     },
 
-    //add google calendar event
+    startRoutine() {
+      console.log(this.userRoutineStartDate);
 
-    async addGoogleAccount() {
-      console.log("Adding Account ");
+      const channels = [];
 
-      const response = await fetch(
-        `https://quickstart-03878ee5.myshopify.com/apps/amrutam-routine/proxy/calendar`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
+      if (this.index.includes(0)) {
+        channels.push("sms");
+      }
+
+      if (this.index.includes(1)) {
+        channels.push("whatsapp");
+      }
+
+      const [day, month, year] = this.userRoutineStartDate.split("-");
+      const startDate = `${year}-${month}-${day}`;
+
+      console.log({ channels, startDate });
+
+      this.createRoutine({ startDate, channels });
+      // this.routineStartModalOpen = true;
+    },
+
+    async createRoutine(data) {
+      try {
+        const id = new URLSearchParams(window.location.search).get("id");
+
+        const response = await fetch(
+          `http://localhost:34217/template?id=${id}`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(data),
           },
-        },
-      );
+        );
 
-      const data = await response.json();
+        const result = await response.json();
 
-      console.log(data);
+        console.log("Routine Start response:", result);
+        
+        this.routineStartModalOpen = true;
+
+      } catch (error) {
+        console.error("Error starting routine:", error);
+      }
     },
   }));
 });

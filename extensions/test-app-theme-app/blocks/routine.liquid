@@ -1,46 +1,40 @@
-<link rel="stylesheet" href="style.css">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link
-  href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap"
-  rel="stylesheet"
->
-
 <link rel="stylesheet" href="{{ 'style.css' | asset_url }}">
 <link rel="stylesheet" href="{{ 'conflict.css' | asset_url }}">
 
-{% render 'routine_nav' %}
-
-<main x-data="routine" class=" rounded-2xl mx-28">
+<main x-data="routine" class=" rounded-2xl mx-2 ssm:mx-4  sm:mx-6 ">
   <!-- Header -->
 
   {% render 'routine_header' %}
 
-  <!-- Footers -->
-  <section class="mx-10">
-    <!-- Reminders & Benfits -->
-    {% render 'routine_reminders' %}
+  <!-- Reminders -->
+  {% render 'routine_reminders' %}
+  {% render 'product_reminder_modal' %}
+  {% render 'activity_reminder_modal' %}
 
-    <!-- Add To Cart Products -->
-    {% render 'routine_addToCart' %}
-    {% render 'cart_modal' %}
+  <!-- Add To Cart Products -->
+  {% render 'routine_addToCart' %}
 
-    <!-- Reminder Channels -->
-    {% render 'routine_reminder_channels' %}
+  <!-- Reminder Channels -->
+  {% render 'routine_reminder_channels' %}
 
-    <!-- Start Date -->
-    {% render 'routine_start-schedule' %}
+  <!-- Start Date -->
+  {% render 'routine_start-schedule' %}
+  {% render 'routine_start_modal' %}
 
-    <!-- Buttons -->
-    <div class="text-center text-[13px] mt-[6px]" x-show="tab === 2 && selectedProducts.length > 0">
-      <button @click="addToCart()" class="mt-10 text-[#3A643B]">Add To Cart</button>
-    </div>
+  <!-- Buttons -->
 
-    <div class="my-10 flex gap-8 justify-center">
+  <div class="mt-[80px] mb-[60px] text-center flex flex-col gap-[18px]">
+    <button
+      @click="addToCart([])"
+      x-show="selectedProducts.length > 0"
+      x-cloak
+      class="text-primaryGreen font-[500] "
+    >
+      Add to Cart
+    </button>
+    <div class="flex gap-8 justify-center">
       <button
-        :disabled="tab === 1"
+        x-show="tab > 1"
         @click="changeTab(tab-1)"
         class="px-10 py-3 rounded-lg border border-[#3A643B] text-[#3A643B] text-[16px]"
       >
@@ -48,24 +42,25 @@
       </button>
 
       <button
-        @click="changeTab(tab+1)"
-        :disabled="tab === 4"
-        class="px-6 py-3 rounded-lg bg-[#3A643B] text-white text-[16px] shadow-lg"
-      >
-        Get Started
-      </button>
+        @click="tab < 3 ? changeTab(tab + 1) : startRoutine()"
+        x-text="tab < 3 ? 'Next' : 'Start Routine'"
+        class="px-14 py-3 rounded-lg bg-[#3A643B] text-white text-[16px] shadow-lg"
+      ></button>
     </div>
-  </section>
+  </div>
 </main>
 
-<script>
-  const productImageUrl = "{{ 'product.svg' | asset_url }}";
-  const reminderCalendarUrl = "{{ 'reminder-calendar.svg' | asset_url }}";
-  const reminderClockUrl = "{{ 'reminder-clock.svg' | asset_url }}";
-</script>
+<script src="{{ 'routine.js' | asset_url }}" defer></script>
+{% comment %}
+  <script src="{{ 'focus.js' | asset_url }}" defer></script>
+  <script src="{{ 'alpine.js' | asset_url }}" defer></script>
+{% endcomment %}
 
-<script src="{{ 'routine.js' | asset_url }}" defer="defer"></script>
-<script src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.1/dist/cdn.min.js" defer="defer"></script>
+<!-- Alpine Plugins -->
+<script defer src="https://cdn.jsdelivr.net/npm/@alpinejs/focus@3.x.x/dist/cdn.min.js"></script>
+
+<!-- Alpine Core -->
+<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 
 {% schema %}
 {

@@ -17,13 +17,13 @@ import { useActionData, useSubmit } from "@remix-run/react";
 
 export async function action({ request }: ActionFunctionArgs) {
   const PAYLOAD = {
-    id: "7780717658279",
+    id: 7790335820029,
   };
 
   const JWT_SECRET = "jwt-secret-for-Doc-Backend-App";
 
   try {
-    const token = jwt.sign(PAYLOAD, JWT_SECRET, { expiresIn: "1h" });
+    const token = jwt.sign(PAYLOAD, JWT_SECRET, { expiresIn: "7d" });
 
     return json({ success: true, token });
   } catch (error) {

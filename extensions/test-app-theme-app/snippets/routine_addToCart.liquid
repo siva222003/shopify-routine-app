@@ -1,72 +1,85 @@
-<div x-show="tab===2" x-transition x-cloak>
-  <div class="flex my-10 justify-between items-center">
-    <h1 class="font-[500] text-3xl text-[#3A643B]">Do you have these products to perform this routine?</h1>
-    <select
-      @change="cartSelectChange($event)"
-      class="py-6 w-fit px-4 placeholder:text-[1.3rem]  block border-gray-200 rounded-full text-[1.4rem] disabled:opacity-50 disabled:pointer-events-none dark:text-neutral-400 dark:placeholder-neutral-500 focus:ring-0"
-    >
-      <option class="text-[1.5rem]" disabled selected="">Select</option>
-      <option class="text-[1.5rem]">I have every product</option>
-      <option class="text-[1.5rem]">I have some products</option>
-      <option class="text-[1.5rem]">I have no product</option>
-    </select>
+<div x-show="tab===2" class="  sm:max-w-[90%]   md:max-w-[80%] mx-auto " x-transition x-cloak>
+  <div class="flex my-6  sm:my-10 justify-center items-center">
+    <h1 class="font-[500] max-sm:max-w-[90%] text-[16px] sm:text-3xl  text-[#434343] my-[10px] sm:my-[24px]">
+      Do you have these products to perform this routine?
+    </h1>
   </div>
 
-  <div id="cart-products-grid" class="grid grid-cols-1 my-4 border rounded-xl gap-0">
-    <template x-for="product in products">
-      <div
-        @click="addSelectedProduct(product)"
-        class="flex gap-6 p-4 cursor-pointer"
-        :class="selectedProducts.includes(product) ? 'border-[#3A643B] border' : ''"
-      >
-        <img
-          height="100"
-          width="100"
-          src="{{ 'product.svg' | asset_url }}"
-          class="w-[17rem] h-[17rem] object-cover min-w-[17rem] min-h-[17rem] "
-          alt=""
-        >
+  <div class="flex flex-col gap-[20px] ">
+    <template x-for="(product, index) in products" :key="index">
+      <div>
+        <div class="flex gap-[10px] sm:gap-[20px] w-fit">
+          <!-- Product content -->
+          <label class="relative inline-flex items-center cursor-pointer sm:hidden">
+            <input
+              @change="selectProduct(product)"
+              id="default-checkbox"
+              type="checkbox"
+              class="cartCheckBox rounded-full appearance-none bg-gray-100 border border-gray-300 checked:bg-primaryGreen peer focus:outline-none"
+            >
+            <svg
+              class="absolute w-6 h-6 ml-[5px] text-white opacity-0 peer-checked:opacity-100 peer-checked:scale-100 transition-opacity  duration-200"
+              width="12"
+              height="8"
+              viewBox="0 0 12 8"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path d="M10.6673 0.5L4.25065 6.91667L1.33398 4" stroke="white" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </label>
 
-        <div class="flex flex-col gap-4">
-          <h1 class="font-[500]">Amrutam Aloe Vera Gel 400grams (2)</h1>
-          <p class="text-[13px] text-[#aaaaaa] max-w-4xl">
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Commodi itaque harum modi labore tenetur excepturi
-            delectus voluptates quidem eos quos!
-          </p>
+          <img
+            width=""
+            height=""
+            :src="product.image"
+            class="rounded-2xl sm:h-[200px] sm:w-[200px] ssmd:h-[150px] ssmd:w-[230px] h-[100px] w-[200px]"
+            alt="Product Image"
+          >
 
-          <p class="text-[13px] font-[500]">Quantity</p>
-        </div>
+          <div class="flex flex-col max-sm:gap-8 justify-between ssmd:py-3">
+            <div class="flex flex-col gap-2 sm:gap-4">
+              <h1 class="text-[13px] ssmd:text-[16px] font-[500] text-primaryGreen" x-text="product.name"></h1>
+              <h1 class="text-[13px] ssmd:text-[16px] font-[500] text-primaryGreen">
+                Quantity required: 2 (400 grams)
+              </h1>
+            </div>
+            <h1 class="text-[14px] ssmd:text-[16px] font-[500] text-[#1D1B20]">₹ 1,112</h1>
 
-        <div
-          x-show="cartSelectOption === 'I have some products' || cartSelectOption === 'I have no product'"
-          class="flex items-center ml-auto mr-4"
-        >
-          <div class="inline-flex items-center">
-            <label class="flex items-center cursor-pointer relative">
-              <input
-                type="checkbox"
-                :checked="selectedProducts.includes(product)"
-                class="peer !h-8 !w-8 !mr-0 cursor-pointer transition-all appearance-none rounded-full shadow hover:shadow-md  checked:bg-[#3A643B] border border-gray-400"
-                id="check"
+            <div class="flex gap-[25px]">
+              <div
+                style="border: 1px solid #3A643B;"
+                class="flex items-center max-md:py-2 gap-4 rounded-lg min-w-[13rem] justify-between px-3"
               >
-              <span class="absolute text-white opacity-0 peer-checked:opacity-100 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 pointer-events-none">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  class="h-3.5 w-3.5"
-                  viewBox="0 0 20 20"
-                  fill="currentColor"
-                  stroke="currentColor"
-                  stroke-width="1"
+                <button
+                  :disabled="product.quantity <= 1"
+                  @click="product.quantity -= 1;"
+                  class="px-4 py-2 rounded-lg text-[13px]"
                 >
-                  <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
-                </svg>
-              </span>
-            </label>
+                  -
+                </button>
+                <p x-text="product.quantity" class="text-[13px] font-[500]"></p>
+                <button
+                  @click="product.quantity += 1;"
+                  class="px-4 py-2 rounded-lg text-[13px]"
+                >
+                  +
+                </button>
+              </div>
+
+              <button
+                @click="addToCart([product])"
+                class="min-w-[20rem] py-5 rounded-lg bg-[#3A643B] max-sm:hidden text-white text-[12px]"
+              >
+                Add To Cart
+              </button>
+            </div>
           </div>
         </div>
-      </div>
 
-      <div class="w-full border my-2"></div>
+        <!-- Border div inside each product iteration -->
+        <div class="sm:border-t border-[#D0D0D0] sm:w-full sm:my-[30px]"></div>
+      </div>
     </template>
   </div>
 </div>

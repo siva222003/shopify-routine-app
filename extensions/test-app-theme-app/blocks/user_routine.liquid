@@ -1,7 +1,31 @@
 <link rel="stylesheet" href="{{ 'style.css' | asset_url }}">
+<link rel="stylesheet" href="{{ 'conflict.css' | asset_url }}">
 
-<h1>User Routine</h1>
+<main x-data="userRoutine" class=" rounded-2xl mx-2 ssm:mx-4  sm:mx-6 ">
+  <!-- Header -->
+  {% render 'routine_header' %}
 
+  <!-- Reminders -->
+  {% render 'routine_reminders' %}
+  {% render 'product_reminder_modal' %}
+  {% render 'activity_reminder_modal' %}
+
+  <!-- Reminder Summary -->
+
+  {% render 'reminder_summary' %}
+</main>
+
+<script src="{{ 'user-routine.js' | asset_url }}" defer></script>
+{% comment %}
+  <script src="{{ 'focus.js' | asset_url }}" defer></script>
+  <script src="{{ 'alpine.js' | asset_url }}" defer></script>
+{% endcomment %}
+
+<!-- Alpine Plugins -->
+<script defer src="https://cdn.jsdelivr.net/npm/@alpinejs/focus@3.x.x/dist/cdn.min.js"></script>
+
+<!-- Alpine Core -->
+<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 {% schema %}
 {
   "name": "User Routine",

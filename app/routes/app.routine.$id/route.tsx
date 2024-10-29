@@ -109,7 +109,7 @@ export default function Routine() {
     validator: addRoutineValidator,
     defaultValues: {
       routineName: data?.name!,
-      category: data?.category._id!,
+      // category: data?.category._id!,
       description: data?.description!,
       duration: data?.duration.number!,
       unit: data?.duration.unit!,
@@ -173,27 +173,25 @@ export default function Routine() {
               )}
               {data?.productReminders.map((reminder) => {
                 return (
-                    <Card roundedAbove="sm" key={reminder.id}>
-                      <BlockStack gap="200">
-                        <InlineGrid columns="1fr auto">
-                          <Text as="h2" variant="headingSm">
-                            {reminder.name}
-                          </Text>
-                          <Button
-                            onClick={() => navigate(`/app/${id}/reminder`)}
-                            accessibilityLabel="Add variant"
-                            icon={PlusIcon}
-                          >
-                            Edit
-                          </Button>
-                        </InlineGrid>
-                        <Text as="p" variant="bodyMd">
-                          {reminder.productType}
+                  <Card roundedAbove="sm" key={reminder.id}>
+                    <BlockStack gap="200">
+                      <InlineGrid columns="1fr auto">
+                        <Text as="h2" variant="headingSm">
+                          {reminder.name}
                         </Text>
-                      </BlockStack>
-                    </Card>
-                
-           
+                        <Button
+                          onClick={() => navigate(`/app/${id}/reminder`)}
+                          accessibilityLabel="Add variant"
+                          icon={PlusIcon}
+                        >
+                          Edit
+                        </Button>
+                      </InlineGrid>
+                      <Text as="p" variant="bodyMd">
+                        {reminder.productType}
+                      </Text>
+                    </BlockStack>
+                  </Card>
                 );
               })}
 

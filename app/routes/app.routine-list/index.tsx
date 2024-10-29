@@ -78,7 +78,7 @@ export default function IndexFiltersDefault() {
     if (actionData) {
       if (actionData.success) {
         shopify.toast.show(
-          `Routine ${navigation.formData?.get("intent")}d  successfully`,
+          `Routine ${navigation.formData?.get("intent")}d  successfully,`
         );
       }
     }
@@ -89,7 +89,7 @@ export default function IndexFiltersDefault() {
       case "type":
         return value.map((val) => `type: ${val}`).join(", ");
       case "tone":
-        return value.map((val) => `tone: ${val}`).join(", ");
+        return value.map((val) =>` tone: ${val}`).join(", ");
       default:
         return value;
     }
@@ -322,7 +322,7 @@ export default function IndexFiltersDefault() {
   //       selected={selectedResources.includes(id)}
   //       position={index}
   //       onClick={() => {
-  //         navigate(`/app/routine/${id}`);
+  //         navigate(/app/routine/${id});
   //       }}
   //     >
   //       <IndexTable.Cell>
@@ -357,7 +357,7 @@ export default function IndexFiltersDefault() {
         selected={selectedResources.includes(_id)}
         position={index}
         // onClick={() => {
-        //   navigate(`/app/routine/${_id}`);
+        //   navigate(/app/routine/${_id});
         // }}
       >
         <IndexTable.Cell>

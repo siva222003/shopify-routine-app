@@ -1,0 +1,15 @@
+<div
+  style="border: 1px solid #EBEBEB"
+  class="custom-border rounded-xl flex items-center gap-3 py-5 px-2 max-w-3xl sm:mx-auto my-10 mx-[22px]"
+>
+  <img src="{{ 'search-icon.svg' | asset_url }}" width="" height="" alt="">
+  <input
+    x-model="search"
+    @input="filterBySearch"
+    class="bg-transparent  w-full custom-input-border placeholder:text-primaryGreen text-[13px] focus:shadow-none focus:outline-none"
+    type="text"
+    name="search"
+    placeholder="Search for routine  here"
+    id="search"
+  >
+</div>

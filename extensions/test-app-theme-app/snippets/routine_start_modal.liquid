@@ -1,0 +1,46 @@
+<div>
+  <div
+    x-cloak
+    x-show="routineStartModalOpen"
+    x-transition.opacity.duration.200ms
+    x-trap.inert.noscroll="routineStartModalOpen"
+    @keydown.esc.window="routineStartModalOpen = false"
+    @click.self="routineStartModalOpen = false"
+    class="fixed inset-0 z-30 flex items-end justify-center  p-4 pb-8 backdrop-contrast-50   sm:items-center lg:p-8"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="defaultModalTitle"
+  >
+    <!-- Modal Dialog -->
+    <div
+      x-show="routineStartModalOpen"
+      x-transition:enter="transition ease-out duration-200 delay-100 motion-reduce:transition-opacity"
+      x-transition:enter-start="opacity-0 scale-50"
+      x-transition:enter-end="opacity-100 scale-100"
+      class="flex max-w-[40rem] flex-col gap-4 overflow-hidden rounded-xl  bg-primaryCream"
+    >
+      <div class=" flex flex-col items-center rounded-4xl gap-[30px] px-[60px] min-h-[340px] justify-center  ">
+        <div class="flex flex-col items-center  gap-3">
+          <img src="{{ 'mark-completed-tick.svg' | asset_url }}" class="w-16" width="" height="" alt="">
+          <h1 class="text-primaryGreen text-[13px]">Your have started following the routine.</h1>
+        </div>
+
+        <h1 class="text-[13px] w-full">Now, you can start your routine once you order and the product is delivered.</h1>
+
+        <div class="flex w-full flex-col gap-5 items-center">
+          <button
+            @click="routineStartModalOpen = false"
+            class="w-full py-5 rounded-lg bg-[#3A643B] text-white text-[12px]"
+          >
+            Yes, Track my Order
+          </button>
+          <a href="/pages/user-routines">
+            <button class="w-full py-5 rounded-lg border border-[#3A643B] text-[12px] text-primaryGreen Start the Routine Right now">
+              Start the Routine Right now
+            </button>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

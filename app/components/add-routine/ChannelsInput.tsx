@@ -1,121 +1,44 @@
-import { FieldValues, FormApi } from "@rvf/remix";
-import { BlockStack, Tag, Autocomplete, InlineError } from "@shopify/polaris";
-import { useState, useCallback, useMemo } from "react";
-import { DefaultRoutine } from "~/types";
+import { FormApi } from "@rvf/remix";
+import { Banner, Card, OptionList } from "@shopify/polaris";
+import { useState } from "react";
+import { DefaultRoutine } from "~/routes/app.add-routine/validator";
 
 interface Props {
-  selectedOptions: string[];
-  setSelectedOptions: React.Dispatch<React.SetStateAction<string[]>>;
-  isChannelsError: string | null;
-  setChannelsError: React.Dispatch<React.SetStateAction<string | null>>;
+  form: FormApi<DefaultRoutine>;
 }
 
-export default function ChannelsInput({
-  selectedOptions,
-  setSelectedOptions,
-  isChannelsError,
-  setChannelsError,
-}: Props) {
-  const deselectedOptions = useMemo(
-    () => [
-      { value: "email", label: "Email" },
-      { value: "call", label: "Call" },
-      { value: "whatsapp", label: "Whatsapp" },
-      { value: "google-calendar", label: "Google Calendar" },
-    ],
-    [],
-  );
+export default function MultipleOptionListExample({ form }: Props) {
+  const [selected, setSelected] = useState<string[]>([]);
 
-  const [inputValue, setInputValue] = useState("");
-  const [options, setOptions] = useState(deselectedOptions);
+  console.log(form.value("channel"));
 
-  const updateText = useCallback(
-    (value: string) => {
-      setInputValue(value);
-
-      if (value === "") {
-        setOptions(deselectedOptions);
-        return;
-      }
-
-      const filterRegex = new RegExp(value, "i");
-      const resultOptions = deselectedOptions.filter((option) =>
-        option.label.match(filterRegex),
-      );
-      setOptions(resultOptions);
-    },
-    [deselectedOptions],
-  );
-
-  const removeTag = useCallback(
-    (tag: string) => () => {
-      const options = [...selectedOptions];
-      options.splice(options.indexOf(tag), 1);
-      setSelectedOptions(options);
-    },
-    [selectedOptions],
-  );
-
-  const verticalContentMarkup =
-    selectedOptions.length > 0 ? (
-      <BlockStack gap="200" align="center">
-        {selectedOptions.map((option) => {
-          let tagLabel = "";
-          tagLabel = option.replace("_", " ");
-          tagLabel = titleCase(tagLabel);
-          return (
-            <Tag
-              key={`option${option}`}
-              size="large"
-              onRemove={removeTag(option)}
-            >
-              {tagLabel}
-            </Tag>
-          );
-        })}
-      </BlockStack>
-    ) : null;
-
-  const textField = (
-    <Autocomplete.TextField
-      onChange={updateText}
-      label="Channels"
-      value={inputValue}
-      placeholder="Call, Email"
-      verticalContent={verticalContentMarkup}
-      autoComplete="off"
-      error={isChannelsError ? isChannelsError : undefined}
-    />
-  );
+  const handleChange = (value: string[]) => {
+    setSelected(value);
+  };
 
   return (
-    <div>
-      <Autocomplete
-        allowMultiple
-        options={options}
-        selected={selectedOptions}
-        textField={textField}
-        onSelect={(value) => {
-          if (isChannelsError) {
-            setChannelsError(null);
-          }
-
-          setSelectedOptions(value);
-
-          if (value.length === 0) {
-            setChannelsError("Please select at least one channel");
-          }
+    <Card>
+      <OptionList
+        id="channels"
+        title="Select Reminder Channels"
+        onChange={(value) => {
+          handleChange(value);
         }}
-        listTitle="Suggested Tags"
+        options={[
+          { value: "sms", label: "SMS" },
+          { value: "whatsapp", label: "WhatsApp" },
+        ]}
+        selected={selected || []}
+        allowMultiple
       />
-    </div>
-  );
 
-  function titleCase(string: string) {
-    return string
-      .toLowerCase()
-      .split(" ")
-      .map((word) => word.replace(word[0], word[0].toUpperCase()))
-      .join("");
-  }
+      {form.error("channel") && (
+        <Banner title="Select atleast one channel" tone="critical"></Banner>
+      )}
+
+      {selected.map((channel) => (
+        <input key={channel} type="hidden" name="channel" value={channel} />
+      ))}
+    </Card>
+  );
 }

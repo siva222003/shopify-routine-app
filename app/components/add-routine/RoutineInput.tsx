@@ -1,6 +1,6 @@
-import { FieldValues, FormApi } from "@rvf/remix";
+import { FormApi } from "@rvf/remix";
 import { Card, TextField } from "@shopify/polaris";
-import { DefaultRoutine } from "~/types";
+import { DefaultRoutine } from "~/routes/app.add-routine/validator";
 
 interface Props {
   form: FormApi<DefaultRoutine>;
@@ -11,18 +11,17 @@ const RoutineInput = ({ form }: Props) => {
     <Card>
       <TextField
         autoComplete="off"
-        name="routineName"
+        name="name"
         label="Routine Name"
         type="text"
-        value={form.value("routineName") || ""}
-        onChange={(e) => form.setValue("routineName", e)}
+        value={form.value("name") || ""}
+        onChange={(e) => form.setValue("name", e)}
         helpText={
           <span>
-            We'll use this email address to inform you on future changes to
-            Polaris.
+            The name of the routine. This will be displayed on the routine page.
           </span>
         }
-        error={form.error("routineName") || undefined}
+        error={form.error("name") || undefined}
       />
     </Card>
   );

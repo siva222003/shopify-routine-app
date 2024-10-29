@@ -33,6 +33,8 @@ const AddProduct = ({ setCurrentStep, product, setProduct }: Props) => {
     setProduct({ ...product, selectedProduct: selected && selected[0] });
   };
 
+  console.log({ product });
+
   const navigate = useNavigate();
   const { id } = useParams();
 

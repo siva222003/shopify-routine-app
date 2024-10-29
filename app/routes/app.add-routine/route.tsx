@@ -1,26 +1,28 @@
 import { Layout, Page, FormLayout, Button } from "@shopify/polaris";
 import { TitleBar } from "@shopify/app-bridge-react";
 import {
-  ClientActionFunctionArgs,
   Form,
   useActionData,
   useLoaderData,
   useNavigation,
   useSubmit,
+  useRouteError,
+  isRouteErrorResponse,
 } from "@remix-run/react";
 import { ActionFunctionArgs, json } from "@remix-run/node";
-import { FormEvent, useCallback, useEffect, useRef, useState } from "react";
-import ImageInput from "~/components/add-routine/ImageInput";
-import ChannelsInput from "~/components/add-routine/ChannelsInput";
-import DurationInput from "~/components/add-routine/DurationInput";
-import { useForm } from "@rvf/remix";
-import { addRoutineValidator } from "~/utils/validators";
-import CategoryInput from "~/components/add-routine/CategoryInput";
-import RoutineInput from "~/components/add-routine/RoutineInput";
-import DraftInput from "~/components/add-routine/DraftInput";
-import { api } from "~/utils/axios";
-import { isRouteErrorResponse, useRouteError } from "@remix-run/react";
-import { fetchCategories, uploadImage } from "./api";
+import { useState } from "react";
+import { useForm, validationError } from "@rvf/remix";
+import {
+  CategoryInput,
+  ChannelsInput,
+  DurationInput,
+  ImageInput,
+  RoutineInput,
+  StatusInput,
+} from "~/components/add-routine";
+import { addRoutine, fetchCategories, uploadImage } from "./api";
+import { addRoutineValidator } from "./validator";
+import { RoutineDefaultValues } from "./types";
 
 export async function loader() {
   const categories = await fetchCategories();
@@ -29,86 +31,25 @@ export async function loader() {
 }
 
 export async function action({ request }: ActionFunctionArgs) {
-  // const formData = await request.formData();
+  const final = await request.formData();
+  const values = JSON.parse(final.get("values") as string);
 
-  // const final = Object.fromEntries(formData.entries());
-
-  // const channels = JSON.parse(formData.get("channels") as string);
-
-  // // final.duration = (final.duration as string) + " " + (final.unit as string);
-
-  // // delete final.unit;
-
-  // const data = {
-  //   routineName: final.routineName as string,
-  //   category: final.category as string,
-  //   description: final.description as string,
-  //   duration: final.duration as string,
-  //   channels: channels,
-  //   draft: final.draft === "true" ? true : false,
-  // };
-
-  // //Data for the routine api
-
-  // const routineData = {
-  //   name: data.routineName,
-  //   visibility: "Public",
-  //   description: data.description,
-  //   image:
-  //     "https://amrutam.co.in/cdn/shop/products/EyeKey-Malt-1-scaled_24e2b45f-c713-4ab1-bfcb-b72ba99b4600.jpg?v=1655351259&width=1000",
-  //   duration: {
-  //     number: final.duration as string,
-  //     unit: final.unit as string,
-  //   },
-  //   category: data.category,
-  //   channel: data.channels,
-  //   draft: data.draft,
-  //   isTemplate: true,
-  // };
-
-  // try {
-  //   const response = await api.post("/admin/reminderlist", routineData);
-
-  //   return json({
-  //     success: true,
-  //     data: response.data,
-  //   });
-  // } catch (error) {
-  //   return json({ success: false, error });
-  // }
-
-  const formData = await request.formData();
-  const intent = formData.get("intent");
-
-  const file = formData.get("image") as File;
-
-  const newData = new FormData();
-  newData.append("file", file);
-
-  try {
-    const response = await uploadImage(newData);
-    return json({ success: true, image: response, intent });
-  } catch (error) {
-    return json({ success: false, error });
-  }
-}
-
-export async function clientAction({
-  serverAction,
-  context,
-  request,
-}: ClientActionFunctionArgs) {
-  let data = await serverAction<any>();
-
-  if (data.success) {
-    if (data.intent === "upload") {
-      shopify.toast.show("Imgae Uploaded successfully");
-    } else {
-      shopify.toast.show("Routine added successfully");
-    }
+  const result = await addRoutineValidator.validate(values);
+  if (result.error) {
+    return validationError(result.error, result.submittedData);
   }
 
-  return data;
+  const apiData = result.data;
+
+  apiData.draft === "draft"
+    ? ((apiData.draft as any) = true)
+    : ((apiData.draft as any) = false);
+
+  (apiData.duration.number as any) = parseInt(apiData.duration.number);
+
+  const res = await addRoutine(apiData);
+
+  return json({ result: res });
 }
 
 export default function AddRoutine() {
@@ -120,82 +61,58 @@ export default function AddRoutine() {
 
   const [file, setFile] = useState<File | null>(null);
 
-  const [selectedOptions, setSelectedOptions] = useState<string[]>([]);
-
-  const [isChannelsError, setChannelsError] = useState<string | null>(null);
-
   const form = useForm({
     validator: addRoutineValidator,
-    defaultValues: {
-      routineName: "",
-      description: "",
-      category: "",
-      duration: "",
-      unit: "",
+    defaultValues: RoutineDefaultValues,
+    handleSubmit: async (values) => {
+      submit({ values: JSON.stringify(values) }, { method: "POST" });
     },
   });
 
   const actionData = useActionData<typeof action>();
 
-  const submit = useSubmit();
-
   console.log(actionData);
 
-  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    const isValid = await form.validate();
+  console.log(form.formState.fieldErrors);
 
-    if (selectedOptions.length === 0) {
-      setChannelsError("Please select at least one channel");
-      return;
-    }
-
-    if (Object.keys(isValid).length === 0) {
-      const formElement = event.target as HTMLFormElement;
-      const formData = new FormData(formElement);
-      formData.append("channels", JSON.stringify(selectedOptions));
-      submit(formData, { method: "post" });
-    }
-  };
+  const submit = useSubmit();
 
   return (
-    <Page narrowWidth>
+    <Page>
       <TitleBar title="Add Routine" />
-      <Layout>
-        <Layout.Section>
-          <Form {...form.getFormProps()} onSubmit={handleSubmit}>
+      <Form {...form.getFormProps()}>
+        <Layout>
+          <Layout.Section>
             <FormLayout>
               <RoutineInput form={form} />
-
-              <ImageInput file={file} setFile={setFile} />
 
               <CategoryInput form={form} catgories={categories} />
 
               <DurationInput form={form} />
+              <ImageInput file={file} setFile={setFile} />
 
-              <ChannelsInput
-                selectedOptions={selectedOptions}
-                setSelectedOptions={setSelectedOptions}
-                isChannelsError={isChannelsError}
-                setChannelsError={setChannelsError}
-              />
-
-              <DraftInput />
-
-              <div style={{ marginBottom: "20px", marginTop: "20px" }}>
-                <Button
-                  loading={isSubmitting}
-                  variant="primary"
-                  size="large"
-                  submit
-                >
-                  Submit
-                </Button>
-              </div>
+              <ChannelsInput form={form} />
             </FormLayout>
-          </Form>
-        </Layout.Section>
-      </Layout>
+          </Layout.Section>
+
+          <Layout.Section variant="oneThird">
+            <FormLayout>
+              <StatusInput form={form} />
+            </FormLayout>
+          </Layout.Section>
+        </Layout>
+        <div
+          style={{
+            marginBottom: "20px",
+            marginTop: "20px",
+            textAlign: "center",
+          }}
+        >
+          <Button loading={isSubmitting} variant="primary" size="large" submit>
+            Submit
+          </Button>
+        </div>
+      </Form>
     </Page>
   );
 }
@@ -214,12 +131,11 @@ export function ErrorBoundary() {
     );
   } else if (error instanceof Error) {
     return (
-      <div>
+      <Page narrowWidth>
+        <TitleBar title="Add Routine" />
         <h1>Error</h1>
         <p>{error.message}</p>
-        {/* <p>The stack trace is:</p> */}
-        {/* <pre>{error.stack}</pre> */}
-      </div>
+      </Page>
     );
   } else {
     return <h1>Unknown Error</h1>;

@@ -1,177 +1,119 @@
-<div x-show="tab===3" x-transition class="mx-10" x-cloak>
-  <h1 class="font-[500] my-10 text-3xl text-[#3A643B]">Set the reminder channels to get notified about the routine.</h1>
+<style>
+  .custom-fieldset {
+    padding-top: 4px;
+    padding-bottom: 8px;
+  }
+</style>
 
-  <div id="reminder-channels-grid" class="grid grid-cols-3 gap-14 my-4">
-    <div class="flex flex-col gap-10 p-6 justify-center border rounded-2xl">
-      <div class="flex justify-between">
-        <h2 class="text-[1.4rem] font-[500]">SMS</h2>
+<div
+  x-show="tab===3"
+  x-init="$watch('index', value => console.log(value))"
+  x-transition
+  class=" md:max-w-[90%] xl:max-w-[80%] mx-auto"
+  x-cloak
+>
+  <h1 class="font-[500] my-[30px] text-3xl text-[#434343]  text-center">Add Reminder Channels</h1>
 
-        <label class="inline-flex items-center cursor-pointer">
-          <input type="checkbox" value="" class="sr-only peer">
-          <div
-            class="relative w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-[#3A643B]"
-          ></div>
-        </label>
-      </div>
+  <div class="flex justify-center mx-[5px]">
+    <div
+      id="reminder-channels-grid"
+      class="grid grid-cols-1 sm:grid-cols-4 xl:grid-cols-4 gap-10 sm:gap-6 md:gap-14 my-4 w-[100%]"
+    >
+      <div
+        x-show="routine?.channel?.includes('sms')"
+        style="border: 1px solid #e5e7eb"
+        class=" col-span-2 flex flex-col gap-8 p-6  rounded-2xl "
+      >
+        <div class="flex justify-between">
+          <h2 class="text-[1.4rem] ">SMS</h2>
 
-      <div class="relative">
-        <input
-          type="email"
-          id="hs-floating-input-email"
-          class="peer p-4 block w-full bg-transparent rounded-lg text-[1.4rem] placeholder:text-transparent !focus:border-[#3A643B] !focus:ring-[#3A643B] disabled:opacity-50 disabled:pointer-events-none border border-[#CED8E0] dark:text-neutral-700 !dark:focus:ring-[#3A643B] focus:pt-6 focus:pb-2 [&:not(:placeholder-shown)]:pt-6 [&:not(:placeholder-shown)]:pb-2 autofill:pt-6 autofill:pb-2"
-          placeholder="you@email.com"
-        >
-        <label
-          for="hs-floating-input-email"
-          class="absolute top-0 start-0 p-4 h-full text-[1.4rem] truncate pointer-events-none transition ease-in-out duration-100 border border-transparent origin-[0_0] peer-disabled:opacity-50 peer-disabled:pointer-events-none peer-focus:scale-90 peer-focus:translate-x-0.5 peer-focus:-translate-y-1.5 peer-focus:text-gray-500 dark:peer-focus:text-neutral-500 peer-[:not(:placeholder-shown)]:scale-90 peer-[:not(:placeholder-shown)]:translate-x-0.5 peer-[:not(:placeholder-shown)]:-translate-y-1.5 peer-[:not(:placeholder-shown)]:text-gray-500 dark:peer-[:not(:placeholder-shown)]:text-neutral-500 dark:text-neutral-500"
-          >Mobile Number</label
-        >
-      </div>
-    </div>
-
-    <div class="flex flex-col gap-10 p-6 justify-center border rounded-2xl">
-      <div class="flex justify-between">
-        <h2 class="text-[1.4rem] font-[500]">WhatsApp</h2>
-
-        <label class="inline-flex items-center cursor-pointer">
-          <input type="checkbox" value="" class="sr-only peer">
-          <div
-            class="relative w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-[#3A643B]"
-          ></div>
-        </label>
-      </div>
-
-      <div class="relative">
-        <input
-          type="email"
-          id="hs-floating-input-email"
-          class="peer p-4 block w-full bg-transparent rounded-lg text-[1.4rem] placeholder:text-transparent focus:border-[#3A643B] focus:ring-[#3A643B] disabled:opacity-50 disabled:pointer-events-none border border-[#CED8E0] dark:text-neutral-700 dark:focus:ring-[#3A643B] focus:pt-6 focus:pb-2 [&:not(:placeholder-shown)]:pt-6 [&:not(:placeholder-shown)]:pb-2 autofill:pt-6 autofill:pb-2"
-          placeholder="you@email.com"
-        >
-        <label
-          for="hs-floating-input-email"
-          class="absolute top-0 start-0 p-4 h-full text-[1.4rem] truncate pointer-events-none transition ease-in-out duration-100 border border-transparent origin-[0_0] peer-disabled:opacity-50 peer-disabled:pointer-events-none peer-focus:scale-90 peer-focus:translate-x-0.5 peer-focus:-translate-y-1.5 peer-focus:text-gray-500 dark:peer-focus:text-neutral-500 peer-[:not(:placeholder-shown)]:scale-90 peer-[:not(:placeholder-shown)]:translate-x-0.5 peer-[:not(:placeholder-shown)]:-translate-y-1.5 peer-[:not(:placeholder-shown)]:text-gray-500 dark:peer-[:not(:placeholder-shown)]:text-neutral-500 dark:text-neutral-500"
-          >WhatsApp Number
-        </label>
-      </div>
-    </div>
-
-    <div class="flex flex-col gap-10 p-6 justify-center border rounded-2xl">
-      <div class="flex justify-between">
-        <h2 class="text-[1.4rem] font-[500]">Call</h2>
-
-        <label class="inline-flex items-center cursor-pointer">
-          <input type="checkbox" value="" class="sr-only peer">
-          <div
-            class="relative w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-[#3A643B]"
-          ></div>
-        </label>
-      </div>
-
-      <div class="relative">
-        <input
-          type="email"
-          id="hs-floating-input-email"
-          class="peer p-4 block w-full bg-transparent rounded-lg text-[1.4rem] placeholder:text-transparent focus:border-[#3A643B] focus:ring-[#3A643B] disabled:opacity-50 disabled:pointer-events-none border border-[#CED8E0] dark:text-neutral-700 dark:focus:ring-[#3A643B] focus:pt-6 focus:pb-2 [&:not(:placeholder-shown)]:pt-6 [&:not(:placeholder-shown)]:pb-2 autofill:pt-6 autofill:pb-2"
-          placeholder="you@email.com"
-        >
-        <label
-          for="hs-floating-input-email"
-          class="absolute top-0 start-0 p-4 h-full text-[1.4rem] truncate pointer-events-none transition ease-in-out duration-100 border border-transparent origin-[0_0] peer-disabled:opacity-50 peer-disabled:pointer-events-none peer-focus:scale-90 peer-focus:translate-x-0.5 peer-focus:-translate-y-1.5 peer-focus:text-gray-500 dark:peer-focus:text-neutral-500 peer-[:not(:placeholder-shown)]:scale-90 peer-[:not(:placeholder-shown)]:translate-x-0.5 peer-[:not(:placeholder-shown)]:-translate-y-1.5 peer-[:not(:placeholder-shown)]:text-gray-500 dark:peer-[:not(:placeholder-shown)]:text-neutral-500 dark:text-neutral-500"
-          >Mobile Number</label
-        >
-      </div>
-    </div>
-
-    <div class="flex flex-col gap-10 p-6 justify-center border rounded-2xl">
-      <div class="flex justify-between">
-        <h2 class="text-[1.4rem] font-[500]">Email</h2>
-
-        <label class="inline-flex items-center cursor-pointer">
-          <input type="checkbox" value="" class="sr-only peer">
-          <div
-            class="relative w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-[#3A643B]"
-          ></div>
-        </label>
-      </div>
-
-      <div class="relative">
-        <input
-          type="email"
-          id="hs-floating-input-email"
-          class="peer p-4 block w-full bg-transparent rounded-lg text-[1.4rem] placeholder:text-transparent focus:border-[#3A643B] focus:ring-[#3A643B] disabled:opacity-50 disabled:pointer-events-none border border-[#CED8E0] dark:text-neutral-700 dark:focus:ring-[#3A643B] focus:pt-6 focus:pb-2 [&:not(:placeholder-shown)]:pt-6 [&:not(:placeholder-shown)]:pb-2 autofill:pt-6 autofill:pb-2"
-          placeholder="you@email.com"
-        >
-        <label
-          for="hs-floating-input-email"
-          class="absolute top-0 start-0 p-4 h-full text-[1.4rem] truncate pointer-events-none transition ease-in-out duration-100 border border-transparent origin-[0_0] peer-disabled:opacity-50 peer-disabled:pointer-events-none peer-focus:scale-90 peer-focus:translate-x-0.5 peer-focus:-translate-y-1.5 peer-focus:text-gray-500 dark:peer-focus:text-neutral-500 peer-[:not(:placeholder-shown)]:scale-90 peer-[:not(:placeholder-shown)]:translate-x-0.5 peer-[:not(:placeholder-shown)]:-translate-y-1.5 peer-[:not(:placeholder-shown)]:text-gray-500 dark:peer-[:not(:placeholder-shown)]:text-neutral-500 dark:text-neutral-500"
-          >Email ID</label
-        >
-      </div>
-    </div>
-
-    <div class="flex flex-col gap-10 p-6 justify-center border rounded-2xl">
-      <div class="flex justify-between">
-        <h2 class="text-[1.4rem] font-[500]">Google Calendar</h2>
-
-        <label class="inline-flex items-center cursor-pointer">
-          <input type="checkbox" value="" class="sr-only peer">
-          <div
-            class="relative w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-[#3A643B]"
-          ></div>
-        </label>
-      </div>
-
-      <div class="relative">
-        {% comment %}
-          <input
-            type="email"
-            id="hs-floating-input-email"
-            class="peer p-4 block w-full bg-transparent rounded-lg text-[1.4rem] placeholder:text-transparent focus:border-[#3A643B] focus:ring-[#3A643B] disabled:opacity-50 disabled:pointer-events-none border border-[#CED8E0] dark:text-neutral-700 dark:focus:ring-[#3A643B] focus:pt-6 focus:pb-2 [&:not(:placeholder-shown)]:pt-6 [&:not(:placeholder-shown)]:pb-2 autofill:pt-6 autofill:pb-2"
-            placeholder="you@email.com"
-          >
           <label
-            for="hs-floating-input-email"
-            class="absolute top-0 start-0 p-4 h-full text-[1.4rem] truncate pointer-events-none transition ease-in-out duration-100 border border-transparent origin-[0_0] peer-disabled:opacity-50 peer-disabled:pointer-events-none peer-focus:scale-90 peer-focus:translate-x-0.5 peer-focus:-translate-y-1.5 peer-focus:text-gray-500 dark:peer-focus:text-neutral-500 peer-[:not(:placeholder-shown)]:scale-90 peer-[:not(:placeholder-shown)]:translate-x-0.5 peer-[:not(:placeholder-shown)]:-translate-y-1.5 peer-[:not(:placeholder-shown)]:text-gray-500 dark:peer-[:not(:placeholder-shown)]:text-neutral-500 dark:text-neutral-500"
-            >Google Calendar</label
+            for="sms"
+            class="flex items-center cursor-pointer select-none text-dark dark:text-white  "
           >
-        {% endcomment %}
+            <div class="relative ">
+              <input
+                :checked="index.includes(0)"
+                @change="index.includes(0) ? index.splice(index.indexOf(0), 1) : index.push(0)"
+                type="checkbox"
+                id="sms"
+                class="peer sr-only"
+              >
+              <div
+                style=" border: 1px solid #3A643B;"
+                class="block h-8 rounded-full dark:bg-dark-2 bg-gray-3 w-14 "
+              ></div>
+              <div
+                class="absolute w-6 h-6 transition bg-primaryGrey  rounded-full dot dark:bg-dark-4 left-1 top-1 peer-checked:translate-x-full peer-checked:bg-primaryGreen"
+              ></div>
+            </div>
+          </label>
+        </div>
 
-        <button @click="addGoogleAccount()" class="px-4 py-3 rounded-full w-fit bg-[#fff7e2] text-[#3A643B] ">
-          Add Account
-        </button>
-      </div>
-    </div>
-
-    <div class="flex flex-col gap-10 p-6 justify-center border rounded-2xl">
-      <div class="flex justify-between">
-        <h2 class="text-[1.4rem] font-[500]">Web Notidications</h2>
-
-        <label class="inline-flex items-center cursor-pointer">
-          <input type="checkbox" value="" class="sr-only peer">
-          <div
-            class="relative w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-[#3A643B]"
-          ></div>
-        </label>
-      </div>
-
-      <div class="relative">
-        {% comment %}
+        <fieldset class="border-2 px-4 min-w-[100%]  ssmd:min-w-[280px]  flex items-center rounded-3xl mb-4">
+          <legend class="text-primaryGrey text-[11px] custom-fieldset-legend">Mobile Number</legend>
           <input
-            type="email"
-            id="hs-floating-input-email"
-            class="peer p-4 block w-full bg-transparent rounded-lg text-[1.4rem] placeholder:text-transparent focus:border-[#3A643B] focus:ring-[#3A643B] disabled:opacity-50 disabled:pointer-events-none border border-[#CED8E0] dark:text-neutral-700 dark:focus:ring-[#3A643B] focus:pt-6 focus:pb-2 [&:not(:placeholder-shown)]:pt-6 [&:not(:placeholder-shown)]:pb-2 autofill:pt-6 autofill:pb-2"
-            placeholder="you@email.com"
+            :disabled="!index.includes(0)"
+            x-model="userReminderChannels.sms"
+            type="text"
+            name="sms"
+            class=" custom-fieldset custom-input-border focus:outline-none bg-transparent w-full focus:shadow-none"
+            id="sms"
           >
-          <label
-            for="hs-floating-input-email"
-            class="absolute top-0 start-0 p-4 h-full text-[1.4rem] truncate pointer-events-none transition ease-in-out duration-100 border border-transparent origin-[0_0] peer-disabled:opacity-50 peer-disabled:pointer-events-none peer-focus:scale-90 peer-focus:translate-x-0.5 peer-focus:-translate-y-1.5 peer-focus:text-gray-500 dark:peer-focus:text-neutral-500 peer-[:not(:placeholder-shown)]:scale-90 peer-[:not(:placeholder-shown)]:translate-x-0.5 peer-[:not(:placeholder-shown)]:-translate-y-1.5 peer-[:not(:placeholder-shown)]:text-gray-500 dark:peer-[:not(:placeholder-shown)]:text-neutral-500 dark:text-neutral-500"
-            >Google Calendar</label
-          >
-        {% endcomment %}
+        </fieldset>
+      </div>
 
-        <button class="px-4 py-3 rounded-full w-fit bg-[#fff7e2] text-[#3A643B] ">Enable</button>
+      <div
+        :checked="index.includes(1)"
+        x-show="routine?.channel?.includes('whatsapp')"
+        style="border: 1px solid #e5e7eb"
+        class=" col-span-2 flex flex-col gap-8 p-6  rounded-2xl "
+      >
+        <div class="flex justify-between">
+          <h2 class="text-[1.4rem] ">WhatsApp</h2>
+          <label
+            for="whataspp"
+            class="flex items-center cursor-pointer select-none text-dark dark:text-white  "
+          >
+            <div class="relative ">
+              <input
+                :checked="index.includes(1)"
+                @change="index.includes(1) ? index.splice(index.indexOf(1), 1) : index.push(1)"
+                type="checkbox"
+                id="whataspp"
+                class="peer sr-only "
+              >
+              <div
+                style=" border: 1px solid #3A643B;"
+                class="block h-8 rounded-full dark:bg-dark-2 bg-gray-3 w-14 "
+              ></div>
+              <div
+                class="absolute w-6 h-6 transition bg-primaryGrey  rounded-full dot dark:bg-dark-4 left-1 top-1 peer-checked:translate-x-full peer-checked:bg-primaryGreen"
+              ></div>
+            </div>
+          </label>
+        </div>
+
+        <fieldset class="border-2 px-4 min-w-[100%]  ssmd:min-w-[280px]  flex items-center rounded-3xl mb-4">
+          <legend class="text-primaryGrey text-[11px] custom-fieldset-legend">WhatsApp Number</legend>
+          <input
+            :disabled="!index.includes(1)"
+            x-model="userReminderChannels.whatsapp"
+            type="text"
+            name="whatsapp"
+            class=" custom-fieldset custom-input-border focus:outline-none bg-transparent w-full focus:shadow-none"
+            id="whatsapp"
+          >
+        </fieldset>
       </div>
     </div>
+  </div>
+
+  <div @click="addChannels" class="text-center">
+    <button
+      :disabled="!index.length"
+      x-text=" isAddingChannels ? 'Adding...' : 'Add Reminder Channels'"
+      class="px-14 py-3 rounded-lg  disabled:opacity-50 bg-[#3A643B] text-white text-[16px] shadow-lg my-[36px]"
+    ></button>
   </div>
 </div>

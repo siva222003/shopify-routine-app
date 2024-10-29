@@ -1,9 +1,9 @@
 # Learn more about configuring your app at https://shopify.dev/docs/apps/tools/cli/configuration
 
 client_id = "9388a5774685dae18ad95269e9767d2a"
-name = "first-app"
-handle = "first-app-1303"
-application_url = "https://returning-jones-simultaneously-applied.trycloudflare.com"
+name = "amrutam-routine"
+handle = "amrutam-routine-app"
+application_url = "https://restricted-way-magazines-twenty.trycloudflare.com"
 embedded = true
 
 [build]
@@ -13,13 +13,13 @@ include_config_on_deploy = true
 
 [access_scopes]
 # Learn more at https://shopify.dev/docs/apps/tools/cli/configuration#access_scopes
-scopes = "read_orders,write_products"
+scopes = "read_products,write_themes"
 
 [auth]
 redirect_urls = [
-  "https://returning-jones-simultaneously-applied.trycloudflare.com/auth/callback",
-  "https://returning-jones-simultaneously-applied.trycloudflare.com/auth/shopify/callback",
-  "https://returning-jones-simultaneously-applied.trycloudflare.com/api/auth/callback"
+  "https://restricted-way-magazines-twenty.trycloudflare.com/auth/callback",
+  "https://restricted-way-magazines-twenty.trycloudflare.com/auth/shopify/callback",
+  "https://restricted-way-magazines-twenty.trycloudflare.com/api/auth/callback"
 ]
 
 [webhooks]
@@ -27,10 +27,10 @@ api_version = "2024-07"
 
   [[webhooks.subscriptions]]
   topics = [ "app/uninstalled" ]
-  uri = "/webhooks"
+  uri = "https://alan-spain-portions-str.trycloudflare.com/webhooks"
 
 [app_proxy]
-url = "https://returning-jones-simultaneously-applied.trycloudflare.com/app"
+url = "https://restricted-way-magazines-twenty.trycloudflare.com/app"
 subpath = "amrutam-routine"
 prefix = "apps"
 

@@ -1,0 +1,25 @@
+<style>
+  .no-routines {
+    background-image: url({{'no-routines-bg.svg'|asset_url}});
+    background-size: cover;
+    background-position: center;
+  }
+</style>
+
+<section class="flex flex-col justify-center items-center gap-[10px] min-h-[90vh]">
+  <div class="no-routines min-w-[300px] flex justify-center p-2">
+    <img
+      width=""
+      height=""
+      src="{{ 'no-routines-clock.svg' | asset_url }}"
+      class="text-primaryGrey"
+      alt=""
+    >
+  </div>
+  <h2 class="text-[#868686] my-2 text-[14px]">0 routines from now</h2>
+  <a href="/pages/routine-list">
+    <button class="min-w-[280px] py-[18px] border mt-[20px] border-primaryGreen rounded-2xl text-[13px]">
+      Explore Routines
+    </button>
+  </a>
+</section>

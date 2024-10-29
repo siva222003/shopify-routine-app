@@ -8,3 +8,16 @@ export type LoaderData = {
     updatedAt: string;
   }[];
 };
+
+export const RoutineDefaultValues = {
+  name: "",
+  description: "",
+  category: "",
+  duration: {
+    number: "",
+    unit: "",
+  },
+  channel: [] as string[],
+  draft: "draft",
+  visibility: "Private" as "Public" | "Private",
+};

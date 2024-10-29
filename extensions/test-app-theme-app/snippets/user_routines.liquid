@@ -1,0 +1,65 @@
+<h1 class="text-center text-[20px] mb-[15px]  sm:mt-[20px] sm:mb-[40px]">My Routines</h1>
+
+<div class="flex justify-center mb-[200px] px-[10px] sm:px-[20px]">
+  <div class="grid grid-cols-2  md:grid-cols-3 lg:grid-cols-4 gap-y-[30px] gap-x-[15px] sm:gap-x-[20px] md:gap-x-[30px] xl:gap-x-[40px]   custom-grid-gap ">
+    <!-- Skeleton Loader -->
+
+    <template x-if="isRoutinesLoading">
+      <template x-for="n in columnCount*2" :key="n">
+        <div class="flex flex-col gap-3 w-full md:w-fit animate-pulse">
+          <div class="bg-skeletonCream md:h-[220px] md:w-[220px] rounded-2xl lg:h-[250px] lg:w-[250px]"></div>
+
+          <div class="h-4 bg-skeletonCream rounded-md w-[70%]"></div>
+
+          <div class="flex gap-3 items-center">
+            <div class="w-5 h-5 bg-skeletonCream rounded-full"></div>
+            <div class="h-3 bg-skeletonCream rounded-md w-[50%]"></div>
+          </div>
+
+          <div class="flex gap-3 items-center">
+            <div class="w-5 h-5 bg-skeletonCream rounded-full"></div>
+            <div class="h-3 bg-skeletonCream rounded-md w-[60%]"></div>
+          </div>
+
+          <div class="flex gap-3 items-center">
+            <div class="w-5 h-5 bg-skeletonCream rounded-full"></div>
+            <div class="h-3 bg-skeletonCream rounded-md w-[80%]"></div>
+          </div>
+        </div>
+      </template>
+    </template>
+
+    <!-- Actual Data -->
+
+    <template class="mb-[200px]" x-for="routine in visibleRoutines" :key="routine._id">
+      <a :href="`/pages/user-routine?id=${routine._id}`">
+        <div class="flex flex-col  gap-3 w-full md:w-fit">
+          <img
+            :src="routine.image"
+            class=" md:h-[220px] md:w-[220px]  lg:h-[250px]  lg:w-[250px] rounded-2xl"
+            alt=""
+            width=""
+            height=""
+          >
+          <div class="flex justify-between">
+            <h1 class=" text-[12px] xsm:text-[14px] sm:text-[16px] font-[500]" x-text="routine.name"></h1>
+          </div>
+
+          <h1
+            class="text-[13px] text-primaryGrey"
+            x-text="routine?.productReminders?.length + routine?.activityReminders?.length  + ' ' + 'Reminder Items'"
+          ></h1>
+
+          <div class="w-full bg-[#F3F3F3] rounded-full h-2  dark:bg-[#F3F3F3]">
+            <div
+              class="bg-primaryGreen h-2 rounded-full dark:bg-primaryGreen"
+              :style="{ width: routine.progress + '%' }"
+            ></div>
+          </div>
+
+          <h1 class="text-[12px] font-[500]  text-primaryGrey" x-text="`${routine.progress}% Finished`"></h1>
+        </div>
+      </a>
+    </template>
+  </div>
+</div>

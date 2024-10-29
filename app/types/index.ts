@@ -1,11 +1,3 @@
-export type DefaultRoutine = {
-  routineName: string;
-  description: string;
-  category: string;
-  duration: string;
-  unit: string;
-};
-
 export type AddProductType = {
   selectedProduct: null | any;
   productType: string;

@@ -1,0 +1,41 @@
+<section class=" xsm:max-w-[90%] sm:max-w-[80%] xsm:mx-auto mx-4">
+  <div class="flex flex-col gap-2 my-8 items-center">
+    <h1 class="">Today's Routines</h1>
+    <p class="text-primaryGrey text-[12px]">You have 4 Routines remaining for the day</p>
+  </div>
+
+  <div class="flex cursor-pointer flex-col gap-4">
+    <template x-for="(reminder,reminderIndex) in visibleReminders" :key="reminderIndex">
+      <template x-for="(slot,index) in reminder?.slots" :key="index">
+        <div @click="isMarkCompleteModalOpen = true" class="flex gap-4 my-4 md:my-8">
+          <img height="" width="" src="{{ 'today-reminder.svg' | asset_url }}" class="w-[58px] h-[58px]" alt="">
+
+          <div class="flex flex-col justify-center gap-4">
+            <h1 class="sm:text-[16px] text-[15px] font-[500]" x-text="reminder?.reminderName"></h1>
+
+            <div class="flex xsm:gap-6 gap-3  ">
+              <h2 class="text-primaryGrey text-[13px] " x-text="reminder?.reminderType"></h2>
+              <div class="flex gap-1 xsm:gap-3 items-center  text-[13px]">
+                <img height="" width="" src="{{ 'reminder-clock.svg' | asset_url }}" alt="">
+                <h1 x-text="slot?.time"></h1>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <template x-if="index >= 0">
+          <div style="border: 1px solid #A0A0A0; height: 14px;"></div>
+        </template>
+      </template>
+    </template>
+
+    <div class="flex justify-between sm:mb-6 mb-3  items-center ">
+      <h3
+        x-text="visibleReminders.length > 1 ? 'Less Routines' : 'More Routines'"
+        @click="visibleReminders.length > 1 ? showLessReminders() : showMoreReminders()"
+        class="text-primaryGrey  text-[12px]"
+      ></h3>
+      <img height="" width="" src="{{ 'down-arrow.svg' | asset_url }}" class="" alt="">
+    </div>
+  </div>
+</section>

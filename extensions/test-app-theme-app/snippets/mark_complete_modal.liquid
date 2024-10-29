@@ -1,11 +1,4 @@
 <div>
-  <button
-    @click="isMarkCompleteModalOpen = true"
-    type="button"
-    class="cursor-pointer whitespace-nowrap rounded-md bg-black px-4 py-2 text-center text-sm font-medium tracking-wide text-neutral-100 transition hover:opacity-75 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black active:opacity-100 active:outline-offset-0 dark:bg-white dark:text-black dark:focus-visible:outline-white"
-  >
-    Open Modal
-  </button>
   <div
     x-cloak
     x-show="isMarkCompleteModalOpen"
@@ -26,7 +19,7 @@
       x-transition:enter-end="opacity-100 scale-100"
       class="flex max-w-xl flex-col gap-4 overflow-hidden rounded-xl  bg-white"
     >
-      <div class=" flex flex-col items-center gap-7 rounded-4xl px-[60px] h-[340px] justify-center font-poppins ">
+      <div class=" flex flex-col items-center gap-7 rounded-4xl px-[60px] h-[340px] justify-center  ">
         <div class="flex gap-2">
           <img src="{{ 'reminder-clock.svg' | asset_url }}" width="" height="" alt="">
           <h1 class="text-primaryGreen">18 min left</h1>

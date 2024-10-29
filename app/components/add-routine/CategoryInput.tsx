@@ -1,7 +1,7 @@
 import { FieldValues, FormApi } from "@rvf/remix";
 import { BlockStack, Card, Select, TextField } from "@shopify/polaris";
 import { useMemo } from "react";
-import { DefaultRoutine } from "~/types";
+import { DefaultRoutine } from "~/routes/app.add-routine/validator";
 
 interface Props {
   form: FormApi<DefaultRoutine>;
