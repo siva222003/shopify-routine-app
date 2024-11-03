@@ -25,13 +25,15 @@ document.addEventListener("alpine:init", () => {
     async exploreRoutines() {
       try {
         this.isLoading = true;
-        const response = await fetch("http://localhost:34217/explore", {
+        const response = await fetch("http://localhost:35279/explore", {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
           },
         });
         const data = await response.json();
+
+        console.log({ data });
 
         // Store routines with `loaded` flag for lazy loading
         this.routines = data.routines.map((routine) => ({

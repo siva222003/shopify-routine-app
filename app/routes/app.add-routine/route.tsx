@@ -1,4 +1,12 @@
-import { Layout, Page, FormLayout, Button } from "@shopify/polaris";
+import {
+  Layout,
+  Page,
+  FormLayout,
+  Button,
+  Card,
+  BlockStack,
+  InlineStack,
+} from "@shopify/polaris";
 import { TitleBar } from "@shopify/app-bridge-react";
 import {
   Form,
@@ -8,9 +16,10 @@ import {
   useSubmit,
   useRouteError,
   isRouteErrorResponse,
+  Await,
 } from "@remix-run/react";
-import { ActionFunctionArgs, json } from "@remix-run/node";
-import { useState } from "react";
+import { ActionFunctionArgs, defer, json } from "@remix-run/node";
+import { Suspense, useEffect, useState } from "react";
 import { useForm, validationError } from "@rvf/remix";
 import {
   CategoryInput,
@@ -23,11 +32,13 @@ import {
 import { addRoutine, fetchCategories, uploadImage } from "./api";
 import { addRoutineValidator } from "./validator";
 import { RoutineDefaultValues } from "./types";
+import CategoryInputSkeleton from "~/components/add-routine/loaders/CategoryInputSkeleton";
+import DescriptionInput from "~/components/add-routine/DescriptionInput";
 
 export async function loader() {
-  const categories = await fetchCategories();
+  const categoriesPromise = fetchCategories();
 
-  return categories;
+  return defer({ categories: categoriesPromise });
 }
 
 export async function action({ request }: ActionFunctionArgs) {
@@ -49,11 +60,13 @@ export async function action({ request }: ActionFunctionArgs) {
 
   const res = await addRoutine(apiData);
 
-  return json({ result: res });
+  return res;
 }
 
 export default function AddRoutine() {
   const { categories } = useLoaderData<typeof loader>();
+
+  console.log({ categories });
 
   const navigation = useNavigation();
 
@@ -71,9 +84,14 @@ export default function AddRoutine() {
 
   const actionData = useActionData<typeof action>();
 
-  console.log(actionData);
-
-  console.log(form.formState.fieldErrors);
+  useEffect(() => {
+    if ((actionData as any)?.success !== undefined) {
+      shopify.toast.show((actionData as any)?.toast ?? "Success", {
+        isError: !(actionData as any)?.success,
+        duration: 3000,
+      });
+    }
+  }, [actionData]);
 
   const submit = useSubmit();
 
@@ -85,8 +103,24 @@ export default function AddRoutine() {
           <Layout.Section>
             <FormLayout>
               <RoutineInput form={form} />
-
-              <CategoryInput form={form} catgories={categories} />
+              <Card>
+                <BlockStack gap="200">
+                  <Suspense fallback={<CategoryInputSkeleton />}>
+                    <Await
+                      resolve={categories}
+                      errorElement={<p>Some Error Occured</p>}
+                    >
+                      {(categories) => (
+                        <CategoryInput
+                          form={form}
+                          categories={categories.data.docs}
+                        />
+                      )}
+                    </Await>
+                  </Suspense>
+                  <DescriptionInput form={form} />
+                </BlockStack>
+              </Card>
 
               <DurationInput form={form} />
               <ImageInput file={file} setFile={setFile} />

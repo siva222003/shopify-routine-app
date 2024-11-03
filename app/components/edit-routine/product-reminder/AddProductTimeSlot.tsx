@@ -1,218 +1,197 @@
+import { FieldArray, FormApi, FormScope, useFieldArray } from "@rvf/remix";
 import {
+  Listbox,
   BlockStack,
-  Button,
-  ButtonGroup,
   Card,
-  FormLayout,
   InlineStack,
-  RadioButton,
-  Select,
   Text,
+  ButtonGroup,
+  Button,
+  Select,
+  FormLayout,
   TextField,
+  RadioButton,
+  Box,
 } from "@shopify/polaris";
-import { useMemo, useState } from "react";
-import { PlusIcon, DeleteIcon } from "@shopify/polaris-icons";
-import { AddProductType, ProductReminderInitialSlots } from "~/types";
+import { PlusCircleIcon } from "@shopify/polaris-icons";
+import { TimeSlot } from "~/routes/app.$id.add-product/types";
+import { ProductReminderType } from "~/routes/app.$id.add-product/validator";
 
 interface Props {
-  setCurrentStep: React.Dispatch<React.SetStateAction<number>>;
-  product?: AddProductType;
-  isActivity?: boolean;
-  slots: ProductReminderInitialSlots[];
-  setSlots: React.Dispatch<React.SetStateAction<ProductReminderInitialSlots[]>>;
-  initialSlotsState: ProductReminderInitialSlots;
+  form: FormApi<ProductReminderType>;
 }
-export default function AddMeals({
-  setCurrentStep,
-  product,
-  slots,
-  setSlots,
-  initialSlotsState,
-}: Props) {
-  const [durationQty, setDurationQty] = useState("1");
-  const [durationUnit, setDurationUnit] = useState("days");
 
-  const options = [
-    { label: "Breakfast", value: "Breakfast" },
-    { label: "Brunch", value: "Brunch" },
-    { label: "Lunch", value: "Lunch" },
-    { label: "Dinner", value: "Dinner" },
-  ];
+export default function AddProductTimeSlot({ form }: Props) {
+  const isConsumable = form.value("productType") === "consumable";
+
+  const slots = useFieldArray(
+    form.scope(
+      isConsumable ? "timeSlotsConsumable" : "timeSlotsAppBased",
+    ) as FormScope<TimeSlot[]>,
+    {
+      validationBehavior: {
+        initial: "onChange",
+        whenSubmitted: "onChange",
+      },
+    },
+  );
 
   const handleAddSlot = () => {
-    if (slots) setSlots([...slots, initialSlotsState]);
+    if (isConsumable) {
+      slots.push(form.defaultValue("timeSlotsConsumable")![0]);
+    } else {
+      slots.push(form.defaultValue("timeSlotsAppBased")![0]);
+    }
+  };
+
+  const renderSlotFields = (
+    slot: any,
+    index: number,
+    isConsumable: boolean,
+    key: string,
+  ) => {
+    const mealTypeError = isConsumable ? slot.error(`mealType`) : undefined;
+    const hoursError = slot.error("hours") || undefined;
+    const minutesError = slot.error("minutes") || undefined;
+    const timeUnitError = slot.error("timeUnit") || undefined;
+
+    return (
+      <Box
+        key={key}
+        borderWidth="025"
+        borderColor="border-disabled"
+        borderStartStartRadius={index === 0 ? "200" : "0"}
+        borderStartEndRadius={index === 0 ? "200" : "0"}
+        padding="300"
+      >
+        <BlockStack gap="100">
+          {isConsumable && (
+            <Select
+              label="Date range"
+              options={["Breakfast", "Brunch", "Lunch", "Dinner"]}
+              name={`timeSlotsConsumable[${index}].mealType`}
+              placeholder="Select"
+              onChange={(e) => slot.setValue(`mealType`, e)}
+              value={slot.value(`mealType`)}
+              error={mealTypeError}
+            />
+          )}
+          <FormLayout.Group condensed>
+            <TextField
+              label="Hours"
+              name={`timeSlots${isConsumable ? "Consumable" : "AppBased"}[${index}].hours`}
+              type="text"
+              maxLength={2}
+              value={slot.value("hours")}
+              onChange={(e) => {
+                if (/^\d{0,2}$/.test(e)) {
+                  slot.setValue("hours", e);
+                }
+              }}
+              autoComplete="off"
+              error={hoursError}
+            />
+            <TextField
+              label="Minutes"
+              name={`timeSlots${isConsumable ? "Consumable" : "AppBased"}[${index}].minutes`}
+              type="text"
+              maxLength={2}
+              value={slot.value("minutes")}
+              onChange={(e) => {
+                if (/^\d{0,2}$/.test(e)) {
+                  slot.setValue("minutes", e);
+                }
+              }}
+              autoComplete="off"
+              error={minutesError}
+            />
+
+            <Select
+              label="AM/PM"
+              placeholder="Select"
+              name={`timeSlots${isConsumable ? "Consumable" : "AppBased"}[${index}].timeUnit`}
+              value={slot.value("timeUnit")}
+              onChange={(e) => slot.setValue("timeUnit", e as "")}
+              options={["AM", "PM"]}
+              error={timeUnitError}
+            />
+          </FormLayout.Group>
+          <InlineStack gap="400">
+            <RadioButton
+              label="Before Meal"
+              name={`timeSlots${isConsumable ? "Consumable" : "AppBased"}[${index}].mealTime`}
+              value="beforeMeal"
+              checked={slot.value("mealTime") === "beforeMeal"}
+              onChange={() => slot.setValue(`mealTime`, "beforeMeal")}
+            />
+            <RadioButton
+              label="After Meal"
+              name={`timeSlots${isConsumable ? "Consumable" : "AppBased"}[${index}].mealTime`}
+              value="afterMeal"
+              checked={slot.value("mealTime") === "afterMeal"}
+              onChange={() => slot.setValue(`mealTime`, "afterMeal")}
+            />
+          </InlineStack>
+        </BlockStack>
+        <InlineStack align="end">
+          <Button
+            variant="secondary"
+            tone="critical"
+            disabled={
+              (isConsumable &&
+                form.value("timeSlotsConsumable")?.length === 1) ||
+              (!isConsumable && form.value("timeSlotsAppBased")?.length === 1)
+            }
+            onClick={() => {
+              slots.remove(index);
+              shopify.toast.show(`Slot ${index + 1} removed successfully`);
+            }}
+          >
+            Delete
+          </Button>
+        </InlineStack>
+      </Box>
+    );
   };
 
   return (
-    <FormLayout>
-      <Text as="h1" variant="headingMd">
-        Duration
-      </Text>
-      <Card>
-        <FormLayout.Group condensed>
-          <TextField
-            label="Duration"
-            name="durationQty"
-            type="number"
-            min={1}
-            value={durationQty}
-            onChange={setDurationQty}
-            autoComplete="off"
-          />
-          <Select
-            label="Unit"
-            placeholder="Select"
-            name="durationUnit"
-            options={["days", "weeks", "months", "years"]}
-            value={durationUnit}
-            onChange={setDurationUnit}
-          />
-        </FormLayout.Group>
-      </Card>
-
-      <Text as="h1" variant="headingMd">
+    <Card>
+      <Text as="h1" variant="headingXs">
         Time Slots
       </Text>
-
-      {slots.map((slot, index) => (
-        <InlineStack direction={"row-reverse"} gap="500">
-          <Card key={index}>
-            <BlockStack gap="300">
-              {product?.productType === "consumable" && (
-                <Select
-                  label="Date range"
-                  options={options}
-                  name="mealType"
-                  onChange={(e) => {
-                    setSlots((prev) => {
-                      const newSlots = [...prev];
-                      newSlots[index].mealType = e;
-                      return newSlots;
-                    });
-                  }}
-                  value={slot.mealType}
-                />
-              )}
-
-              <FormLayout.Group condensed>
-                <TextField
-                  label="Hours"
-                  name="hours"
-                  type="number"
-                  min={1}
-                  value={slot.hours}
-                  onChange={(e) => {
-                    setSlots((prev) => {
-                      const newSlots = [...prev];
-                      newSlots[index].hours = e;
-                      return newSlots;
-                    });
-                  }}
-                  autoComplete="off"
-                />
-                <TextField
-                  label="Minutes"
-                  name="minutes"
-                  type="number"
-                  min={1}
-                  value={slot.minutes}
-                  onChange={(e) => {
-                    setSlots((prev) => {
-                      const newSlots = [...prev];
-                      newSlots[index].minutes = e;
-                      return newSlots;
-                    });
-                  }}
-                  autoComplete="off"
-                />
-                <Select
-                  label="AM/PM"
-                  placeholder="Select"
-                  name="unit"
-                  value={slot.timeUnit}
-                  onChange={(e) => {
-                    setSlots((prev) => {
-                      const newSlots = [...prev];
-                      newSlots[index].timeUnit = e;
-                      return newSlots;
-                    });
-                  }}
-                  options={["AM", "PM"]}
-                />
-              </FormLayout.Group>
-
-              {product?.productType === "consumable" && (
-                <InlineStack gap="400">
-                  <RadioButton
-                    label="Before Meal"
-                    checked={slot.mealTime === "beforeMeal"}
-                    name="mealTime"
-                    value="beforeMeal"
-                    onChange={(e) => {
-                      setSlots((prev) => {
-                        const newSlots = [...prev];
-                        newSlots[index].mealTime = "beforeMeal";
-                        return newSlots;
-                      });
-                    }}
-                  />
-                  <RadioButton
-                    label="After Meal"
-                    name="mealTime"
-                    value="afterMeal"
-                    checked={slot.mealTime === "afterMeal"}
-                    onChange={(e) => {
-                      setSlots((prev) => {
-                        const newSlots = [...prev];
-                        newSlots[index].mealTime = "afterMeal";
-                        return newSlots;
-                      });
-                    }}
-                  />
-                </InlineStack>
-              )}
-            </BlockStack>
-          </Card>
-
-          {slots.length > 1 && (
+      <div style={{ marginTop: "10px" }}></div>
+      <Listbox accessibilityLabel="Listbox with Action example">
+        <FieldArray
+          scope={
+            form.scope(
+              isConsumable ? "timeSlotsConsumable" : "timeSlotsAppBased",
+            ) as FormScope<TimeSlot[]>
+          }
+        >
+          {(array) =>
+            array.map((key, item, index) =>
+              renderSlotFields(item, index, isConsumable, key),
+            )
+          }
+        </FieldArray>
+        <Box
+          padding="100"
+          borderWidth="025"
+          borderColor="border-disabled"
+          borderEndStartRadius="200"
+          borderEndEndRadius="200"
+        >
+          <ButtonGroup>
             <Button
-              icon={DeleteIcon}
+              icon={PlusCircleIcon}
+              onClick={handleAddSlot}
               variant="tertiary"
-              tone="critical"
-              onClick={() => {
-                const newSlots = slots.filter((_, i) => i !== index);
-                setSlots(newSlots);
-              }}
-              accessibilityLabel="Delete"
-            />
-          )}
-        </InlineStack>
-      ))}
-      <Button onClick={handleAddSlot} icon={PlusIcon}>
-        Add more slots
-      </Button>
-      <div
-        style={{
-          marginTop: "20px",
-          display: "flex",
-          width: "100%",
-          justifyContent: "right",
-        }}
-      >
-        <ButtonGroup>
-          <Button onClick={() => setCurrentStep(1)} size="large">
-            Back
-          </Button>
-          <Button
-            // onClick={() => console.log(slots)}
-            variant="primary"
-            size="large"
-            submit
-          >
-            Save & Next
-          </Button>
-        </ButtonGroup>
-      </div>
-    </FormLayout>
+            >
+              Add Slot
+            </Button>
+          </ButtonGroup>
+        </Box>
+      </Listbox>
+    </Card>
   );
 }

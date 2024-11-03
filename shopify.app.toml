@@ -3,7 +3,7 @@
 client_id = "9388a5774685dae18ad95269e9767d2a"
 name = "amrutam-routine"
 handle = "amrutam-routine-app"
-application_url = "https://restricted-way-magazines-twenty.trycloudflare.com"
+application_url = "https://0f87-2405-201-a40b-aae-1845-e25e-3ea4-54b8.ngrok-free.app"
 embedded = true
 
 [build]
@@ -17,9 +17,9 @@ scopes = "read_products,write_themes"
 
 [auth]
 redirect_urls = [
-  "https://restricted-way-magazines-twenty.trycloudflare.com/auth/callback",
-  "https://restricted-way-magazines-twenty.trycloudflare.com/auth/shopify/callback",
-  "https://restricted-way-magazines-twenty.trycloudflare.com/api/auth/callback"
+  "https://0f87-2405-201-a40b-aae-1845-e25e-3ea4-54b8.ngrok-free.app/auth/callback",
+  "https://0f87-2405-201-a40b-aae-1845-e25e-3ea4-54b8.ngrok-free.app/auth/shopify/callback",
+  "https://0f87-2405-201-a40b-aae-1845-e25e-3ea4-54b8.ngrok-free.app/api/auth/callback"
 ]
 
 [webhooks]
@@ -30,7 +30,7 @@ api_version = "2024-07"
   uri = "https://alan-spain-portions-str.trycloudflare.com/webhooks"
 
 [app_proxy]
-url = "https://restricted-way-magazines-twenty.trycloudflare.com/app"
+url = "https://0f87-2405-201-a40b-aae-1845-e25e-3ea4-54b8.ngrok-free.app/app"
 subpath = "amrutam-routine"
 prefix = "apps"
 

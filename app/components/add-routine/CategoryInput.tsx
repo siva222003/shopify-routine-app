@@ -1,57 +1,37 @@
 import { FieldValues, FormApi } from "@rvf/remix";
 import { BlockStack, Card, Select, TextField } from "@shopify/polaris";
 import { useMemo } from "react";
+import { CategoryType } from "~/routes/app.add-routine/types";
 import { DefaultRoutine } from "~/routes/app.add-routine/validator";
 
 interface Props {
   form: FormApi<DefaultRoutine>;
-  catgories: any[];
+  categories: CategoryType[];
 }
 
-const CategoryInput = ({ form, catgories }: Props) => {
+const CategoryInput = ({ form, categories }: Props) => {
   const handleCategoryChange = (value: string) => {
     console.log(value);
-    form.setValue("category", value); // The value will now be the _id directly
+    form.setValue("category", value);
   };
 
   const categoryOptions = useMemo(() => {
-    return catgories.map((category) => ({
+    return categories.map((category) => ({
       label: category.name,
       value: category._id,
     }));
-  }, [catgories]);
+  }, [categories]);
 
   return (
-    <Card>
-      <BlockStack gap="200">
-        <Select
-          label="Category"
-          placeholder="Select"
-          name="category"
-          options={categoryOptions} // options now contain both label and value
-          value={form.value("category") || ""} // use _id for value
-          onChange={handleCategoryChange}
-          error={form.error("category") || undefined}
-        />
-
-        <TextField
-          name="description"
-          label="Description"
-          type="text"
-          autoComplete="off"
-          value={form.value("description") || ""}
-          onChange={(e) => form.setValue("description", e)}
-          multiline={6}
-          helpText={
-            <span>
-              We'll use this email address to inform you on future changes to
-              Polaris.
-            </span>
-          }
-          error={form.error("description") || undefined}
-        />
-      </BlockStack>
-    </Card>
+    <Select
+      label="Category"
+      placeholder="Select"
+      name="category"
+      options={categoryOptions}
+      value={form.value("category") || ""}
+      onChange={handleCategoryChange}
+      error={form.error("category") || undefined}
+    />
   );
 };
 

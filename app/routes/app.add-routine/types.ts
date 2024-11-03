@@ -1,12 +1,17 @@
-export type LoaderData = {
+export type CategoryType = {
+  _id: string;
+  name: string;
+  status: boolean;
+  aiImages: string[];
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type CategorryLoaderData = {
   success: boolean;
-  categories: {
-    name: string;
-    status: boolean;
-    aiImages: string[];
-    createdAt: string;
-    updatedAt: string;
-  }[];
+  data: {
+    docs: CategoryType[];
+  };
 };
 
 export const RoutineDefaultValues = {

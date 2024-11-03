@@ -11,7 +11,6 @@ import {
   Select,
 } from "@shopify/polaris";
 import { useCallback } from "react";
-import { getError } from "~/utils/validated-from";
 import { AddActivityType } from "~/types";
 
 interface Props {

@@ -6,7 +6,7 @@ import AddTimeSlot from "~/components/edit-routine/activity-reminder/AddActivity
 
 import prisma from "../../db.server";
 import { ValidatedForm } from "@rvf/remix";
-import { addProductValidator } from "~/utils/validators";
+import { addProductValidator } from "../app.$id.add-product/validator";
 import { ActivityReminderInitialSlots, AddActivityType } from "~/types";
 import AddActivity from "~/components/edit-routine/activity-reminder/AddActivity";
 import { number } from "zod";

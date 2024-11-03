@@ -1,33 +1,50 @@
-import { Form, useNavigate, useSubmit } from "@remix-run/react";
+import { useNavigation, useSubmit } from "@remix-run/react";
 import { Button, Popover, ActionList } from "@shopify/polaris";
-import { ImportIcon, ExportIcon, DeleteIcon } from "@shopify/polaris-icons";
+import { ImportIcon, DeleteIcon } from "@shopify/polaris-icons";
 import { useState, useCallback } from "react";
-import { api } from "~/utils/axios";
+import DeleteConfirmModal from "./DeleteConfirmModal";
 
 interface RowActionsProps {
   id: string;
+  showDeleteModal: boolean;
+  setShowDeleteModal: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export default function ActionListWithDestructiveItemExample({
   id,
+  showDeleteModal,
+  setShowDeleteModal,
 }: RowActionsProps) {
   const submit = useSubmit();
-
   const [active, setActive] = useState(false);
 
   const handleSubmit = (intent: string) => {
-    console.log("Form submitted");
-
     const formData = new FormData();
     formData.append("intent", intent);
     formData.append("id", id);
 
-    submit(formData, { method: "delete" });
+    if (intent === "clone") {
+      submit(formData, { method: "post" });
+    } else {
+      submit(formData, { method: "delete" });
+    }
+
+    setActive(false);
   };
 
-  const navigate = useNavigate();
-
   const toggleActive = useCallback(() => setActive((active) => !active), []);
+
+  const navigation = useNavigation();
+
+  const isSubmitting = navigation.state === "submitting";
+
+  const openDeleteModal = () => {
+    setShowDeleteModal(true);
+  };
+
+  const handleDelete = () => {
+    handleSubmit("delete");
+  };
 
   const activator = (
     <Button onClick={toggleActive} disclosure>
@@ -37,44 +54,25 @@ export default function ActionListWithDestructiveItemExample({
 
   return (
     <form>
-      <div style={{}} onClick={(e) => e.stopPropagation()}>
-        <Popover
-          active={active}
-          activator={activator}
-          // autofocusTarget="first-node"
-          onClose={toggleActive}
-        >
+      <div onClick={(e) => e.stopPropagation()}>
+        <Popover active={active} activator={activator} onClose={toggleActive}>
           <ActionList
             actionRole="menuitem"
             sections={[
               {
                 items: [
                   {
-                    // active: true,
                     content: "Clone",
                     icon: ImportIcon,
                     onAction: () => {
-                      console.log("Clone action");
                       handleSubmit("clone");
-                      setActive(false);
-                    },
-                  },
-                  {
-                    content: "Edit",
-                    icon: ExportIcon,
-                    onAction: () => {
-                      console.log("Edit action");
-                      navigate(`/app/routine/${id}`);
                     },
                   },
                   {
                     destructive: true,
                     content: "Delete",
                     icon: DeleteIcon,
-                    onAction: async () => {
-                      console.log("Delete action");
-                      handleSubmit("delete");
-                    },
+                    onAction: openDeleteModal,
                   },
                 ],
               },
@@ -82,6 +80,14 @@ export default function ActionListWithDestructiveItemExample({
           />
         </Popover>
       </div>
+
+      {showDeleteModal && (
+        <DeleteConfirmModal
+          open={showDeleteModal}
+          onClose={() => setShowDeleteModal(false)}
+          onConfirm={handleDelete}
+        />
+      )}
     </form>
   );
 }

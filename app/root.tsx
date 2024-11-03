@@ -7,15 +7,19 @@ import {
   Scripts,
   ScrollRestoration,
   useRouteError,
+  unstable_useViewTransitionState as useViewTransitionState,
 } from "@remix-run/react";
 
 import { ReactNode } from "react";
+import GlobalSpinner from "./components/GlobalSpinner";
 
 export default function App() {
+  const isTransitioning = useViewTransitionState("/app/*");
+
+  console.log({ isTransitioning });
+
   return (
-    <Document>
-      <Outlet />
-    </Document>
+    <Document>{isTransitioning ? <GlobalSpinner /> : <Outlet />}</Document>
   );
 }
 

@@ -72,7 +72,7 @@ document.addEventListener("alpine:init", () => {
         this.isLoading = true;
 
         const response = await fetch(
-          `http://localhost:34217/routine?id=${id}`,
+          `http://localhost:35279/routine?id=${id}`,
           { method: "GET", headers: { "Content-Type": "application/json" } },
         );
 
