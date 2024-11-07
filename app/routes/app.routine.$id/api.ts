@@ -10,8 +10,6 @@ export const fetchRoutine = async (id: string) => {
 
 export const updateRoutine = async (id: string, data: DefaultRoutine) => {
   try {
-    console.log({ id, data });
-
     await apiFetch(`/admin/reminderlist/${id}`, {
       method: "PUT",
       body: JSON.stringify(data),
@@ -33,6 +31,56 @@ export const deleteRoutine = async (id: string) => {
       success: false,
       toast:
         error instanceof Error ? error.message : "Failed to delete routine",
+    });
+  }
+};
+
+export const deleteProductReminder = async (id: string) => {
+  try {
+    await apiFetch(`/admin/reminder/${id}`, {
+      method: "DELETE",
+    });
+    return json({ success: true, toast: "Reminder deleted successfully" });
+  } catch (error) {
+    return json({
+      success: false,
+      toast:
+        error instanceof Error ? error.message : "Failed to delete reminder",
+    });
+  }
+};
+
+export const deleteActivityReminder = async (id: string) => {
+  try {
+    await apiFetch(`/admin/reminder-activity/${id}`, {
+      method: "DELETE",
+    });
+    return json({ success: true, toast: "Reminder deleted successfully" });
+  } catch (error) {
+    return json({
+      success: false,
+      toast:
+        error instanceof Error ? error.message : "Failed to delete reminder",
+    });
+  }
+};
+
+export const deleteWeeklyBenfits = async (id: string) => {
+  try {
+    await apiFetch(`/admin/benfit/${id}`, {
+      method: "DELETE",
+    });
+    return json({
+      success: true,
+      toast: "Weekly Benfits deleted successfully",
+    });
+  } catch (error) {
+    return json({
+      success: false,
+      toast:
+        error instanceof Error
+          ? error.message
+          : "Failed to delete weekly benfits",
     });
   }
 };

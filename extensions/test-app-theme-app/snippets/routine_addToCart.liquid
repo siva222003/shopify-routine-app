@@ -60,7 +60,7 @@
                 </button>
                 <p x-text="product.quantity" class="text-[13px] font-[500]"></p>
                 <button
-                  @click="product.quantity += 1;"
+                  @click="product.quantity += 1"
                   class="px-4 py-2 rounded-lg text-[13px]"
                 >
                   +
@@ -68,11 +68,28 @@
               </div>
 
               <button
+                x-show="!isCartLoading"
                 @click="addToCart([product])"
                 class="min-w-[20rem] py-5 rounded-lg bg-[#3A643B] max-sm:hidden text-white text-[12px]"
               >
                 Add To Cart
               </button>
+
+              <div
+                x-show="isCartLoading"
+                disabled
+                class="min-w-[20rem] opacity-50  flex justify-center items-center  py-5 rounded-lg bg-[#3A643B] max-sm:hidden text-white text-[12px]"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                  aria-hidden="true"
+                  class="size-7 fill-neutral-600 motion-safe:animate-spin dark:fill-neutral-300"
+                >
+                  <path d="M12,1A11,11,0,1,0,23,12,11,11,0,0,0,12,1Zm0,19a8,8,0,1,1,8-8A8,8,0,0,1,12,20Z" opacity=".25" />
+                  <path d="M10.14,1.16a11,11,0,0,0-9,8.92A1.59,1.59,0,0,0,2.46,12,1.52,1.52,0,0,0,4.11,10.7a8,8,0,0,1,6.66-6.61A1.42,1.42,0,0,0,12,2.69h0A1.57,1.57,0,0,0,10.14,1.16Z" />
+                </svg>
+              </div>
             </div>
           </div>
         </div>
@@ -81,5 +98,43 @@
         <div class="sm:border-t border-[#D0D0D0] sm:w-full sm:my-[30px]"></div>
       </div>
     </template>
+  </div>
+
+  <!-- Buttons -->
+  <div class="mt-[80px] mb-[60px] text-center flex flex-col gap-[18px]">
+    <button
+      @click="addToCart([])"
+      x-show="selectedProducts.length > 0 && !isCartLoading"
+      x-cloak
+      class="text-primaryGreen font-[500] "
+    >
+      Add to Cart
+    </button>
+
+    <button
+      disabled="{true}"
+      @click="addToCart([])"
+      x-show="isCartLoading"
+      x-cloak
+      class="text-primaryGreen font-[500] "
+    >
+      Adding...
+    </button>
+
+    <div class="flex gap-8 justify-center">
+      <button
+        x-show="tab > 1"
+        @click="changeTab(tab-1)"
+        class="px-10 py-3 rounded-lg border border-[#3A643B] text-[#3A643B] text-[16px]"
+      >
+        Back
+      </button>
+
+      <button
+        @click="changeTab(tab + 1) "
+        x-text="'Next'"
+        class="px-14 py-3 rounded-lg bg-[#3A643B] text-white text-[16px] shadow-lg"
+      ></button>
+    </div>
   </div>
 </div>

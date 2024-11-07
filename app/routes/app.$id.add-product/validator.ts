@@ -3,7 +3,7 @@ import { z } from "zod";
 import { zfd } from "zod-form-data";
 
 const timeSlotsConsumable = z.object({
-  mealType: z.enum(["Breakfast", "Brunch", "Lunch", "Dinner", ""], {
+  meal: z.enum(["Breakfast", "Brunch", "Lunch", "Dinner", ""], {
     message: "Select meal type",
   }),
   hours: z
@@ -17,7 +17,7 @@ const timeSlotsConsumable = z.object({
       message: "Minutes are required and must be in 2-digit format",
     }),
   timeUnit: z.enum(["AM", "PM"], { message: "Select AM or PM" }),
-  mealTime: z.enum(["beforeMeal", "afterMeal"], {
+  timing: z.enum(["beforeMeal", "afterMeal"], {
     message: "Select meal time",
   }),
 });
@@ -34,17 +34,25 @@ const timeSlotsAppBased = z.object({
       message: "Minutes are required and must be in 2-digit format",
     }),
   timeUnit: z.enum(["AM", "PM"], { message: "Select AM or PM" }),
-  mealTime: z.enum(["beforeMeal", "afterMeal"], {
+  timing: z.enum(["beforeMeal", "afterMeal"], {
     message: "Select meal time",
   }),
 });
 
 const addProductSchema = z
   .object({
-    // name: z.string({ message: "Name is required" }),
-    // image: z.string({ message: "Image is required" }),
-    // productId: z.string({ message: "Product ID is required" }),
-    // variationId: z.string({ message: "Variation ID is required" }),
+    name: z.string({ message: "Product Name is missing" }).min(1, {
+      message: "Product Name is missing",
+    }),
+    image: z.string({ message: "Product Image is required" }).min(1, {
+      message: "Product Image is required",
+    }),
+    productId: z.string({ message: "Product ID is missing" }).min(1, {
+      message: "Product ID is missing",
+    }),
+    variationId: z.string({ message: "Variant ID is missing" }).min(1, {
+      message: "Variant ID is missing",
+    }),
     productType: z.string({ message: "Product Type is required" }),
     dosageQty: z.string().min(1, { message: "Dosage Quantity is required" }),
     dosageUnit: z.string().min(1, { message: "Dosage Unit is required" }),
@@ -90,35 +98,3 @@ const addProductSchema = z
 export const addProductValidator = withZod(addProductSchema);
 
 export type ProductReminderType = z.infer<typeof addProductSchema>;
-
-export const DefaultProductReminderValues: ProductReminderType = {
-  //   name: "",
-  //   image: "",
-  //   productId: "",
-  //   variationId: "",
-  productType: "",
-  dosageQty: "",
-  dosageUnit: "",
-  duration: {
-    number: "",
-    unit: "",
-  },
-  timeSlotsConsumable: [
-    {
-      mealType: "",
-      hours: "",
-      minutes: "",
-      timeUnit: "AM",
-      mealTime: "beforeMeal",
-    },
-  ],
-  timeSlotsAppBased: [
-    {
-      hours: "",
-      minutes: "",
-      timeUnit: "AM",
-      mealTime: "beforeMeal",
-    },
-  ],
-  frequency: [],
-};

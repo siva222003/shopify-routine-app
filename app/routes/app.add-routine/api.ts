@@ -17,7 +17,7 @@ export const uploadImage = async (file: FormData) => {
 };
 
 //Add routine
-export const addRoutine = async (values: DefaultRoutine) => {
+export const addRoutine = async (values: any) => {
   try {
     await api.post("/admin/reminderlist", values);
 

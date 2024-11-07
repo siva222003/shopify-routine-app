@@ -1,11 +1,22 @@
 document.addEventListener("alpine:init", () => {
   Alpine.data("userRoutine", () => ({
     tab: 1, //Tab to display
+    isUserRoutine: true, //Flag to check if user routine
 
     routine: {}, //Routine data
 
     // Loading
     isLoading: false,
+    isFetchingSlots: false,
+    isUpdatingSlot: false,
+
+    //User routine start date
+    currentSlotDate: new Date().toLocaleDateString("en-CA"),
+
+    //Reminder Id's
+    reminderIds: [],
+    reminderSlots: [],
+    currentSlot: null,
 
     // Products
     products: [], // All products fetched from API
@@ -14,23 +25,7 @@ document.addEventListener("alpine:init", () => {
     expanded: false, // Expanded status
 
     //Weekly Benefits
-    weeklyBenefits: [
-      // Weekly benefits data
-      {
-        duration: "Week 0 - 1",
-        benefits: [
-          `Improved Hydration: Your body will be better hydrated, which can lead to increased energy levels.`,
-          `Healthy Skin: Proper hydration can promote healthier, more radiant skin by helping to flush out toxins.`,
-        ],
-      },
-      {
-        duration: "Week 1 - 2",
-        benefits: [
-          `Improved Hydration: Your body will be better hydrated, which can lead to increased energy levels.`,
-          `Healthy Skin: Proper hydration can promote healthier, more radiant skin by helping to flush out toxins.`,
-        ],
-      },
-    ],
+    weeklyBenefits: [],
 
     // Reminder Modals
     selectedReminder: null, // Store selected reminder data
@@ -54,7 +49,7 @@ document.addEventListener("alpine:init", () => {
 
         this.isLoading = true;
 
-        const response = await fetch(`http://localhost:34217/hey?id=${id}`, {
+        const response = await fetch(`http://localhost:36679/hey?id=${id}`, {
           method: "GET",
           headers: { "Content-Type": "application/json" },
         });
@@ -71,6 +66,22 @@ document.addEventListener("alpine:init", () => {
           }),
         );
 
+        this.weeklyBenefits = data.routine.benefits.weeklyBenefits;
+
+        const productReminderIds = data.routine.productReminders.map(
+          (reminder) => reminder?._id,
+        );
+        const activityReminderIds = data.routine.activityReminders.map(
+          (reminder) => reminder?._id,
+        );
+
+        // Concatenate both sets of reminder IDs
+        this.reminderIds = productReminderIds.concat(activityReminderIds);
+
+        // Fetch today's reminders
+
+        await this.getSlots();
+
         this.isLoading = false;
 
         console.log("Routine data:", data);
@@ -79,6 +90,77 @@ document.addEventListener("alpine:init", () => {
       } finally {
         this.isLoading = false;
       }
+    },
+
+    async getSlots() {
+      try {
+        const body = {
+          date: this.currentSlotDate,
+          Ids: this.reminderIds,
+        };
+
+        this.isFetchingSlots = true;
+
+        const response = await fetch(`http://localhost:36679/slots`, {
+          method: "POST",
+          body: JSON.stringify(body),
+          headers: { "Content-Type": "application/json" },
+        });
+
+        const data = await response.json();
+        this.reminderSlots = data.reminders;
+
+        this.isFetchingSlots = false;
+
+        console.log("Reminder Slots:", data.reminders);
+      } catch (error) {
+        console.error("Error while fetching reminder slots:", error);
+      } finally {
+        this.isFetchingSlots = false;
+      }
+    },
+
+    async markSlot(slot, reminderId) {
+      try {
+        this.currentSlot = slot;
+        this.isUpdatingSlot = true;
+        const body = {
+          reminderId,
+          slotId: slot._id,
+          status: !slot.marked,
+        };
+
+        const response = await fetch(`http://localhost:36679/mark-slot`, {
+          method: "POST",
+          body: JSON.stringify(body),
+          headers: { "Content-Type": "application/json" },
+        });
+
+        const data = await response.json();
+
+        const { response: updatedSlot } = data;
+
+        console.log("Reminder updated:", data);
+
+        // Update slot status
+
+        this.reminderSlots = this.reminderSlots.map((reminder) => ({
+          ...reminder,
+          slots: reminder.slots.map((s) =>
+            s._id === updatedSlot._id
+              ? { ...s, marked: updatedSlot.marked }
+              : s,
+          ),
+        }));
+
+        this.isUpdatingSlot = false;
+      } catch (error) {
+        console.error("Error while marking reminder:", error);
+
+        this.isUpdatingSlot = false;
+      }
+
+      console.log({ slot });
     },
 
     // Open product reminder modal and set selected reminder

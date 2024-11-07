@@ -12,15 +12,21 @@ import {
 } from "@shopify/polaris";
 import { PlusIcon } from "@shopify/polaris-icons";
 import { useNavigate, useParams } from "@remix-run/react";
-import { TitleBar } from "@shopify/app-bridge-react";
 
 export default function ChooseReminder() {
   const navigate = useNavigate();
   const { id } = useParams();
 
   return (
-    <Page>
-      <TitleBar title="Select Reminder" />
+    <Page
+      title="Select Reminder"
+      backAction={{
+        content: "Back",
+        onAction: () => {
+          navigate(`/app/routine/${id}`);
+        },
+      }}
+    >
       <Box>
         <InlineStack align="center">
           <Card roundedAbove="sm">

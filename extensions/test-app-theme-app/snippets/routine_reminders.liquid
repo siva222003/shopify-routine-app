@@ -1,4 +1,4 @@
-<div x-show="tab===1" class="xl:max-w-[90%] 2xl:max-w-[70%] mx-auto max-md:mx-3" x-cloak x-transition>
+<div x-show="tab===1 && !isLoading" class="xl:max-w-[90%] 2xl:max-w-[70%] mx-auto max-md:mx-3" x-cloak x-transition>
   <h1 class="font-[500] my-[25px]">
     List of Reminders (<span x-text="routine?.productReminders?.length + routine?.activityReminders?.length"></span>)
   </h1>
@@ -22,7 +22,10 @@
         >
 
         <div class=" flex-col  flex gap-[15px] w-fit">
-          <h1 class="font-[500] text-[14px] xsm:text-[15px]" x-text="reminder.name"></h1>
+          <h1
+            class="font-[500] text-[14px] xsm:text-[15px]"
+            x-text="reminder.name.length > 25 ? reminder.name.slice(0, 25) + '...' : reminder.name"
+          ></h1>
 
           <div class="p-3 rounded-full bg-primaryCream w-fit">
             <p
@@ -56,7 +59,7 @@
 
             <!-- Display more if the frequency is more than 3 and less than 7 -->
             <template x-if="reminder?.frequency?.length > 3 && reminder?.frequency?.length < 7">
-              <p class="text-[12px]" x-text="`+ more`"></p>
+              <p class="text-[12px]" x-text="`...`"></p>
             </template>
 
             <!-- For all 7 days -->
@@ -155,7 +158,7 @@
 
             <!-- Display more if the frequency is more than 3 and less than 7 -->
             <template x-if="reminder?.frequency?.length > 3 && reminder?.frequency?.length < 7">
-              <p class="text-[12px]" x-text="`+ more`"></p>
+              <p class="text-[12px]" x-text="`...`"></p>
             </template>
 
             <!-- For all 7 days -->
@@ -191,5 +194,18 @@
         >
       </div>
     </template>
+  </div>
+
+  <!-- Buttons -->
+  <div
+    x-show="!isUserRoutine"
+    class="mt-[80px] mb-[60px] text-center flex justify-center gap-[18px]"
+  >
+    <button
+      @click="changeTab(tab + 1)"
+      class="px-14 py-3 rounded-lg bg-[#3A643B] text-white text-[16px] shadow-lg"
+    >
+      Next
+    </button>
   </div>
 </div>

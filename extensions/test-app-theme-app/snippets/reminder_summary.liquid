@@ -3,108 +3,333 @@
     padding-top: 4px;
     padding-bottom: 8px;
   }
+
+  .custom-date {
+    background: none;
+  }
+  .no-routines {
+    background-image: url({{'no-routines-bg.svg'|asset_url}});
+    background-size: cover;
+    background-position: center;
+  }
 </style>
 
-<div x-show="tab===1" class="xl:max-w-[90%] 2xl:max-w-[70%] mx-auto max-md:mx-3 mb-[100px]" x-cloak x-transition>
+<div
+  x-show="tab===1 && !isLoading"
+  class="xl:max-w-[90%] 2xl:max-w-[70%] mt-[40px] mx-auto max-md:mx-3 mb-[100px]"
+  x-cloak
+  x-transition
+>
   <h1 class="font-[500] my-[25px]">Reminder Progress Summary</h1>
 
-  <fieldset class="border-2 px-4 max-w-[350px]  flex items-center rounded-3xl mb-4">
-    <legend class="text-primaryGrey text-[11px] custom-fieldset-legend">Select Date</legend>
-    <input
-      type="text"
-      name="date"
-      class="custom-fieldset custom-input-border focus:outline-none bg-transparent w-full focus:shadow-none"
-      id="date"
-    >
-  </fieldset>
+  <div class="antialiased sans-serif ">
+    <div x-data="app()" x-init="[initDate(), getNoOfDays()]" x-cloak>
+      <div class="container">
+        <fieldset class="border-2 px-4 py-2 flex items-center rounded-3xl w-[330px] xsm:w-[350px] ">
+          <legend class="text-primaryGrey text-[11px] custom-fieldset-legend">Select Date</legend>
+
+          <div class="mb-5 h-full w-full">
+            <div class="relative ">
+              <input type="hidden" name="date" x-ref="date" :value="userRoutineStartDate">
+              <input
+                type="text"
+                x-on:click="showDatepicker = !showDatepicker"
+                x-model="userRoutineStartDate"
+                x-on:keydown.escape="showDatepicker = false"
+                class="w-full pl-4 pr-10 py-3 leading-none focus:shadow-none rounded-lg custom-input-border custom-date focus:outline-none text-gray-600 font-medium "
+                placeholder="Select date"
+                readonly
+              >
+
+              <div class="absolute top-0 right-0 px-3 py-2">
+                <svg class="h-10 w-10 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                </svg>
+              </div>
+
+              <!--
+                <div x-text="no_of_days.length"></div>
+                <div x-text="32 - new Date(year, month, 32).getDate()"></div>
+                <div x-text="new Date(year, month).getDay()"></div>
+              -->
+
+              <div
+                class="bg-white mt-12 rounded-lg shadow p-4 absolute top-4 z-10 left-0"
+                {% comment %} style="width: 17rem" {% endcomment %}
+                x-show.transition="showDatepicker"
+                @click.away="showDatepicker = false"
+              >
+                <div class="flex justify-between items-center mb-2 ">
+                  <div>
+                    <span x-text="MONTH_NAMES[month]" class="text-[18px] font-bold text-gray-800"></span>
+                    <span x-text="year" class="ml-1 text-lg text-gray-600 text-[16px] font-normal"></span>
+                  </div>
+                  <div>
+                    <button
+                      type="button"
+                      class="focus:outline-none focus:shadow-outline transition ease-in-out duration-100 inline-flex cursor-pointer hover:bg-gray-100 p-1 rounded-full"
+                      @click="
+                        if (month == 0) {
+                          year--;
+                          month = 12;
+                        } month--; getNoOfDays()
+                      "
+                    >
+                      <svg
+                        class="h-6 w-6 text-gray-400 inline-flex"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                      </svg>
+                    </button>
+                    <button
+                      type="button"
+                      class="focus:outline-none focus:shadow-outline transition ease-in-out duration-100 inline-flex cursor-pointer hover:bg-gray-100 p-1 rounded-full"
+                      @click="
+                        if (month == 11) {
+                          month = 0;
+                          year++;
+                        } else {
+                          month++;
+                        } getNoOfDays()
+                      "
+                    >
+                      <svg
+                        class="h-6 w-6 text-gray-400 inline-flex"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                      </svg>
+                    </button>
+                  </div>
+                </div>
+
+                <div class="flex flex-wrap mb-3 -mx-1">
+                  <template x-for="(day, index) in DAYS" :key="index">
+                    <div style="width: 14.26%" class="px-0.5">
+                      <div x-text="day" class="text-gray-800 text-[14px] font-medium text-center"></div>
+                    </div>
+                  </template>
+                </div>
+
+                <div class="flex flex-wrap -mx-1">
+                  <template x-for="blankday in blankdays">
+                    <div style="width: 14.28%" class="text-center border p-1 border-transparent text-sm"></div>
+                  </template>
+                  <template x-for="(date, dateIndex) in no_of_days" :key="dateIndex">
+                    <div style="width: 14.28%" class="px-1 mb-1">
+                      <div
+                        @click="getDateValue(date)"
+                        x-text="date"
+                        class="cursor-pointer text-[13px] w-[40px] h-[40px] flex justify-center items-center rounded-full leading-loose transition ease-in-out duration-100"
+                        :class="
+                          {
+                            'bg-primaryCream': isToday(date) == true,
+                            'text-gray-600 hover:bg-indigo-200': isToday(date) == false && isSelectedDate(date) == false,
+                            'bg-primaryGreen text-white hover:bg-opacity-75': isSelectedDate(date) == true
+                          }
+                        "
+                      ></div>
+                    </div>
+                  </template>
+                </div>
+              </div>
+            </div>
+          </div>
+        </fieldset>
+      </div>
+    </div>
+
+    <script>
+      const MONTH_NAMES = [
+        'January',
+        'February',
+        'March',
+        'April',
+        'May',
+        'June',
+        'July',
+        'August',
+        'September',
+        'October',
+        'November',
+        'December',
+      ];
+      const MONTH_SHORT_NAMES = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+      const DAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+
+      function app() {
+        return {
+          showDatepicker: false,
+          selectedDate: new Date().toLocaleDateString('en-CA'),
+          dateFormat: 'DD-MM-YYYY',
+          month: '',
+          year: '',
+          no_of_days: [],
+          blankdays: [],
+          initDate() {
+            let today;
+            if (this.selectedDate) {
+              today = new Date(Date.parse(this.selectedDate));
+            } else {
+              today = new Date();
+            }
+            this.month = today.getMonth();
+            this.year = today.getFullYear();
+            this.userRoutineStartDate = this.formatDateForDisplay(today);
+          },
+          formatDateForDisplay(date) {
+            let formattedDay = DAYS[date.getDay()];
+            let formattedDate = ('0' + date.getDate()).slice(-2); // appends 0 (zero) in single digit date
+            let formattedMonth = MONTH_NAMES[date.getMonth()];
+            let formattedMonthShortName = MONTH_SHORT_NAMES[date.getMonth()];
+            let formattedMonthInNumber = ('0' + (parseInt(date.getMonth()) + 1)).slice(-2);
+            let formattedYear = date.getFullYear();
+            if (this.dateFormat === 'DD-MM-YYYY') {
+              return `${formattedDate}-${formattedMonthInNumber}-${formattedYear}`; // 02-04-2021
+            }
+            if (this.dateFormat === 'YYYY-MM-DD') {
+              return `${formattedYear}-${formattedMonthInNumber}-${formattedDate}`; // 2021-04-02
+            }
+            if (this.dateFormat === 'D d M, Y') {
+              return `${formattedDay} ${formattedDate} ${formattedMonthShortName} ${formattedYear}`; // Tue 02 Mar 2021
+            }
+            return `${formattedDay} ${formattedDate} ${formattedMonth} ${formattedYear}`;
+          },
+          isSelectedDate(date) {
+            const d = new Date(this.year, this.month, date);
+            return this.userRoutineStartDate === this.formatDateForDisplay(d) ? true : false;
+          },
+          isToday(date) {
+            const today = new Date();
+            const d = new Date(this.year, this.month, date);
+            return today.toDateString() === d.toDateString() ? true : false;
+          },
+          getDateValue(date) {
+            let selectedDate = new Date(this.year, this.month, date);
+            this.userRoutineStartDate = this.formatDateForDisplay(selectedDate);
+            this.currentSlotDate = selectedDate.toLocaleDateString('en-CA');
+            console.log(selectedDate.toLocaleDateString('en-CA'));
+            this.getSlots();
+            // this.$refs.date.value = selectedDate.getFullYear() + "-" + ('0' + formattedMonthInNumber).slice(-2) + "-" + ('0' + selectedDate.getDate()).slice(-2);
+            this.isSelectedDate(date);
+            this.showDatepicker = false;
+          },
+          getNoOfDays() {
+            let daysInMonth = new Date(this.year, this.month + 1, 0).getDate();
+            // find where to start calendar day of week
+            let dayOfWeek = new Date(this.year, this.month).getDay();
+            let blankdaysArray = [];
+            for (var i = 1; i <= dayOfWeek; i++) {
+              blankdaysArray.push(i);
+            }
+            let daysArray = [];
+            for (var i = 1; i <= daysInMonth; i++) {
+              daysArray.push(i);
+            }
+            this.blankdays = blankdaysArray;
+            this.no_of_days = daysArray;
+          },
+        };
+      }
+    </script>
+  </div>
 
   <h1 class="font-[500] my-[25px] text-[14px]">Reminder Item Summary (19th April,2025)</h1>
 
-  <div>
-    <h1 class="font-[500] my-[25px] text-[15px]">Amrutam Nari Sondarya Malt</h1>
+  <template x-if="!isFetchingSlots && reminderSlots.some(obj => obj.slots && obj.slots.length > 0)">
+    <template x-for="reminderSlot in reminderSlots" :key="reminderSlot?._id">
+      <div>
+        <h1 class="font-[500] my-[25px] text-[15px]" x-text="reminderSlot?.reminderName"></h1>
 
-    <div class="flex flex-col gap-[30px]">
-      <div class="flex gap-4 items-center">
-        <div class="flex gap-2 items-center">
-          <img
-            width=""
-            height=""
-            src="{{ 'slot-clock.svg' | asset_url }}"
-            alt=""
-          >
-          <h3 class="text-primaryGrey text-[13px]">10:00 AM</h3>
-        </div>
+        <div class="flex flex-col gap-[30px]">
+          <template x-for="slot in reminderSlot.slots" :key="slot?._id">
+            <div class="flex gap-4 items-center">
+              <div class="flex gap-2 items-center">
+                <img
+                  width=""
+                  height=""
+                  src="{{ 'slot-clock.svg' | asset_url }}"
+                  alt=""
+                >
+                <h3 class="text-primaryGrey text-[13px]" x-text="slot?.time"></h3>
+              </div>
 
-        <div class="p-2 border-primaryGrey rounded-full border">
-          <h3 class="text-[13px] text-primaryGrey">Before Meal</h3>
-        </div>
+              <div
+                x-show="reminderSlot?.reminderType === 'Product'"
+                class="p-2 border-primaryGrey max-ssmdd:hidden rounded-full border"
+              >
+                <h3
+                  class="text-[13px] text-primaryGrey"
+                  x-text="slot?.timing === 'beforeMeal' ? 'Before Meal' : 'After Meal'"
+                ></h3>
+              </div>
 
-        <div style="border: 1px solid #e5e7eb" class="min-w-[250px] mx-4"></div>
+              <div
+                style="border: 1px solid #e5e7eb"
+                class="min-w-[100px] sm:min-w-[200px]  md:min-w-[250px] mx-4"
+              ></div>
 
-        <div class="flex gap-3 items-center">
-          <label class="relative inline-flex items-center cursor-pointer">
-            <input
-              {% comment %} @change="selectProduct(product)" {% endcomment %}
-              id="default-checkbox"
-              type="checkbox"
-              class="cartCheckBox rounded-full appearance-none bg-gray-100 border border-gray-300 checked:bg-primaryGreen peer focus:outline-none"
-            >
-            <svg
-              class="absolute w-6 h-6 ml-[5px] text-white opacity-0 peer-checked:opacity-100 peer-checked:scale-100 transition-opacity  duration-200"
-              width="12"
-              height="8"
-              viewBox="0 0 12 8"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path d="M10.6673 0.5L4.25065 6.91667L1.33398 4" stroke="white" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-          </label>
+              <div class="flex gap-3 items-center">
+                <label class="relative inline-flex items-center cursor-pointer">
+                  <input
+                    @change="markSlot(slot,reminderSlot.reminderId)"
+                    :checked="slot?.marked"
+                    id="default-checkbox"
+                    type="checkbox"
+                    class="cartCheckBox rounded-full appearance-none bg-gray-100 border border-gray-300 checked:bg-primaryGreen peer focus:outline-none"
+                  >
+                  <svg
+                    class="absolute w-6 h-6 ml-[5px] text-white opacity-0 peer-checked:opacity-100 peer-checked:scale-100 transition-opacity  duration-200"
+                    width="12"
+                    height="8"
+                    viewBox="0 0 12 8"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path d="M10.6673 0.5L4.25065 6.91667L1.33398 4" stroke="white" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </label>
 
-          <h3 class="text-primaryGreen text-[13px]">Mark as Done</h3>
-        </div>
-      </div>
+                <h3
+                  x-show="!isUpdatingSlot || currentSlot?._id !== slot?._id"
+                  class="text-primaryGreen text-[13px]"
+                  x-text="slot?.marked ? 'Unmark' : 'Mark as Done'"
+                ></h3>
 
-      <div class="flex gap-4 items-center">
-        <div class="flex gap-2 items-center">
-          <img
-            width=""
-            height=""
-            src="{{ 'slot-clock.svg' | asset_url }}"
-            alt=""
-          >
-          <h3 class="text-primaryGrey text-[13px]">10:00 AM</h3>
-        </div>
-
-        <div class="p-2 border-primaryGrey rounded-full border">
-          <h3 class="text-[13px] text-primaryGrey">Before Meal</h3>
-        </div>
-
-        <div style="border: 1px solid #e5e7eb" class="min-w-[250px] mx-4"></div>
-
-        <div class="flex gap-3 items-center">
-          <label class="relative inline-flex items-center cursor-pointer">
-            <input
-              {% comment %} @change="selectProduct(product)" {% endcomment %}
-              id="default-checkbox"
-              type="checkbox"
-              class="cartCheckBox rounded-full appearance-none bg-gray-100 border border-gray-300 checked:bg-primaryGreen peer focus:outline-none"
-            >
-            <svg
-              class="absolute w-6 h-6 ml-[5px] text-white opacity-0 peer-checked:opacity-100 peer-checked:scale-100 transition-opacity  duration-200"
-              width="12"
-              height="8"
-              viewBox="0 0 12 8"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path d="M10.6673 0.5L4.25065 6.91667L1.33398 4" stroke="white" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-          </label>
-
-          <h3 class="text-primaryGreen text-[13px]">Mark as Done</h3>
+                <h3
+                  x-show="isUpdatingSlot && currentSlot?._id === slot?._id"
+                  class="text-primaryGreen text-[13px]"
+                  x-text="slot?.marked ? 'Unmarking' : 'Marking'"
+                ></h3>
+              </div>
+            </div>
+          </template>
         </div>
       </div>
-    </div>
+    </template>
+  </template>
+
+  <div class="ml-[100px] mt-[70px]" x-show="isFetchingSlots" x-cloak>
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 24 24"
+      aria-hidden="true"
+      class="size-20 fill-neutral-600 motion-safe:animate-spin dark:fill-neutral-300"
+    >
+      <path d="M12,1A11,11,0,1,0,23,12,11,11,0,0,0,12,1Zm0,19a8,8,0,1,1,8-8A8,8,0,0,1,12,20Z" opacity=".25" />
+      <path d="M10.14,1.16a11,11,0,0,0-9,8.92A1.59,1.59,0,0,0,2.46,12,1.52,1.52,0,0,0,4.11,10.7a8,8,0,0,1,6.66-6.61A1.42,1.42,0,0,0,12,2.69h0A1.57,1.57,0,0,0,10.14,1.16Z" />
+    </svg>
+  </div>
+
+  <div
+    x-cloak
+    x-show="!isFetchingSlots && !reminderSlots.some(obj => obj.slots && obj.slots.length > 0);"
+  >
+    <h2 class="text-[#868686] my-2 text-[18px] ">No Reminders</h2>
   </div>
 </div>

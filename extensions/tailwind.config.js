@@ -1,5 +1,3 @@
-const { SkeletonBodyText } = require("@shopify/polaris");
-
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   // important: true,
@@ -21,6 +19,7 @@ module.exports = {
         xsm: "370px",
         ssm: "400px",
         ssmd: "450px",
+        ssmdd : "480px",
         lMd: "900px",
         "2xld": "2000px",
       },

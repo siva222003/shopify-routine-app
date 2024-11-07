@@ -2,11 +2,18 @@
 <link rel="stylesheet" href="{{ 'conflict.css' | asset_url }}">
 
 <main x-data="userRoutine" class=" rounded-2xl mx-2 ssm:mx-4  sm:mx-6 ">
-  <!-- Header -->
-  {% render 'routine_header' %}
+  <section x-cloak x-transition x-show="isLoading" class="flex flex-col justify-center items-center min-h-screen">
+    <h1>Loading...</h1>
+  </section>
 
-  <!-- Reminders -->
-  {% render 'routine_reminders' %}
+  <section x-cloak x-transition x-show="!isLoading">
+    <!-- Header -->
+
+    {% render 'routine_header' %}
+
+    <!-- Reminders -->
+    {% render 'routine_reminders' %}
+  </section>
   {% render 'product_reminder_modal' %}
   {% render 'activity_reminder_modal' %}
 

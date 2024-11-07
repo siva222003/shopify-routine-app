@@ -1,5 +1,6 @@
 import {
   Await,
+  isRouteErrorResponse,
   json,
   useActionData,
   useLoaderData,
@@ -7,6 +8,7 @@ import {
   useNavigate,
   useNavigation,
   useParams,
+  useRouteError,
 } from "@remix-run/react";
 import {
   IndexTable,
@@ -324,4 +326,28 @@ export default function IndexFiltersDefault() {
       </Card>
     </Page>
   );
+}
+
+export function ErrorBoundary() {
+  const error = useRouteError();
+
+  if (isRouteErrorResponse(error)) {
+    return (
+      <div>
+        <h1>
+          {error.status} {error.statusText}
+        </h1>
+        <p>{error.data}</p>
+      </div>
+    );
+  } else if (error instanceof Error) {
+    return (
+      <Page narrowWidth title="Routines">
+        <h1>Error</h1>
+        <p>{error.message}</p>
+      </Page>
+    );
+  } else {
+    return <h1>Unknown Error</h1>;
+  }
 }

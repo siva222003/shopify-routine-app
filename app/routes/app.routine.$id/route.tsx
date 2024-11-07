@@ -10,10 +10,10 @@ import {
   Text,
   Grid,
   Badge,
+  Divider,
 } from "@shopify/polaris";
 import { SaveBar, TitleBar } from "@shopify/app-bridge-react";
 import {
-  Link,
   Form,
   useActionData,
   useLoaderData,
@@ -30,6 +30,7 @@ import {
   ImageInput,
   RoutineInput,
   StatusInput,
+  DescriptionInput,
 } from "~/components/add-routine";
 import {
   ActionFunctionArgs,
@@ -38,17 +39,25 @@ import {
   LoaderFunctionArgs,
 } from "@remix-run/node";
 import { startTransition, Suspense, useEffect, useState } from "react";
-import { useForm, validationError } from "@rvf/remix";
+import { useForm } from "@rvf/remix";
 import { addRoutineValidator } from "../app.add-routine/validator";
-import { EditRoutineDefaultValues, EditRoutineType } from "./types";
+import { EditRoutineType } from "./types";
 import ProductReminderCard from "~/components/edit-routine/ui/ProductReminderCard";
 import ActivityReminderCard from "~/components/edit-routine/ui/ActivityReminderCard";
-import NoRoutines from "~/components/edit-routine/ui/NoRoutines";
-import DescriptionInput from "~/components/add-routine/DescriptionInput";
+import NoRoutines from "~/components/edit-routine/ui/NoReminders";
 import RoutineFormSkeleton from "~/components/edit-routine/loaders/RoutineFormSkeleton";
-import { deleteRoutine, fetchRoutine, updateRoutine } from "./api";
+import {
+  deleteActivityReminder,
+  deleteProductReminder,
+  deleteRoutine,
+  fetchRoutine,
+  updateRoutine,
+} from "./api";
 import { fetchCategories } from "../app.add-routine/api";
 import CategoryInputSkeleton from "~/components/add-routine/loaders/CategoryInputSkeleton";
+
+import { NotificationIcon, RewardIcon } from "@shopify/polaris-icons";
+import { EditRoutineDefaultValues } from "./helper";
 
 export async function loader({ params }: LoaderFunctionArgs) {
   if (!params.id) {
@@ -99,6 +108,31 @@ export async function action({ request, params }: ActionFunctionArgs) {
     const response = await updateRoutine(id, apiData);
 
     return response;
+  } else if (_action === "productDelete") {
+    const id = JSON.parse(data.get("id") as string);
+
+    if (!id) {
+      return json({
+        success: false,
+        toast: "Invalid ID",
+      });
+    }
+
+    const response = await deleteProductReminder(id);
+    return response;
+  } else if (_action === "activityDelete") {
+    const id = JSON.parse(data.get("id") as string);
+
+    if (!id) {
+      return json({
+        success: false,
+        toast: "Invalid ID",
+      });
+    }
+
+    const response = await deleteActivityReminder(id);
+
+    return response;
   }
 }
 
@@ -132,8 +166,6 @@ export default function Routine() {
         isError: !actionData.success,
       });
 
-      setShowSaveBar(false);
-
       if (
         actionData.success &&
         actionData.toast === "Routine deleted successfully"
@@ -158,15 +190,13 @@ export default function Routine() {
     },
   });
 
-  console.log({ form: form.value("channel") });
-
-  useEffect(() => {
-    if (form.formState.isDirty) {
-      setShowSaveBar(true);
-    } else {
-      setShowSaveBar(false);
-    }
-  }, [form.formState.isDirty]);
+  // useEffect(() => {
+  //   if (form.formState.isDirty) {
+  //     setShowSaveBar(true);
+  //   } else {
+  //     setShowSaveBar(false);
+  //   }
+  // }, [form.formState.isDirty]);
 
   const submit = useSubmit();
 
@@ -190,79 +220,96 @@ export default function Routine() {
         onAction: () => {
           submit({ _action: JSON.stringify("delete") }, { method: "delete" });
         },
-        loading: isSubmitting,
+        loading:
+          isSubmitting && navigation.formData?.get("_action") === '"delete"',
 
         disabled: isSubmitting,
       }}
+      secondaryActions={[
+        {
+          content: "Save",
+          onAction: () => {
+            form.submit();
+          },
+          loading:
+            isSubmitting && navigation.formData?.get("_action") === '"update"',
+          disabled: isSubmitting,
+        },
+      ]}
     >
       <Suspense fallback={<RoutineFormSkeleton />}>
         <Await
           resolve={routinePromise}
           errorElement={<p>Some Error Occured</p>}
         >
-          {(resolvedData) => (
-            <Form {...form.getFormProps()}>
-              {/* Save Bar */}
-              <SaveBar open={showSaveBar}>
-                <button
-                  type="submit"
-                  loading={isSubmitting}
-                  variant="primary"
-                  id="save-button"
-                >
-                  Save
-                </button>
-                <button
-                  onClick={() =>
-                    form.resetForm(
-                      EditRoutineDefaultValues(resolvedRoutineData),
-                    )
-                  }
-                  type="button"
-                  id="discard-button"
-                >
-                  Discard
-                </button>
-              </SaveBar>
+          <Form {...form.getFormProps()}>
+            {/* Save Bar */}
+            {/* <SaveBar open={showSaveBar}>
+              <button
+                type="submit"
+                loading={isSubmitting}
+                variant="primary"
+                id="save-button"
+              >
+                Save
+              </button>
+              <button
+                onClick={() =>
+                  form.resetForm(EditRoutineDefaultValues(resolvedRoutineData))
+                }
+                type="button"
+                id="discard-button"
+              >
+                Discard
+              </button>
+            </SaveBar> */}
 
-              <Layout>
-                <Layout.Section>
-                  <FormLayout>
-                    <RoutineInput form={form} />
-                    <Card>
-                      <BlockStack gap="200">
-                        <Suspense fallback={<CategoryInputSkeleton />}>
-                          <Await
-                            resolve={categoriesPromise}
-                            errorElement={<p>Some Error Occured</p>}
-                          >
-                            {(categories) => (
-                              <CategoryInput
-                                form={form}
-                                categories={categories.data.docs}
-                              />
-                            )}
-                          </Await>
-                        </Suspense>
-                        <DescriptionInput form={form} />
-                      </BlockStack>
-                    </Card>
-                    <DurationInput form={form} />
-                    <ImageInput file={file} setFile={setFile} />
-                    <ChannelsInput form={form} />
-                  </FormLayout>
-                </Layout.Section>
+            <Layout>
+              <Layout.Section>
+                <FormLayout>
+                  <RoutineInput form={form} />
+                  <Card>
+                    <BlockStack gap="200">
+                      <Suspense fallback={<CategoryInputSkeleton />}>
+                        <Await
+                          resolve={categoriesPromise}
+                          errorElement={<p>Some Error Occured</p>}
+                        >
+                          {(categories) => (
+                            <CategoryInput
+                              form={form}
+                              categories={categories.data.docs}
+                            />
+                          )}
+                        </Await>
+                      </Suspense>
+                      <DescriptionInput form={form} />
+                    </BlockStack>
+                  </Card>
+                  <DurationInput form={form} />
+                  <ChannelsInput form={form} />
+                </FormLayout>
+              </Layout.Section>
 
-                <Layout.Section variant="oneThird">
-                  <FormLayout>
-                    <StatusInput form={form} />
-                  </FormLayout>
-                </Layout.Section>
-              </Layout>
-            </Form>
-          )}
+              <Layout.Section variant="oneThird">
+                <FormLayout>
+                  <ImageInput form={form} />
+
+                  <StatusInput form={form} />
+                </FormLayout>
+              </Layout.Section>
+            </Layout>
+          </Form>
         </Await>
       </Suspense>
+
+      <div
+        style={{
+          marginTop: "30px",
+        }}
+      ></div>
+
+      <Divider borderWidth="050" />
 
       {(resolvedRoutineData &&
         resolvedRoutineData.productReminders.length > 0) ||
@@ -270,9 +317,28 @@ export default function Routine() {
         resolvedRoutineData.activityReminders.length > 0) ? (
         <>
           <div style={{ marginTop: "30px" }}></div>
-          <Text as="h1" variant="headingLg">
-            Reminders
-          </Text>
+          <InlineStack align="space-between" blockAlign="center">
+            <Text as="h1" variant="headingLg">
+              Reminders
+            </Text>
+            <InlineStack gap={"400"}>
+              <Button
+                icon={NotificationIcon}
+                onClick={() => navigate(`/app/${id}/reminder`)}
+              >
+                Add Reminder
+              </Button>
+              {resolvedRoutineData.benefits ? null : (
+                <Button
+                  icon={RewardIcon}
+                  onClick={() => navigate(`/app/${id}/weekly-benfits`)}
+                >
+                  Add Weekly Benfits
+                </Button>
+              )}
+            </InlineStack>
+          </InlineStack>
+
           <div style={{ marginTop: "30px" }}></div>
           <Grid gap={{ lg: "20px" }}>
             {resolvedRoutineData?.productReminders.map((reminder) => (
@@ -293,23 +359,32 @@ export default function Routine() {
             ))}
           </Grid>
           <div style={{ marginTop: "30px" }}></div>
-          <InlineStack align="end">
-            <Button onClick={() => navigate(`/app/${id}/reminder`)}>
-              Add Reminder
-            </Button>
-          </InlineStack>
         </>
       ) : (
         <>
-          <div style={{ marginTop: "30px" }}></div>
-          <Grid>
-            <Grid.Cell columnSpan={{ xs: 6, sm: 3, md: 3, lg: 6, xl: 6 }}>
-              <NoRoutines id={id!} />
-            </Grid.Cell>
-          </Grid>
+          {resolvedRoutineData && (
+            <>
+              <div style={{ marginTop: "30px" }}></div>
+              <Grid>
+                <Grid.Cell columnSpan={{ xs: 6, sm: 3, md: 3, lg: 6, xl: 6 }}>
+                  <NoRoutines id={id!} />
+                </Grid.Cell>
+              </Grid>
+            </>
+          )}
         </>
       )}
       <div style={{ marginTop: "30px" }}></div>
+
+      {resolvedRoutineData?.benefits && (
+        <div>
+          <Text as="h1" variant="headingLg">
+            Weekly Benefits
+          </Text>
+
+          <div style={{ marginTop: "30px" }}></div>
+        </div>
+      )}
     </Page>
   );
 }

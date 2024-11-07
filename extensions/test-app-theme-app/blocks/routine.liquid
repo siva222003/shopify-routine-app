@@ -4,10 +4,17 @@
 <main x-data="routine" class=" rounded-2xl mx-2 ssm:mx-4  sm:mx-6 ">
   <!-- Header -->
 
-  {% render 'routine_header' %}
+  <section x-cloak x-transition x-show="isLoading" class="flex flex-col justify-center items-center min-h-screen">
+    <h1>Loading...</h1>
+  </section>
 
-  <!-- Reminders -->
-  {% render 'routine_reminders' %}
+  <section x-cloak x-transition x-show="!isLoading">
+    {% render 'routine_header' %}
+
+    <!-- Reminders -->
+    {% render 'routine_reminders' %}
+  </section>
+
   {% render 'product_reminder_modal' %}
   {% render 'activity_reminder_modal' %}
 
@@ -20,34 +27,6 @@
   <!-- Start Date -->
   {% render 'routine_start-schedule' %}
   {% render 'routine_start_modal' %}
-
-  <!-- Buttons -->
-
-  <div class="mt-[80px] mb-[60px] text-center flex flex-col gap-[18px]">
-    <button
-      @click="addToCart([])"
-      x-show="selectedProducts.length > 0"
-      x-cloak
-      class="text-primaryGreen font-[500] "
-    >
-      Add to Cart
-    </button>
-    <div class="flex gap-8 justify-center">
-      <button
-        x-show="tab > 1"
-        @click="changeTab(tab-1)"
-        class="px-10 py-3 rounded-lg border border-[#3A643B] text-[#3A643B] text-[16px]"
-      >
-        Back
-      </button>
-
-      <button
-        @click="tab < 3 ? changeTab(tab + 1) : startRoutine()"
-        x-text="tab < 3 ? 'Next' : 'Start Routine'"
-        class="px-14 py-3 rounded-lg bg-[#3A643B] text-white text-[16px] shadow-lg"
-      ></button>
-    </div>
-  </div>
 </main>
 
 <script src="{{ 'routine.js' | asset_url }}" defer></script>

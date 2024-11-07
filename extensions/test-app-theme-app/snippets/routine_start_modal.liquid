@@ -5,8 +5,8 @@
     x-transition.opacity.duration.200ms
     x-trap.inert.noscroll="routineStartModalOpen"
     @keydown.esc.window="routineStartModalOpen = false"
-    @click.self="routineStartModalOpen = false"
-    class="fixed inset-0 z-30 flex items-end justify-center  p-4 pb-8 backdrop-contrast-50   sm:items-center lg:p-8"
+    {% comment %} @click.self="routineStartModalOpen = false" {% endcomment %}
+    class="fixed inset-0 z-30 flex items-end justify-center p-4 pb-8 backdrop-contrast-50 sm:items-center lg:p-8"
     role="dialog"
     aria-modal="true"
     aria-labelledby="defaultModalTitle"
@@ -17,30 +17,73 @@
       x-transition:enter="transition ease-out duration-200 delay-100 motion-reduce:transition-opacity"
       x-transition:enter-start="opacity-0 scale-50"
       x-transition:enter-end="opacity-100 scale-100"
-      class="flex max-w-[40rem] flex-col gap-4 overflow-hidden rounded-xl  bg-primaryCream"
+      class="flex max-w-[40rem] flex-col gap-4 overflow-hidden rounded-xl bg-primaryCream"
     >
-      <div class=" flex flex-col items-center rounded-4xl gap-[30px] px-[60px] min-h-[340px] justify-center  ">
-        <div class="flex flex-col items-center  gap-3">
+      <div class="flex flex-col items-center rounded-4xl gap-[20px] px-[20px] xsm:px-[40px] ssmd:px-[60px] min-h-[340px] justify-center">
+        <div class="flex flex-col items-center gap-3">
           <img src="{{ 'mark-completed-tick.svg' | asset_url }}" class="w-16" width="" height="" alt="">
-          <h1 class="text-primaryGreen text-[13px]">Your have started following the routine.</h1>
+          <h1 class="text-primaryGreen text-[13px]">You have started following the routine.</h1>
         </div>
 
-        <h1 class="text-[13px] w-full">Now, you can start your routine once you order and the product is delivered.</h1>
+        <div class="flex w-full justify-center">
+          <h1 class="text-[13px] text-center w-full break-words">
+            Now, you can start your routine once you order and the product is delivered.
+          </h1>
+        </div>
 
         <div class="flex w-full flex-col gap-5 items-center">
-          <button
-            @click="routineStartModalOpen = false"
-            class="w-full py-5 rounded-lg bg-[#3A643B] text-white text-[12px]"
+          <!-- Go to My Routines -->
+          <a
+            class="w-full py-5 rounded-lg bg-[#3A643B] text-center"
+            href="/pages/user-routines"
+            @click="navigateAndReplaceHistory('/pages/user-routines')"
           >
-            Yes, Track my Order
-          </button>
-          <a href="/pages/user-routines">
-            <button class="w-full py-5 rounded-lg border border-[#3A643B] text-[12px] text-primaryGreen Start the Routine Right now">
-              Start the Routine Right now
-            </button>
+            <button class="text-white text-[12px]">Go To My Routines</button>
+          </a>
+
+          <!-- Explore More Routines -->
+          <a
+            class="w-full py-4 rounded-lg border border-[#3A643B] text-center"
+            href="/pages/routine-list"
+            @click="navigateAndReplaceHistory('/pages/routine-list')"
+          >
+            <button class="text-[12px] text-primaryGreen">Explore More Routines</button>
           </a>
         </div>
       </div>
     </div>
   </div>
 </div>
+
+<script>
+  // Function to replace the current URL with the target URL
+  function navigateAndReplaceHistory(targetUrl) {
+    window.history.replaceState(null, '', targetUrl);
+  }
+
+  {% comment %} // Listen for the 'beforeunload' event to confirm reload or navigation
+  window.addEventListener('beforeunload', function (event) {
+    // Check if the modal is open
+    if (true) {
+      const message = 'You have unsaved changes. Are you sure you want to leave?';
+      // Display a confirmation dialog
+      event.returnValue = message; // Standard message for most browsers
+      return message; // Some browsers might require both returnValue and the return statement
+    }
+  });
+
+  // Make sure to update the routineStartModalOpen variable when modal state changes
+  window.routineStartModalOpen = false; // Set it initially to false or to the real state.
+
+  // Function to manually handle the confirmation and redirection
+  function handleRedirectAfterConfirmation() {
+    const isConfirmed = confirm('You have unsaved changes. Are you sure you want to leave?');
+    console.log({ isConfirmed });
+    if (isConfirmed) {
+      window.location.href = '/pages/routine-list'; // Redirect to routine list page
+    }
+  }
+
+  // Listen for the "beforeunload" event to redirect if necessary
+  window.addEventListener('beforeunload', handleRedirectAfterConfirmation); {% endcomment %}
+</script>

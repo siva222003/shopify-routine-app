@@ -1,5 +1,5 @@
 {
-  "include": ["env.d.ts", "**/*.ts", "**/*.tsx", "app/routes/_hey/.hello.tsx"],
+  "include": ["env.d.ts", "**/*.ts", "**/*.tsx", "app/routes/_hey/.hello.tsx", "app/routes/app.files"],
   "compilerOptions": {
     "lib": ["DOM", "DOM.Iterable", "ES2022"],
     "strict": true,

@@ -1,34 +1,18 @@
-import { RoutineDefaultValues } from "../app.add-routine/types";
-import { DefaultRoutine } from "../app.add-routine/validator";
+import { WeeklyBenefitsType } from "../app.$id.weekly-benfits/validator";
 import { RoutineListType } from "../app.routine-list.$page/types";
 
 export type EditRoutineType = RoutineListType & {
   channels: string[];
   productReminders: ProductReminderType[];
   activityReminders: ActivityReminderType[];
-};
-
-export const EditRoutineDefaultValues = (data: EditRoutineType | null) => {
-  if (!data) return RoutineDefaultValues;
-
-  return {
-    name: data.name ?? "",
-    category: data.category._id ?? "",
-    description: data.description ?? "",
-    duration: {
-      number: data.duration.number.toString() ?? "",
-      unit: data.duration.unit ?? "",
-    },
-    draft: data.draft ? "draft" : "active",
-    channel: data.channel ?? ([] as string[]),
-    visibility: data.visibility ?? ("Private" as "Public" | "Private"),
-  } as DefaultRoutine;
+  benefits: WeeklyBenefitsType;
 };
 
 export type ActivityReminderType = {
   _id: string;
   name: string;
   image: string;
+  reminderListId: string;
   activityType: string;
 };
 
@@ -36,6 +20,7 @@ export type ProductReminderType = {
   _id: string;
   name: string;
   image: string;
+  reminderListId: string;
   productType: string;
 };
 

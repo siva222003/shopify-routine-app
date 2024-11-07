@@ -26,30 +26,33 @@ document.addEventListener("alpine:init", () => {
       this.visibleRoutines = this.routines.slice(0, this.columnCount);
 
       // Flatten product and activity reminders
-      const productReminders = this.routines.flatMap(
-        (routine) => routine.productReminders ?? [],
-      );
-      const activityReminders = this.routines.flatMap(
-        (routine) => routine.activityReminders ?? [],
-      );
+      // const productReminders = this.routines.flatMap(
+      //   (routine) => routine.productReminders ?? [],
+      // );
+      // const activityReminders = this.routines.flatMap(
+      //   (routine) => routine.activityReminders ?? [],
+      // );
 
-      // Extract IDs safely using optional chaining
-      const productReminderIds = productReminders.map(
-        (reminder) => reminder?._id,
-      );
-      const activityReminderIds = activityReminders.map(
-        (reminder) => reminder?._id,
-      );
+      // // Extract IDs safely using optional chaining
+      // const productReminderIds = productReminders.map(
+      //   (reminder) => reminder?._id,
+      // );
+      // const activityReminderIds = activityReminders.map(
+      //   (reminder) => reminder?._id,
+      // );
 
-      // Concatenate both sets of reminder IDs
-      const Ids = productReminderIds.concat(activityReminderIds);
+      // // Concatenate both sets of reminder IDs
+      // const Ids = productReminderIds.concat(activityReminderIds);
 
-      const date = new Date().toLocaleDateString("en-CA");
+      // const date = new Date().toLocaleDateString("en-CA");
 
-      const body = { date, Ids };
+      // const body = { date, Ids };
 
       // Fetch today's reminders
-      await this.getReminders(body);
+
+      if (this.routines.length > 0) {
+        await this.getReminders();
+      }
     },
 
     // Fetch User Routines from API
@@ -57,7 +60,7 @@ document.addEventListener("alpine:init", () => {
       try {
         this.isRoutinesLoading = true;
 
-        const response = await fetch(`http://localhost:34217/user-routines`, {
+        const response = await fetch(`http://localhost:36679/user-routines`, {
           method: "GET",
           headers: { "Content-Type": "application/json" },
         });
@@ -76,15 +79,12 @@ document.addEventListener("alpine:init", () => {
     },
 
     //Fetch Today's Reminders
-    async getReminders(body) {
+    async getReminders() {
       try {
-        // console.log({ body });
-
         this.isRemindersLoading = true;
 
-        const response = await fetch(`http://localhost:34217/slots`, {
-          method: "POST",
-          body: JSON.stringify(body),
+        const response = await fetch(`http://localhost:36679/today-reminders`, {
+          method: "GET",
           headers: { "Content-Type": "application/json" },
         });
 
@@ -93,7 +93,7 @@ document.addEventListener("alpine:init", () => {
 
         this.isRemindersLoading = false;
 
-        this.visibleReminders = this.reminders.slice(0, 1);
+        this.visibleReminders = this.reminders.slice(0, 2);
 
         console.log("User Todays Reminders:", data.reminders);
       } catch (error) {
@@ -127,13 +127,40 @@ document.addEventListener("alpine:init", () => {
 
     // Show more Reminders
     showMoreReminders() {
-      const nextReminders = this.reminders.slice(1, this.reminders.length);
+      const nextReminders = this.reminders.slice(2, this.reminders.length);
       this.visibleReminders.push(...nextReminders);
     },
 
     // Reset to the initial set of routines
     showLessReminders() {
-      this.visibleReminders = this.reminders.slice(0, 1);
+      this.visibleReminders = this.reminders.slice(0, 2);
     },
   }));
 });
+
+// async getReminders() {
+//   try {
+//     // console.log({ body });
+
+//     this.isRemindersLoading = true;
+
+//     const response = await fetch(`http://localhost:36679/slots`, {
+//       method: "POST",
+//       body: JSON.stringify(body),
+//       headers: { "Content-Type": "application/json" },
+//     });
+
+//     const data = await response.json();
+//     this.reminders = data.reminders;
+
+//     this.isRemindersLoading = false;
+
+//     this.visibleReminders = this.reminders.slice(0, 1);
+
+//     console.log("User Todays Reminders:", data.reminders);
+//   } catch (error) {
+//     console.error("Error fetching user Todays Reminder:", error);
+//   } finally {
+//     this.isRemindersLoading = false;
+//   }
+// },

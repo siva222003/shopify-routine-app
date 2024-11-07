@@ -1,3 +1,4 @@
+import { useNavigate, useNavigation, useSubmit } from "@remix-run/react";
 import { Badge, MediaCard } from "@shopify/polaris";
 import { ProductReminderType } from "~/routes/app.routine.$id/types";
 
@@ -6,6 +7,16 @@ interface Props {
 }
 
 export default function ProductReminderCard({ reminder }: Props) {
+  const navigate = useNavigate();
+  const navigation = useNavigation();
+
+  const isSubmitting =
+    navigation.state === "submitting" &&
+    reminder._id ===
+      JSON.parse((navigation.formData?.get("id") as string) || "");
+
+  const submit = useSubmit();
+
   return (
     <MediaCard
       title={
@@ -16,7 +27,9 @@ export default function ProductReminderCard({ reminder }: Props) {
             gap: "6px",
           }}
         >
-          <h1 style={{ fontWeight: "bold" }}>{reminder.name}</h1>{" "}
+          <h1 style={{ fontWeight: "bold" }}>
+            {reminder.name.slice(0, 26) + "..."}{" "}
+          </h1>{" "}
           <div>
             {" "}
             <Badge tone="attention">Product</Badge>{" "}
@@ -25,20 +38,35 @@ export default function ProductReminderCard({ reminder }: Props) {
       }
       primaryAction={{
         content: "Customize Reminder",
-        onAction: () => {},
+        onAction: () => {
+          navigate(`/app/${reminder.reminderListId}/product/${reminder._id}`);
+        },
+      }}
+      secondaryAction={{
+        content: "Delete",
+        destructive: true,
+        loading: isSubmitting,
+        onAction: () => {
+          submit(
+            {
+              _action: JSON.stringify("productDelete"),
+              id: JSON.stringify(reminder._id),
+            },
+            { method: "delete" },
+          );
+        },
       }}
       description={
         reminder.productType === "applicationBased"
           ? "Application Based"
           : "Consumable"
       }
-      popoverActions={[{ content: "Delete", onAction: () => {} }]}
       size="small"
     >
       <img
         alt=""
-        width="100%"
         height="100%"
+        width="100%"
         style={{
           objectFit: "cover",
           objectPosition: "center",

@@ -11,22 +11,26 @@
   <!-- All Routines -->
   {% render 'all_routines' %}
 
-  <div x-show="routines.length > 4" x-cloak class="text-right">
+  <div x-show="routines.length > columnCount" x-cloak class="text-right">
     <button
       x-text="visibleRoutines.length >= routines.length ? 'Show Less' : 'Show More'"
       @click="visibleRoutines.length >= routines.length ? showLess() : showMore()"
       class="text-primaryGreen font-[500] text-[13px] my-6 md:my-8 mr-[20px] md:mr-[40px]"
     ></button>
   </div>
+
+  <div
+    class="mt-[100px]"
+  ></div>
 </section>
 
 <script src="{{ 'routine-list.js' | asset_url }}" defer="defer"></script>
 {% comment %} <script src="{{ 'alpine.js' | asset_url }}" defer="defer"></script> {% endcomment %}
- <!-- Alpine Plugins -->
+<!-- Alpine Plugins -->
 <script defer src="https://cdn.jsdelivr.net/npm/@alpinejs/focus@3.x.x/dist/cdn.min.js"></script>
 
 <!-- Alpine Core -->
-<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script> 
+<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 
 {% schema %}
 {

@@ -6,6 +6,7 @@ const routineSchema = z.object({
   name: z.string().min(5, {
     message: "Name must be at least 5 characters long",
   }),
+  image: z.string(),
   category: z.string({ message: "Select one category" }),
   description: z.string().min(10, {
     message: "Description must be at least 10 characters long",

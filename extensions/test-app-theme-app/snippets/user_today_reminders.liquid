@@ -1,4 +1,7 @@
-<section class=" xsm:max-w-[90%] sm:max-w-[80%] xsm:mx-auto mx-4">
+<section
+  x-show="!isRemindersLoading && visibleReminders.length > 0 "
+  class=" xsm:max-w-[90%] sm:max-w-[80%] xsm:mx-auto mx-4"
+>
   <div class="flex flex-col gap-2 my-8 items-center">
     <h1 class="">Today's Routines</h1>
     <p class="text-primaryGrey text-[12px]">You have 4 Routines remaining for the day</p>

@@ -1,180 +1,141 @@
 import { ActionFunctionArgs, json } from "@remix-run/node";
-import { Form, useActionData, useNavigate, useSubmit } from "@remix-run/react";
-import { Button, Page } from "@shopify/polaris";
-import { FormEvent, useEffect, useMemo, useRef, useState } from "react";
-import AddTimeSlot from "~/components/edit-routine/activity-reminder/AddActivityTimeSlot";
+import {
+  Form,
+  useActionData,
+  useNavigate,
+  useNavigation,
+  useParams,
+  useSubmit,
+} from "@remix-run/react";
+import { Button, FormLayout, Page } from "@shopify/polaris";
+import { useEffect } from "react";
+import { useForm } from "@rvf/remix";
+import { addActivityValidator } from "./validator";
 
-import prisma from "../../db.server";
-import { ValidatedForm } from "@rvf/remix";
-import { addProductValidator } from "../app.$id.add-product/validator";
-import { ActivityReminderInitialSlots, AddActivityType } from "~/types";
-import AddActivity from "~/components/edit-routine/activity-reminder/AddActivity";
-import { number } from "zod";
-import { api } from "~/utils/axios";
+import {
+  DefaultActivityReminderValues,
+  formattedActivityBasedTimeslots,
+} from "./helper";
+import { addActivityReminder } from "./api";
+import {
+  ActivityNameInput,
+  ActivityTypeInput,
+  AddActivityTimeSlot,
+  DurationInput,
+  Frequency,
+  GoalInput,
+} from "~/components/activity-reminder";
+import { ImageInput } from "~/components/add-routine";
 
 export async function action({ request, params }: ActionFunctionArgs) {
-  const formData = await request.formData();
+  const id = params.id;
 
-  const final = Object.fromEntries(formData.entries());
-
-  if (final.customDays) {
-    final.customDays = JSON.parse(final.customDays as string);
+  if (!id) {
+    return json({ success: false, toast: "Routine ID is missing" });
   }
 
-  const times = JSON.parse(final.times as string);
+  const data = await request.formData();
 
-  //data for routine api
+  const values = JSON.parse(data.get("values") as string);
 
-  let timeslotActivityBased = times.map((time: string) => {
-    return {
-      time: time,
-    };
+  const result = await addActivityValidator.validate(values);
+
+  if (result.error) {
+    return json({
+      success: false,
+      toast: "Invalid Fields",
+    });
+  }
+
+  const apiData = result.data;
+
+  (apiData.duration.number as any) = parseInt(apiData.duration.number);
+
+  apiData.timeslotActivityBased = formattedActivityBasedTimeslots(
+    apiData.timeslotActivityBased,
+  ) as any;
+  
+  console.log(apiData.timeslotActivityBased)
+
+  const response = await addActivityReminder({
+    ...apiData,
+    reminderListId: id,
   });
 
-  const data = {
-    name: final.activityName as string,
-    activityType: final.activityType as string,
-    goal: final.goal as string,
-    unit: final.goalUnit as string,
-    frequency: final.customDays,
-    duration: {
-      number: final.durationQty as string,
-      unit: final.durationUnit as string,
-    },
-    timeslotActivityBased,
-    reminderListId: params.id as string,
-  };
-
-  try {
-    // const routine = await prisma.activityReminder.create({
-    //   data: {
-    //     activityName: final.activityName as string,
-    //     activityType: final.activityType as string,
-    //     goal: final.goal as string,
-    //     goalUnit: final.goalUnit as string,
-    //     daily: final.daily === "daily",
-    //     times,
-    //     customDays: final.customDays as any,
-    //     durationQty: final.durationQty as string,
-    //     durationUnit: final.durationUnit as string,
-    //     routineId: params.id as string,
-    //   },
-    // });
-
-    const response = await api.post("/admin/reminder-activity", data);
-
-    return json({
-      success: true,
-      data: response.data,
-    });
-  } catch (error) {
-    console.log(final);
-    return json({ success: false, data });
-  }
+  return response;
 }
 
 const AddActivityReminder = () => {
-  const [currentStep, setCurrentStep] = useState(1);
-
-  const activityInitialState: AddActivityType = {
-    activityName: "",
-    activityType: "",
-    selectedDays: [],
-    intakeFrequency: "daily",
-    goal: "1",
-    goalUnit: "",
-  };
-
-  const initialSlotsState: ActivityReminderInitialSlots = useMemo(() => {
-    return {
-      hours: "",
-      minutes: "",
-      timeUnit: "AM",
-    };
-  }, []);
-
-  const [slots, setSlots] = useState([initialSlotsState]);
-
-  const [activity, setActivity] = useState(activityInitialState);
-
-  const navigate = useNavigate();
+  const form = useForm({
+    validator: addActivityValidator,
+    defaultValues: DefaultActivityReminderValues,
+    handleSubmit: async (values) => {
+      console.log({ values });
+      submit({ values: JSON.stringify(values) }, { method: "POST" });
+    },
+  });
 
   const actionData = useActionData<typeof action>();
 
-  console.log(actionData);
+  const navigaton = useNavigation();
+  const navigate = useNavigate();
 
-  useEffect(() => {
-    if (actionData) {
-      if (actionData.success) {
-        shopify.toast.show("Activity Reminder added successfully");
-      }
-    }
-  }, [actionData?.success]);
+  const { id } = useParams();
+
+  const isSubmitting = navigaton.state === "submitting";
 
   const submit = useSubmit();
 
-  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-
-    const formElement = event.target as HTMLFormElement;
-    const formData = new FormData(formElement);
-
-    if (activity.selectedDays.length > 0) {
-      formData.append("customDays", JSON.stringify(activity.selectedDays));
+  useEffect(() => {
+    if (actionData) {
+      shopify.toast.show(actionData.toast, {
+        duration: 3000,
+        isError: !actionData.success,
+      });
     }
-
-    formData.append("goalUnit", activity.goalUnit);
-    formData.append("goal", activity.goal);
-    formData.append("activityType", activity.activityType);
-    formData.append("daily", activity.intakeFrequency);
-    formData.append("activityName", activity.activityName);
-
-    const times = slots.map((slot) => {
-      return `${slot.hours}:${slot.minutes} ${slot.timeUnit}`;
-    });
-
-    formData.append("times", JSON.stringify(times));
-
-    submit(formData, { method: "post" });
-  };
+  }, [actionData]);
 
   return (
-    <ValidatedForm
-      method="post"
-      validator={addProductValidator}
-      onSubmit={handleSubmit}
+    <Page
+      title="Add Activity Reminder"
+      backAction={{
+        content: "Back",
+        onAction: () => {
+          navigate(`/app/${id}/reminder`);
+        },
+      }}
+      narrowWidth
     >
-      <Page title="Add Activity Reminder " narrowWidth>
-        {currentStep === 1 && (
-          <AddActivity
-            setCurrentStep={setCurrentStep}
-            activity={activity}
-            setActivity={setActivity}
-          />
-        )}
-        {currentStep === 2 && (
-          <AddTimeSlot
-            setCurrentStep={setCurrentStep}
-            slots={slots}
-            setSlots={setSlots}
-            initialSlotsState={initialSlotsState}
-          />
-        )}
+      <Form {...form.getFormProps()}>
+        <FormLayout>
+          <ActivityNameInput form={form} />
+          <ActivityTypeInput form={form} />
+          <ImageInput form={form} />
+          <GoalInput form={form} />
+          <DurationInput form={form} />
+          <AddActivityTimeSlot form={form} />
+          <Frequency form={form} />
+        </FormLayout>
 
         <div
-          style={{ marginTop: "10px", marginBottom: "30px", height: "100%" }}
+          style={{
+            marginBottom: "20px",
+            marginTop: "20px",
+            textAlign: "center",
+          }}
         >
           <Button
             variant="primary"
-            tone="critical"
             size="large"
-            onClick={() => navigate("/app/routine-list")}
+            submit
+            loading={isSubmitting}
+            disabled={isSubmitting}
           >
-            Cancel
+            Submit
           </Button>
         </div>
-      </Page>
-    </ValidatedForm>
+      </Form>
+    </Page>
   );
 };
 

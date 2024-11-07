@@ -20,6 +20,8 @@ export default function MultipleOptionListExample({ form }: Props) {
       "channel",
       form.value("channel").length !== form.defaultValue("channel").length,
     );
+
+    setSelected(form.value("channel"));
   }, [form.value("channel")]);
 
   return (

@@ -17,6 +17,7 @@ export type CategorryLoaderData = {
 export const RoutineDefaultValues = {
   name: "",
   description: "",
+  image: "",
   category: "",
   duration: {
     number: "",
@@ -25,4 +26,18 @@ export const RoutineDefaultValues = {
   channel: [] as string[],
   draft: "draft",
   visibility: "Private" as "Public" | "Private",
+};
+
+export type FileGridType = {
+  id: string;
+  preview: {
+    image: {
+      url: string;
+    };
+  };
+};
+
+export type FileGridResponseType = {
+  success: boolean;
+  files: FileGridType[];
 };

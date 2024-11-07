@@ -1,19 +1,66 @@
 import { ActionFunctionArgs, json } from "@remix-run/node";
-import { Form, useActionData, useNavigate, useSubmit } from "@remix-run/react";
+import {
+  Form,
+  useActionData,
+  useNavigate,
+  useNavigation,
+  useParams,
+  useSubmit,
+} from "@remix-run/react";
 import { Button, FormLayout, Page } from "@shopify/polaris";
 import { useEffect } from "react";
-import AddTimeSlot from "~/components/edit-routine/product-reminder/AddProductTimeSlot";
-import AddProduct from "~/components/edit-routine/product-reminder/AddProduct";
+import {
+  AddProduct,
+  AddProductTimeSlot,
+  DosageInput,
+  DurationInput,
+  Frequency,
+  ProductTypeInput,
+} from "~/components/product-reminder";
 import { useForm } from "@rvf/remix";
-import { addProductValidator, DefaultProductReminderValues } from "./validator";
-import { api } from "~/utils/axios";
-import ProductTypeInput from "~/components/edit-routine/product-reminder/ProductTypeInput";
-import DosageInput from "~/components/edit-routine/product-reminder/DosageInput";
-import DurationInput from "~/components/edit-routine/product-reminder/DurationInput";
-import Frequency from "~/components/edit-routine/product-reminder/Frequency";
+import { addProductValidator } from "./validator";
+import {
+  DefaultProductReminderValues,
+  formattedAppBasedTimeslots,
+  formattedConsumableTimeslots,
+} from "./helper";
+import { addProductReminder } from "./api";
 
 export async function action({ request, params }: ActionFunctionArgs) {
-  return json({ success: true });
+  const id = params.id;
+
+  if (!id) {
+    return json({ success: false, toast: "Routine ID is missing" });
+  }
+
+  const data = await request.formData();
+
+  const values = JSON.parse(data.get("values") as string);
+
+  const result = await addProductValidator.validate(values);
+
+  if (result.error) {
+    return json({
+      success: false,
+      toast: "Invalid Fields",
+    });
+  }
+
+  const apiData = result.data;
+
+  (apiData.duration.number as any) = parseInt(apiData.duration.number);
+
+  apiData.timeSlotsConsumable = formattedConsumableTimeslots(
+    apiData.timeSlotsConsumable,
+  ) as any;
+
+  apiData.timeSlotsAppBased = formattedAppBasedTimeslots(
+    apiData.timeSlotsAppBased,
+  ) as any;
+
+  const response = await addProductReminder({ ...apiData, reminderListId: id });
+
+  return response;
 }
 
 const AddProductReminder = () => {
@@ -22,37 +69,69 @@ const AddProductReminder = () => {
     defaultValues: DefaultProductReminderValues,
     handleSubmit: async (values) => {
       console.log({ values });
-      // submit({ values: JSON.stringify(values) }, { method: "POST" });
+      submit({ values: JSON.stringify(values) }, { method: "POST" });
     },
   });
 
+  const actionData = useActionData<typeof action>();
+
+  const navigaton = useNavigation();
+
   const navigate = useNavigate();
 
-  const data = useActionData<typeof action>();
+  const { id } = useParams();
 
-  useEffect(() => {
-    if (data) {
-      if (data.success) {
-        shopify.toast.show("Product Reminder added successfully");
-      }
-    }
-  }, [data?.success]);
+  const isSubmitting = navigaton.state === "submitting";
 
   const submit = useSubmit();
 
+  useEffect(() => {
+    if (actionData) {
+      shopify.toast.show(actionData.toast, {
+        duration: 3000,
+        isError: !actionData.success,
+      });
+    }
+  }, [actionData]);
+
   return (
-    <Page title="Add Product Reminder" narrowWidth>
+    <Page
+      title="Add Product Reminder"
+      backAction={{
+        content: "Back",
+        onAction: () => {
+          navigate(`/app/${id}/reminder`);
+        },
+      }}
+      narrowWidth
+    >
       <Form {...form.getFormProps()}>
         <FormLayout>
-          <AddProduct />
+          <AddProduct form={form} />
           <ProductTypeInput form={form} />
           <DosageInput form={form} />
           <DurationInput form={form} />
-          <AddTimeSlot form={form} />
+          <AddProductTimeSlot form={form} />
           <Frequency form={form} />
         </FormLayout>
 
-        <Button submit>Save</Button>
+        <div
+          style={{
+            marginBottom: "20px",
+            marginTop: "20px",
+            textAlign: "center",
+          }}
+        >
+          <Button
+            variant="primary"
+            size="large"
+            submit
+            loading={isSubmitting}
+            disabled={isSubmitting}
+          >
+            Submit
+          </Button>
+        </div>
       </Form>
     </Page>
   );

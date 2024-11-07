@@ -1,116 +1,174 @@
-import { Form, useNavigate, useParams } from "@remix-run/react";
 import {
-  Card,
-  FormLayout,
-  RadioButton,
-  TextField,
-  BlockStack,
-  OptionList,
-  ButtonGroup,
-  Button,
-  Select,
-  Page,
-  Text,
-} from "@shopify/polaris";
-import { useCallback } from "react";
-import { getError } from "~/utils/validated-from";
-import { PlusIcon } from "@shopify/polaris-icons";
+  Await,
+  Form,
+  isRouteErrorResponse,
+  useActionData,
+  useLoaderData,
+  useNavigate,
+  useNavigation,
+  useParams,
+  useRouteError,
+  useSubmit,
+} from "@remix-run/react";
+import { Button, FormLayout, Page, Text } from "@shopify/polaris";
+import { Suspense, useEffect } from "react";
+import { defer, json, LoaderFunctionArgs } from "@remix-run/node";
+import { addWeeklyBenefits, fetchRoutineForDuration } from "./api";
+import WeekIntervalsInput from "~/components/edit-routine/weekly-benfits/WeekIntervalsInput";
+import WeekIntervalsSkeleton from "~/components/edit-routine/weekly-benfits/loaders/WeekIntervalsSkeleton";
+import { EditRoutineResponseType } from "../app.routine.$id/types";
+import { useForm } from "@rvf/remix";
+import { benfitsValidator } from "./validator";
+import { WeeklyBenfitsDefaultValues } from "./helper";
+import WeeklyBenefitsInput from "~/components/edit-routine/weekly-benfits/WeeklyBenefitsInput";
+import { TitleBar } from "@shopify/app-bridge-react";
 
-interface Props {}
+export async function loader({ params }: LoaderFunctionArgs) {
+  if (!params.id) {
+    throw new Error("Routine ID is required");
+  }
 
-const WeeklyBenfits = ({}: Props) => {
-  const handleChange = useCallback(
-    (_: boolean, newValue: string) =>
-      setActivity({ ...activity, intakeFrequency: newValue }),
-    [],
-  );
+  const response = fetchRoutineForDuration(params.id);
 
+  return defer({ routinePromise: response });
+}
+
+export async function action({ params, request }: LoaderFunctionArgs) {
+  if (!params.id) {
+    return json({ success: false, toast: "Routine ID is required" });
+  }
+
+  const data = await request.formData();
+
+  const values = JSON.parse(data.get("values") as string);
+
+  const result = await benfitsValidator.validate(values);
+
+  if (result.error) {
+    return json({
+      success: false,
+      toast: "Invalid Fields",
+    });
+  }
+
+  const apiData = result.data;
+
+  (apiData as any).totalWeeks = parseInt(apiData.totalWeeks);
+
+  console.log({
+    ...apiData,
+    reminderListId: params.id,
+  });
+
+  const response = await addWeeklyBenefits({
+    ...apiData,
+    reminderListId: params.id,
+  });
+
+  return response;
+}
+
+const WeeklyBenfits = () => {
   const navigate = useNavigate();
   const { id } = useParams();
 
+  const submit = useSubmit();
+  const actionData = useActionData<typeof action>();
+
+  const navigation = useNavigation();
+
+  const isSubmitting = navigation.state === "submitting";
+
+  const { routinePromise } = useLoaderData<typeof loader>();
+
+  const form = useForm({
+    validator: benfitsValidator,
+    defaultValues: WeeklyBenfitsDefaultValues,
+    handleSubmit: (values) => {
+      console.log({ values });
+      submit({ values: JSON.stringify(values) }, { method: "POST" });
+    },
+  });
+
+  console.log(form.formState.fieldErrors);
+
+  useEffect(() => {
+    if (actionData) {
+      shopify.toast.show(actionData.toast, {
+        duration: 3000,
+        isError: !actionData.success,
+      });
+    }
+  }, [actionData]);
+
   return (
-    <>
-      <Page title="Add Weekly Benfits" narrowWidth>
-        <Form method="post">
-          <FormLayout>
-            {/* <Text as="h2" variant="headingSm">
-              Enter the weekly benefits.
-            </Text> */}
-
-            <FormLayout.Group condensed>
-              <Select
-                label="Select Weeks Intervals"
-                placeholder="Select"
-                name="weekIntervals"
-                options={["physical", "mental"]}
-                // value={activity.activityType}
-                // onChange={(value) =>
-                //   setActivity({ ...activity, activityType: value })
-                // }
-              />
-            </FormLayout.Group>
-
-            <Text as="h2" variant="headingSm">
-              0-2 weeks
-            </Text>
-
-            <Card>
-              <BlockStack gap="500">
-                <TextField
-                  autoComplete="off"
-                  name="routineName"
-                  label="Routine Name"
-                  type="text"
-                  // value={form.value("routineName") || ""}
-                  // onChange={(e) => form.setValue("routineName", e)}
-                  // helpText={
-                  //   <span>
-                  //     We'll use this email address to inform you on future changes
-                  //     to Polaris.
-                  //   </span>
-                  // }
-                  // error={form.error("routineName") || undefined}
-                />
-                <Button
-                  onClick={() => navigate(`/app/routine/${id}`)}
-                  accessibilityLabel="Add variant"
-                  icon={PlusIcon}
-                >
-                  Add
-                </Button>
-              </BlockStack>
-            </Card>
-
-            <div
-              style={{
-                marginTop: "20px",
-                display: "flex",
-                width: "100%",
-                justifyContent: "right",
-              }}
+    <Form {...form.getFormProps()}>
+      <Page
+        title="Add Weekly Benfits"
+        narrowWidth
+        backAction={{
+          content: "Back",
+          onAction: () => navigate(`/app/routine/${id}`),
+        }}
+        // primaryAction={{
+        //   type: "submit",
+        //   loading: navigation.state === "submitting",
+        //   content: "Save",
+        // }}
+      >
+        <FormLayout>
+          <Suspense fallback={<WeekIntervalsSkeleton />}>
+            <Await
+              resolve={routinePromise as Promise<EditRoutineResponseType>}
+              errorElement={
+                <p>Some Error Occured while retrieving week intervals</p>
+              }
             >
-              <ButtonGroup>
-                <Button
-                  onClick={() => navigate(`/app/routine/${id}`)}
-                  size="large"
-                >
-                  Back
-                </Button>
-                <Button
-                  //   onClick={() => setCurrentStep(2)}
-                  variant="primary"
-                  size="large"
-                  submit={true}
-                >
-                  Submit
-                </Button>
-              </ButtonGroup>
-            </div>
-          </FormLayout>
-        </Form>
+              <WeekIntervalsInput form={form} />
+            </Await>
+          </Suspense>
+
+          <WeeklyBenefitsInput form={form} />
+        </FormLayout>
       </Page>
-    </>
+      <div
+        style={{
+          marginBottom: "20px",
+          marginTop: "40px",
+          textAlign: "center",
+        }}
+      >
+        <Button loading={isSubmitting} variant="primary" size="large" submit>
+          Submit
+        </Button>
+      </div>
+    </Form>
   );
 };
 
 export default WeeklyBenfits;
+
+export function ErrorBoundary() {
+  const error = useRouteError();
+
+  if (isRouteErrorResponse(error)) {
+    return (
+      <div>
+        <h1>
+          {error.status} {error.statusText}
+        </h1>
+        <p>{error.data}</p>
+      </div>
+    );
+  } else if (error instanceof Error) {
+    return (
+      <Page narrowWidth>
+        <TitleBar title="Add Routine" />
+        <h1>Error</h1>
+        <p>{error.message}</p>
+      </Page>
+    );
+  } else {
+    return <h1>Unknown Error</h1>;
+  }
+}

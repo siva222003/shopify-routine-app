@@ -8,13 +8,116 @@
   }
 </style>
 
+{% comment %}
+  <!-- Skeleton Loader -->
+
+  <section
+    x-show="tab===1 "
+    class=" flex animate-pulse  max-md:flex-col max-md:items-center md:justify-center my-10 gap-10 md:gap-6 lg:gap-14"
+    x-transition
+    x-cloak
+  >
+    <!-- Routine Thumbnail -->
+
+    <img
+      width="100"
+      height="100"
+      src="{{ "background.svg" | asset_url }}"
+      alt="Routine Thumbnail"
+      class="rounded-2xl max-md:min-w-[100%] md:h-[33rem] md:w-[33rem] lg:h-[47rem] lg:w-[47rem] lMd:h-[40rem] lMd:w-[40rem] xl:h-[50rem] xl:w-[50rem] "
+    >
+
+    <div class="flex flex-col gap-[2rem] max-md:mx-3">
+      <div class="h-[15px] max-w-lg rounded-xl  bg-skeletonCream "></div>
+
+      <!-- Imports & Likes -->
+      <div class="h-[10px] max-w-md rounded-xl bg-skeletonCream "></div>
+
+      <!-- Weeks, Type, Created -->
+      <div class=" flex gap-4 w-fit ">
+        <div class="flex flex-col  w-[70px] py-4 rounded-xl bg-[#fff7e2]  items-center justify-evenly gap-2">
+          <img width="" height="" class=" " src="{{ "reminder-calendar.svg" | asset_url }}" alt="">
+
+          <div class="h-[10px] rounded-xl bg-skeletonCream "></div>
+          <div class="h-[10px] rounded-xl bg-skeletonCream "></div>
+        </div>
+
+        <div class=" flex flex-col w-[70px] justify-evenly  py-4 rounded-xl  bg-[#fff7e2]  items-center gap-3">
+          <img width="" height="" class=" " src="{{ "type.svg" | asset_url }}" alt="">
+          <div class="h-[10px] rounded-xl bg-skeletonCream "></div>
+          <div class="h-[10px] rounded-xl bg-skeletonCream "></div>
+        </div>
+
+        <div class="flex flex-col bg-[#fff7e2]  w-[70px] py-4 rounded-xl justify-evenly   items-center gap-3">
+          <img width="" height="" class="" src="{{ "by-amrutam.svg" | asset_url }}" alt="">
+          <div class="h-[10px] rounded-xl bg-skeletonCream "></div>
+          <div class="h-[10px] rounded-xl bg-skeletonCream "></div>
+        </div>
+      </div>
+
+      <!-- Products Used -->
+      <div class="flex flex-col  gap-3">
+        <h3 class="text-primaryGreen text-[13px] ml-2">Products Used</h3>
+        <div class="flex gap-3">
+          <template x-for="product in 3">
+            <div class="flex flex-col items-center  gap-3">
+              <div class="h-[70px] w-[70px] rounded-full bg-skeletonCream "></div>
+              <div class="h-[10px] w-20  rounded-2xl bg-skeletonCream"></div>
+            </div>
+          </template>
+        </div>
+      </div>
+
+      <!-- Description & Weekly Benfits -->
+      <div class="flex flex-col gap-1 px-[20px] md:max-w-[50rem] lg:max-w-[60rem] bg-slate-50  md:px-[18px] lg:px-[24px] py-[22px] rounded-2xl  w-fit">
+        <!-- Description -->
+
+        <div class="flex flex-col gap-4">
+          <div class="flex  items-center  gap-4">
+            <div class="h-[50px] w-[50px] rounded-full bg-skeletonCream "></div>
+
+            <div class="h-[15px] w-40 rounded-xl bg-skeletonCream "></div>
+          </div>
+
+          <!-- Description -->
+          <div class="h-[10px] max-w-3xl  rounded-xl bg-skeletonCream "></div>
+          <div class="h-[10px] max-w-3xl  rounded-xl bg-skeletonCream "></div>
+          <div class="h-[10px]  max-w-xl  rounded-xl bg-skeletonCream "></div>
+        </div>
+
+        <!-- Weekly Benfits -->
+
+        <div
+          class="bg-skeletonCream rounded-2xl h-[20px] w-lg  max-w-lg  mt-5"
+        ></div>
+
+        <div class="flex flex-col gap-8">
+          <template x-for="weeklyBenefit in 3">
+            <div class="mt-[10px]">
+              <div class="h-[20px] w-[100px] bg-skeletonCream rounded-2xl"></div>
+              <ul class="  pl-6 text-[#464646] flex flex-col gap-10">
+                <template x-for="benefit in 2">
+                  <div
+                    class="h-[10px] w-[100px] bg-skeletonCream rounded-2xl"
+                  ></div>
+                </template>
+              </ul>
+            </div>
+          </template>
+        </div>
+      </div>
+    </div>
+  </section>
+{% endcomment %}
+
 <section
-  x-show="tab===1"
+  x-show="tab===1 && !isLoading"
   class=" flex max-md:flex-col max-md:items-center md:justify-center my-10 gap-10 md:gap-6 lg:gap-14"
   x-transition
   x-cloak
 >
   <!-- Routine Thumbnail -->
+
   <img
     width="100"
     height="100"
@@ -115,21 +218,27 @@
 
       <!-- Weekly Benfits -->
 
-      <h1 class="text-primaryBlack text-[18px] font-[500] my-4 ">Weekly Benfits</h1>
+      <h1 class="text-primaryBlack text-[18px] font-[500] my-4">Weekly Benefits</h1>
 
-      <template x-for="weeklyBenefit in weeklyBenefits">
-        <div class="flex flex-col">
-          <h2 class="text-primaryGreen text-[16px] my-4" x-text="weeklyBenefit.duration"></h2>
-          <ul class="text-[#464646] flex flex-col gap-[15px]">
-            <template x-for="benefit in weeklyBenefit.benefits">
-              <li class="text-[14px]">
-                <span class="font-[600]" x-text="benefit.split(':')[0]"></span>
-                <span x-text="benefit.split(':')[1]"></span>
-              </li>
-            </template>
-          </ul>
-        </div>
-      </template>
+      <div class="flex flex-col gap-8">
+        <template x-for="weeklyBenefit in weeklyBenefits">
+          <div class="mt-[10px]">
+            <h2
+              class="text-primaryGreen text-[16px] font-[500] mb-2"
+              x-text="`Week: ${weeklyBenefit.weekRange}`"
+            ></h2>
+            <ul class="list-disc pl-6 text-[#464646] flex flex-col gap-4">
+              <template x-for="benefit in weeklyBenefit.benefits">
+                <li class="text-[14px] leading-relaxed ">
+                  <span class="font-[600]" x-text="`${benefit.split(':')[0]} : `"></span>
+                  <span x-text="benefit.split(':')[1]"></span>
+                </li>
+              </template>
+            </ul>
+          </div>
+        </template>
+      </div>
     </div>
   </div>
 </section>
+

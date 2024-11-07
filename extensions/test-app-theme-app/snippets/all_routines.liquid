@@ -1,45 +1,52 @@
-<h1 class="text-center text-[20px] mb-[40px]">Explore Routines</h1>
-
-<div class="flex justify-center px-[10px] mb-[200px] sm:px-[20px]">
-  <div class="grid  grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-y-[30px] gap-x-[15px] sm:gap-x-[20px] md:gap-x-[30px] xl:gap-x-[40px] custom-grid-gap">
+<div class="flex justify-center px-[10px] sm:px-[20px]">
+  <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-y-[30px] gap-x-[15px] sm:gap-x-[20px] md:gap-x-[30px] xl:gap-x-[40px] custom-grid-gap">
     <!-- Skeleton Loader -->
+    <template x-for="n in columnCount*2" :key="n">
+      <div x-show="isLoading" x-clock x-transition class="flex flex-col gap-3 w-full md:w-fit animate-pulse">
+        <img
+          width=""
+          height=""
+          src="{{ 'background.svg' | asset_url }}"
+          class="h-[300px] w-full sm:h-[220px] sm:w-[220px] rounded-2xl lg:h-[250px] lg:w-[250px]"
+          alt="Routine Image"
+          alt=""
+        >
 
-    <template x-if="isLoading">
-      <template x-for="n in columnCount*2" :key="n">
-        <div class="flex flex-col gap-3 w-full md:w-fit animate-pulse">
-          <div class="bg-skeletonCream md:h-[220px] md:w-[220px] rounded-2xl lg:h-[250px] lg:w-[250px]"></div>
+        <div class="h-4 bg-skeletonCream rounded-md w-[70%]"></div>
 
-          <div class="h-4 bg-skeletonCream rounded-md w-[70%]"></div>
-
-          <div class="flex gap-3 items-center">
-            <div class="w-5 h-5 bg-skeletonCream rounded-full"></div>
-            <div class="h-3 bg-skeletonCream rounded-md w-[50%]"></div>
-          </div>
-
-          <div class="flex gap-3 items-center">
-            <div class="w-5 h-5 bg-skeletonCream rounded-full"></div>
-            <div class="h-3 bg-skeletonCream rounded-md w-[60%]"></div>
-          </div>
-
-          <div class="flex gap-3 items-center">
-            <div class="w-5 h-5 bg-skeletonCream rounded-full"></div>
-            <div class="h-3 bg-skeletonCream rounded-md w-[80%]"></div>
-          </div>
+        <div class="flex gap-3 items-center">
+          <div class="w-5 h-5 bg-skeletonCream rounded-full"></div>
+          <div class="h-3 bg-skeletonCream rounded-md w-[50%]"></div>
         </div>
-      </template>
+
+        <div class="flex gap-3 items-center">
+          <div class="w-5 h-5 bg-skeletonCream rounded-full"></div>
+          <div class="h-3 bg-skeletonCream rounded-md w-[60%]"></div>
+        </div>
+
+        <div class="flex gap-3 items-center">
+          <div class="w-5 h-5 bg-skeletonCream rounded-full"></div>
+          <div class="h-3 bg-skeletonCream rounded-md w-[80%]"></div>
+        </div>
+      </div>
     </template>
 
     <!-- Actual Data -->
     <template class="mb-[200px]" x-for="routine in visibleRoutines" :key="routine._id">
-      <a :href="`/pages/routine?id=${routine._id}`">
-        <div class="flex flex-col gap-3 w-full md:w-fit ">
-          <section
+      <a :href="`/pages/routine?id=${routine._id}`" x-show="!isLoading" x-clock x-transition>
+        <div class="flex flex-col gap-3 w-full md:w-fit">
+          <img
+            loading="lazy"
+            x-cloak
             x-show="!routine.loaded"
             x-transition:enter="transition ease-out duration-300"
-            x-cloak
-            class="bg-gray-300 md:h-[220px] md:w-[220px] rounded-2xl lg:h-[250px] lg:w-[250px]"
-          ></section>
-
+            width=""
+            height=""
+            src="{{ 'background.svg' | asset_url }}"
+            class=" w-full sm:h-[220px] sm:w-[220px] rounded-2xl lg:h-[250px] lg:w-[250px]"
+            alt="Routine Image"
+            alt=""
+          >
           <img
             width=""
             height=""
@@ -47,7 +54,7 @@
             x-cloak
             x-transition
             :src="routine.image"
-            class="md:h-[220px] md:w-[220px] rounded-2xl lg:h-[250px] lg:w-[250px]"
+            class="w-full sm:h-[220px] sm:w-[220px] rounded-2xl lg:h-[250px] lg:w-[250px]"
             alt="Routine Image"
             @load="routine.loaded = true"
             @error="routine.loaded = true"

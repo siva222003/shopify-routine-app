@@ -1,11 +1,12 @@
 import { FormApi } from "@rvf/remix";
 import { Banner, Card, OptionList } from "@shopify/polaris";
 import { useEffect, useState } from "react";
+import { ActivityReminderType } from "~/routes/app.$id.add-activity/validator";
 import { ProductReminderType } from "~/routes/app.$id.add-product/validator";
 import { DefaultRoutine } from "~/routes/app.add-routine/validator";
 
 interface Props {
-  form: FormApi<ProductReminderType>;
+  form: FormApi<ActivityReminderType>;
 }
 
 export default function Frequency({ form }: Props) {
@@ -21,6 +22,8 @@ export default function Frequency({ form }: Props) {
       "frequency",
       form.value("frequency").length !== form.defaultValue("frequency").length,
     );
+
+    setSelected(form.value("frequency"));
   }, [form.value("frequency")]);
 
   return (
@@ -32,13 +35,13 @@ export default function Frequency({ form }: Props) {
           handleChange(value);
         }}
         options={[
-          { value: "sunday", label: "Sunday" },
-          { value: "monday", label: "Monday" },
-          { value: "tuesday", label: "Tuesday" },
-          { value: "wednesday", label: "Wednesday" },
-          { value: "thursday", label: "Thursday" },
-          { value: "friday", label: "Friday" },
-          { value: "saturday", label: "Saturday" },
+          { value: "Sunday", label: "Sunday" },
+          { value: "Monday", label: "Monday" },
+          { value: "Tuesday", label: "Tuesday" },
+          { value: "Wednesday", label: "Wednesday" },
+          { value: "Thursday", label: "Thursday" },
+          { value: "Friday", label: "Friday" },
+          { value: "Saturday", label: "Saturday" },
         ]}
         selected={selected || []}
         allowMultiple

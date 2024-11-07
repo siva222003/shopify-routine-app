@@ -6,8 +6,10 @@ import {
   Card,
   BlockStack,
   InlineStack,
+  ButtonGroup,
+  Spinner,
 } from "@shopify/polaris";
-import { TitleBar } from "@shopify/app-bridge-react";
+import { SaveBar, TitleBar } from "@shopify/app-bridge-react";
 import {
   Form,
   useActionData,
@@ -55,18 +57,15 @@ export async function action({ request }: ActionFunctionArgs) {
   apiData.draft === "draft"
     ? ((apiData.draft as any) = true)
     : ((apiData.draft as any) = false);
-
   (apiData.duration.number as any) = parseInt(apiData.duration.number);
 
-  const res = await addRoutine(apiData);
+  const res = await addRoutine({ ...apiData, isTemplate: true });
 
   return res;
 }
 
 export default function AddRoutine() {
   const { categories } = useLoaderData<typeof loader>();
-
-  console.log({ categories });
 
   const navigation = useNavigation();
 
@@ -96,9 +95,28 @@ export default function AddRoutine() {
   const submit = useSubmit();
 
   return (
-    <Page>
-      <TitleBar title="Add Routine" />
+    <Page
+      title="Add Routine"
+      primaryAction={{
+        content: "Save",
+        onAction: form.submit,
+        loading: isSubmitting,
+      }}
+    >
       <Form {...form.getFormProps()}>
+        {/* <SaveBar open={form.formState.isDirty}>
+          <button variant={"primary"} onClick={() => form.submit}>
+            {isSubmitting ? <Spinner size="small" /> : null}
+            Save
+          </button>
+          <button
+            type="button"
+            onClick={() => form.resetForm(RoutineDefaultValues)}
+          >
+            Discard
+          </button>
+        </SaveBar> */}
+
         <Layout>
           <Layout.Section>
             <FormLayout>
@@ -121,9 +139,7 @@ export default function AddRoutine() {
                   <DescriptionInput form={form} />
                 </BlockStack>
               </Card>
-
               <DurationInput form={form} />
-              <ImageInput file={file} setFile={setFile} />
 
               <ChannelsInput form={form} />
             </FormLayout>
@@ -131,21 +147,18 @@ export default function AddRoutine() {
 
           <Layout.Section variant="oneThird">
             <FormLayout>
+              <ImageInput form={form} />
+
               <StatusInput form={form} />
             </FormLayout>
           </Layout.Section>
         </Layout>
+
         <div
           style={{
-            marginBottom: "20px",
-            marginTop: "20px",
-            textAlign: "center",
+            marginTop: "3rem",
           }}
-        >
-          <Button loading={isSubmitting} variant="primary" size="large" submit>
-            Submit
-          </Button>
-        </div>
+        ></div>
       </Form>
     </Page>
   );
@@ -165,8 +178,7 @@ export function ErrorBoundary() {
     );
   } else if (error instanceof Error) {
     return (
-      <Page narrowWidth>
-        <TitleBar title="Add Routine" />
+      <Page narrowWidth title="Add Routine">
         <h1>Error</h1>
         <p>{error.message}</p>
       </Page>

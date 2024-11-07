@@ -39,7 +39,7 @@
               -->
 
               <div
-                class="bg-white mt-12 rounded-lg shadow p-4 absolute top-4 left-0"
+                class="bg-white mt-12 rounded-lg shadow p-4 absolute top-4 z-10 left-0"
                 {% comment %} style="width: 17rem" {% endcomment %}
                 x-show.transition="showDatepicker"
                 @click.away="showDatepicker = false"
@@ -110,7 +110,7 @@
                       <div
                         @click="getDateValue(date)"
                         x-text="date"
-                        class="cursor-pointer text-center text-[13px] rounded-full leading-loose transition ease-in-out duration-100"
+                        class="cursor-pointer  w-[40px] h-[40px] flex justify-center items-center text-[13px] rounded-full leading-loose transition ease-in-out duration-100"
                         :class="
                           {
                             'bg-primaryCream': isToday(date) == true,
@@ -219,5 +219,35 @@
         };
       }
     </script>
+  </div>
+  <!-- Buttons -->
+  <div class="mt-[80px] mb-[60px] text-center flex flex-col gap-[18px]">
+    <div class="flex max-ssm:flex-col max-ssm:items-center gap-8 justify-center">
+      <button
+        @click="changeTab(tab-1)"
+        class="px-10 py-3 min-w-[150px] rounded-lg border border-[#3A643B] text-[#3A643B] text-[16px]"
+      >
+        Back
+      </button>
+
+      <button
+        :disabled="isCreatingRoutine"
+        @click="startRoutine()"
+        class="px-14 py-3  rounded-lg relative -z-1 bg-[#3A643B] disabled:opacity-60 text-white text-[16px] shadow-lg"
+      >
+        <div x-show="isCreatingRoutine" class="absolute top-5 right-1/2">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            aria-hidden="true"
+            class="size-8 fill-neutral-600 motion-safe:animate-spin dark:fill-neutral-300"
+          >
+            <path d="M12,1A11,11,0,1,0,23,12,11,11,0,0,0,12,1Zm0,19a8,8,0,1,1,8-8A8,8,0,0,1,12,20Z" opacity=".25" />
+            <path d="M10.14,1.16a11,11,0,0,0-9,8.92A1.59,1.59,0,0,0,2.46,12,1.52,1.52,0,0,0,4.11,10.7a8,8,0,0,1,6.66-6.61A1.42,1.42,0,0,0,12,2.69h0A1.57,1.57,0,0,0,10.14,1.16Z" />
+          </svg>
+        </div>
+        <span>Start Routine</span>
+      </button>
+    </div>
   </div>
 </div>

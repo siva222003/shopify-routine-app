@@ -1,3 +1,4 @@
+import { useNavigate, useNavigation, useSubmit } from "@remix-run/react";
 import { Badge, MediaCard } from "@shopify/polaris";
 import { ActivityReminderType } from "~/routes/app.routine.$id/types";
 
@@ -6,6 +7,17 @@ interface Props {
 }
 
 export default function ActivityReminderCard({ reminder }: Props) {
+  const navigate = useNavigate();
+
+  const navigation = useNavigation();
+
+  const isSubmitting =
+    navigation.state === "submitting" &&
+    reminder._id ===
+      JSON.parse((navigation.formData?.get("id") as string) || "");
+
+  const submit = useSubmit();
+
   return (
     <MediaCard
       title={
@@ -25,10 +37,25 @@ export default function ActivityReminderCard({ reminder }: Props) {
       }
       primaryAction={{
         content: "Customize Reminder",
-        onAction: () => {},
+        onAction: () => {
+          navigate(`/app/${reminder.reminderListId}/activity/${reminder._id}`);
+        },
+      }}
+      secondaryAction={{
+        content: "Delete",
+        destructive: true,
+        loading: isSubmitting,
+        onAction: () => {
+          submit(
+            {
+              _action: JSON.stringify("activityDelete"),
+              id: JSON.stringify(reminder._id),
+            },
+            { method: "delete" },
+          );
+        },
       }}
       description={reminder.activityType === "mental" ? "Mental" : "Physical"}
-      popoverActions={[{ content: "Delete", onAction: () => {} }]}
       size="small"
     >
       <img

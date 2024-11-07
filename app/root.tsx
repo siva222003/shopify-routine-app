@@ -16,8 +16,6 @@ import GlobalSpinner from "./components/GlobalSpinner";
 export default function App() {
   const isTransitioning = useViewTransitionState("/app/*");
 
-  console.log({ isTransitioning });
-
   return (
     <Document>{isTransitioning ? <GlobalSpinner /> : <Outlet />}</Document>
   );
@@ -59,6 +57,7 @@ function Document(props: { children: ReactNode; title?: string }) {
         {props.title ? <title>{props.title}</title> : null}
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width,initial-scale=1" />
+        {/* <meta name="shopify-debug" content="web-vitals" /> */}
         <link rel="preconnect" href="https://cdn.shopify.com/" />
         <link
           rel="stylesheet"
@@ -66,6 +65,19 @@ function Document(props: { children: ReactNode; title?: string }) {
         />
         <Meta />
         <Links />
+        {/* <script src="https://cdn.shopify.com/shopifycloud/app-bridge.js"></script>
+          <script
+            dangerouslySetInnerHTML={{
+              __html: `
+                function processWebVitals(metrics) {
+                  const monitorUrl = 'https://yourserver.com/web-vitals-metrics';
+                  const data = JSON.stringify(metrics);
+                  navigator.sendBeacon(monitorUrl, data);
+                }
+                shopify.webVitals.onReport(processWebVitals);
+              `,
+            }}
+          /> */}
       </head>
       <body>
         {props.children}

@@ -14,43 +14,29 @@ import {
   Box,
 } from "@shopify/polaris";
 import { PlusCircleIcon } from "@shopify/polaris-icons";
-import { TimeSlot } from "~/routes/app.$id.add-product/types";
-import { ProductReminderType } from "~/routes/app.$id.add-product/validator";
+import { ActivityReminderType } from "~/routes/app.$id.add-activity/validator";
 
 interface Props {
-  form: FormApi<ProductReminderType>;
+  form: FormApi<ActivityReminderType>;
 }
 
-export default function AddProductTimeSlot({ form }: Props) {
-  const isConsumable = form.value("productType") === "consumable";
-
-  const slots = useFieldArray(
-    form.scope(
-      isConsumable ? "timeSlotsConsumable" : "timeSlotsAppBased",
-    ) as FormScope<TimeSlot[]>,
-    {
-      validationBehavior: {
-        initial: "onChange",
-        whenSubmitted: "onChange",
-      },
+export default function AddActivityTimeSlot({ form }: Props) {
+  const slots = useFieldArray(form.scope("timeslotActivityBased"), {
+    validationBehavior: {
+      initial: "onChange",
+      whenSubmitted: "onChange",
     },
-  );
+  });
 
   const handleAddSlot = () => {
-    if (isConsumable) {
-      slots.push(form.defaultValue("timeSlotsConsumable")![0]);
-    } else {
-      slots.push(form.defaultValue("timeSlotsAppBased")![0]);
-    }
+    slots.push({
+      hours: "",
+      minutes: "",
+      timeUnit: "AM",
+    });
   };
 
-  const renderSlotFields = (
-    slot: any,
-    index: number,
-    isConsumable: boolean,
-    key: string,
-  ) => {
-    const mealTypeError = isConsumable ? slot.error(`mealType`) : undefined;
+  const renderSlotFields = (slot: any, index: number, key: string) => {
     const hoursError = slot.error("hours") || undefined;
     const minutesError = slot.error("minutes") || undefined;
     const timeUnitError = slot.error("timeUnit") || undefined;
@@ -65,21 +51,10 @@ export default function AddProductTimeSlot({ form }: Props) {
         padding="300"
       >
         <BlockStack gap="100">
-          {isConsumable && (
-            <Select
-              label="Date range"
-              options={["Breakfast", "Brunch", "Lunch", "Dinner"]}
-              name={`timeSlotsConsumable[${index}].mealType`}
-              placeholder="Select"
-              onChange={(e) => slot.setValue(`mealType`, e)}
-              value={slot.value(`mealType`)}
-              error={mealTypeError}
-            />
-          )}
           <FormLayout.Group condensed>
             <TextField
               label="Hours"
-              name={`timeSlots${isConsumable ? "Consumable" : "AppBased"}[${index}].hours`}
+              name={`timeslotActivityBased[${index}].hours`}
               type="text"
               maxLength={2}
               value={slot.value("hours")}
@@ -93,7 +68,7 @@ export default function AddProductTimeSlot({ form }: Props) {
             />
             <TextField
               label="Minutes"
-              name={`timeSlots${isConsumable ? "Consumable" : "AppBased"}[${index}].minutes`}
+              name={`timeslotActivityBased[${index}].minutes`}
               type="text"
               maxLength={2}
               value={slot.value("minutes")}
@@ -109,39 +84,25 @@ export default function AddProductTimeSlot({ form }: Props) {
             <Select
               label="AM/PM"
               placeholder="Select"
-              name={`timeSlots${isConsumable ? "Consumable" : "AppBased"}[${index}].timeUnit`}
+              name={`timeslotActivityBased[${index}].timeUnit`}
               value={slot.value("timeUnit")}
               onChange={(e) => slot.setValue("timeUnit", e as "")}
               options={["AM", "PM"]}
               error={timeUnitError}
             />
           </FormLayout.Group>
-          <InlineStack gap="400">
-            <RadioButton
-              label="Before Meal"
-              name={`timeSlots${isConsumable ? "Consumable" : "AppBased"}[${index}].mealTime`}
-              value="beforeMeal"
-              checked={slot.value("mealTime") === "beforeMeal"}
-              onChange={() => slot.setValue(`mealTime`, "beforeMeal")}
-            />
-            <RadioButton
-              label="After Meal"
-              name={`timeSlots${isConsumable ? "Consumable" : "AppBased"}[${index}].mealTime`}
-              value="afterMeal"
-              checked={slot.value("mealTime") === "afterMeal"}
-              onChange={() => slot.setValue(`mealTime`, "afterMeal")}
-            />
-          </InlineStack>
         </BlockStack>
+
+        <div
+          style={{
+            marginTop: "13px",
+          }}
+        ></div>
         <InlineStack align="end">
           <Button
             variant="secondary"
             tone="critical"
-            disabled={
-              (isConsumable &&
-                form.value("timeSlotsConsumable")?.length === 1) ||
-              (!isConsumable && form.value("timeSlotsAppBased")?.length === 1)
-            }
+            disabled={form.value("timeslotActivityBased").length === 1}
             onClick={() => {
               slots.remove(index);
               shopify.toast.show(`Slot ${index + 1} removed successfully`);
@@ -161,17 +122,9 @@ export default function AddProductTimeSlot({ form }: Props) {
       </Text>
       <div style={{ marginTop: "10px" }}></div>
       <Listbox accessibilityLabel="Listbox with Action example">
-        <FieldArray
-          scope={
-            form.scope(
-              isConsumable ? "timeSlotsConsumable" : "timeSlotsAppBased",
-            ) as FormScope<TimeSlot[]>
-          }
-        >
+        <FieldArray scope={form.scope("timeslotActivityBased")}>
           {(array) =>
-            array.map((key, item, index) =>
-              renderSlotFields(item, index, isConsumable, key),
-            )
+            array.map((key, item, index) => renderSlotFields(item, index, key))
           }
         </FieldArray>
         <Box
