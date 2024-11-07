@@ -110,7 +110,7 @@
 // }
 
 import { Box, Button, ButtonGroup, Card, InlineStack } from "@shopify/polaris";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import ImageUploadModal from "./ui/ImageUploadModal";
 import { useFetcher } from "@remix-run/react";
 import {
@@ -129,10 +129,22 @@ const ImageInput = ({ form }: ImageInputProps) => {
   const [showModal, setShowModal] = useState(false);
   const fileFetcher = useFetcher<FileGridResponseType>();
   const [selectedImage, setSelectedImage] = useState<FileGridType | null>(
-    form.value("image").length > 0
+    !!form.value("image")
       ? ({ preview: { image: { url: form.value("image") } } } as FileGridType)
       : null,
   );
+
+  useEffect(() => {
+    if (!!form.value("image")) {
+      setSelectedImage({
+        preview: {
+          image: {
+            url: form.value("image"),
+          },
+        },
+      } as FileGridType);
+    }
+  }, [form.value("image")]);
 
   const handleFetchFiles = async () => {
     fileFetcher.load("/app/files");

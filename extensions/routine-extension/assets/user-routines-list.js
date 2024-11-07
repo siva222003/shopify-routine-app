@@ -60,7 +60,7 @@ document.addEventListener("alpine:init", () => {
       try {
         this.isRoutinesLoading = true;
 
-        const response = await fetch(`http://localhost:36679/user-routines`, {
+        const response = await fetch(`http://localhost:36515/user-routines`, {
           method: "GET",
           headers: { "Content-Type": "application/json" },
         });
@@ -83,7 +83,7 @@ document.addEventListener("alpine:init", () => {
       try {
         this.isRemindersLoading = true;
 
-        const response = await fetch(`http://localhost:36679/today-reminders`, {
+        const response = await fetch(`http://localhost:36515/today-reminders`, {
           method: "GET",
           headers: { "Content-Type": "application/json" },
         });
@@ -144,7 +144,7 @@ document.addEventListener("alpine:init", () => {
 
 //     this.isRemindersLoading = true;
 
-//     const response = await fetch(`http://localhost:36679/slots`, {
+//     const response = await fetch(`http://localhost:36515/slots`, {
 //       method: "POST",
 //       body: JSON.stringify(body),
 //       headers: { "Content-Type": "application/json" },

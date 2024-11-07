@@ -22,6 +22,8 @@ import {
   useParams,
   useSubmit,
   Await,
+  useRouteError,
+  isRouteErrorResponse,
 } from "@remix-run/react";
 import {
   CategoryInput,
@@ -177,12 +179,11 @@ export default function Routine() {
 
   const isSubmitting = navigation.state === "submitting";
 
-  const [file, setFile] = useState<File | null>(null);
-
   const form = useForm({
     validator: addRoutineValidator,
     defaultValues: EditRoutineDefaultValues(resolvedRoutineData),
     handleSubmit: async (values) => {
+      console.log({ values });
       submit(
         { values: JSON.stringify(values), _action: JSON.stringify("update") },
         { method: "PUT" },
@@ -197,6 +198,8 @@ export default function Routine() {
   //     setShowSaveBar(false);
   //   }
   // }, [form.formState.isDirty]);
+
+  // console.log(form.value("image"));
 
   const submit = useSubmit();
 
@@ -387,4 +390,27 @@ export default function Routine() {
       )}
     </Page>
   );
+}
+export function ErrorBoundary() {
+  const error = useRouteError();
+
+  if (isRouteErrorResponse(error)) {
+    return (
+      <div>
+        <h1>
+          {error.status} {error.statusText}
+        </h1>
+        <p>{error.data}</p>
+      </div>
+    );
+  } else if (error instanceof Error) {
+    return (
+      <Page narrowWidth title="Customize Routine">
+        <h1>Error</h1>
+        <p>{error.message}</p>
+      </Page>
+    );
+  } else {
+    return <h1>Unknown Error</h1>;
+  }
 }

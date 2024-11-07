@@ -11,6 +11,8 @@
   <!-- All Routines -->
   {% render 'all_routines' %}
 
+  <button @click="test">Bro</button>
+
   <div x-show="routines.length > columnCount" x-cloak class="text-right">
     <button
       x-text="visibleRoutines.length >= routines.length ? 'Show Less' : 'Show More'"

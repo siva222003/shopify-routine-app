@@ -3,7 +3,7 @@ import { authenticate } from "~/shopify.server";
 
 import prisma from "~/db.server";
 import { useLoaderData } from "@remix-run/react";
-import { api } from "~/utils/axios";
+// import { api } from "~/utils/axios";
 
 export async function loader({ request, params }: LoaderFunctionArgs) {
   const { session, admin } = await authenticate.public.appProxy(request);

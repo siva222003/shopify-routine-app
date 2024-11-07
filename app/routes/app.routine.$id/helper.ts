@@ -3,8 +3,6 @@ import { DefaultRoutine } from "../app.add-routine/validator";
 import { EditRoutineType } from "./types";
 
 export const EditRoutineDefaultValues = (data: EditRoutineType | null) => {
-  console.log({ data });
-
   if (!data) return RoutineDefaultValues;
 
   return {

@@ -12,8 +12,7 @@ export default function ProductReminderCard({ reminder }: Props) {
 
   const isSubmitting =
     navigation.state === "submitting" &&
-    reminder._id ===
-      JSON.parse((navigation.formData?.get("id") as string) || "");
+    JSON.stringify(reminder._id) === navigation.formData?.get("id");
 
   const submit = useSubmit();
 

@@ -25,7 +25,7 @@ document.addEventListener("alpine:init", () => {
     async exploreRoutines() {
       try {
         this.isLoading = true;
-        const response = await fetch("http://localhost:36679/explore", {
+        const response = await fetch("http://localhost:36515/explore", {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
@@ -49,6 +49,32 @@ document.addEventListener("alpine:init", () => {
       } finally {
         this.isLoading = false;
         this.filterRoutines(); // Apply initial filtering
+      }
+    },
+
+    async test() {
+      try {
+        const rootUrl = window.location.origin;
+
+        console.log({ rootUrl });
+
+        const res = await fetch(`${rootUrl}/apps/routine/app/hello`, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+
+        if (!res.ok) {
+          // Log or handle non-OK responses (like 404 or 500 errors)
+          throw new Error(`Failed to fetch: ${res.status} ${res.statusText}`);
+        }
+
+        const data = await res.json();
+
+        console.log(data);
+      } catch (error) {
+        console.error("Error fetching routines:", error);
       }
     },
 
