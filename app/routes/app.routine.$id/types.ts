@@ -5,7 +5,7 @@ export type EditRoutineType = RoutineListType & {
   channels: string[];
   productReminders: ProductReminderType[];
   activityReminders: ActivityReminderType[];
-  benefits: WeeklyBenefitsType;
+  benefits: WeeklyBenefitsType & { _id: string };
 };
 
 export type ActivityReminderType = {

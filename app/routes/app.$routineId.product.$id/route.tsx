@@ -33,6 +33,7 @@ import {
 import { fetchProductReminder, updateProductReminder } from "./api";
 import { EditProductReminderDefaultValues } from "./helper";
 import { EditProductReminderType } from "./types";
+import { deleteProductReminder } from "../app.routine.$id/api";
 
 export async function loader({ params }: LoaderFunctionArgs) {
   if (!params.id) {
@@ -61,35 +62,43 @@ export async function action({ request, params }: ActionFunctionArgs) {
 
   const data = await request.formData();
 
-  const values = JSON.parse(data.get("values") as string);
+  const _action = JSON.parse(data.get("_action") as string);
 
-  const result = await addProductValidator.validate(values);
+  if (_action === "update") {
+    const values = JSON.parse(data.get("values") as string);
 
-  if (result.error) {
-    return json({
-      success: false,
-      toast: "Invalid Fields",
+    const result = await addProductValidator.validate(values);
+
+    if (result.error) {
+      return json({
+        success: false,
+        toast: "Invalid Fields",
+      });
+    }
+
+    const apiData = result.data;
+
+    (apiData.duration.number as any) = parseInt(apiData.duration.number);
+
+    apiData.timeSlotsConsumable = formattedConsumableTimeslots(
+      apiData.timeSlotsConsumable,
+    ) as any;
+
+    apiData.timeSlotsAppBased = formattedAppBasedTimeslots(
+      apiData.timeSlotsAppBased,
+    ) as any;
+
+    const response = await updateProductReminder(id, {
+      ...apiData,
+      reminderListId: routineId,
     });
+
+    return response;
+  } else if (_action === "delete") {
+    const response = await deleteProductReminder(id);
+
+    return response;
   }
-
-  const apiData = result.data;
-
-  (apiData.duration.number as any) = parseInt(apiData.duration.number);
-
-  apiData.timeSlotsConsumable = formattedConsumableTimeslots(
-    apiData.timeSlotsConsumable,
-  ) as any;
-
-  apiData.timeSlotsAppBased = formattedAppBasedTimeslots(
-    apiData.timeSlotsAppBased,
-  ) as any;
-
-  const response = await updateProductReminder(id, {
-    ...apiData,
-    reminderListId: routineId,
-  });
-
-  return response;
 }
 
 const EditProductReminder = () => {
@@ -100,7 +109,10 @@ const EditProductReminder = () => {
     validator: addProductValidator,
     defaultValues: EditProductReminderDefaultValues(resolvedReminder),
     handleSubmit: async (values) => {
-      submit({ values: JSON.stringify(values) }, { method: "PUT" });
+      submit(
+        { _action: JSON.stringify("update"), values: JSON.stringify(values) },
+        { method: "PUT" },
+      );
     },
   });
 
@@ -108,13 +120,13 @@ const EditProductReminder = () => {
 
   const actionData = useActionData<typeof action>();
 
-  const navigaton = useNavigation();
+  const navigation = useNavigation();
 
   const navigate = useNavigate();
 
   const { routineId } = useParams();
 
-  const isSubmitting = navigaton.state === "submitting";
+  const isSubmitting = navigation.state === "submitting";
 
   const submit = useSubmit();
 
@@ -136,6 +148,13 @@ const EditProductReminder = () => {
         duration: 3000,
         isError: !actionData.success,
       });
+
+      if (
+        actionData.success &&
+        actionData.toast === "Reminder deleted successfully"
+      ) {
+        navigate(`/app/routine/${routineId}`);
+      }
     }
   }, [actionData]);
 
@@ -146,6 +165,28 @@ const EditProductReminder = () => {
         content: "Back",
         onAction: () => navigate(`/app/routine/${routineId}`),
       }}
+      primaryAction={{
+        content: "Delete",
+        destructive: true,
+        onAction: () => {
+          submit({ _action: JSON.stringify("delete") }, { method: "delete" });
+        },
+        loading:
+          isSubmitting && navigation.formData?.get("_action") === '"delete"',
+
+        disabled: isSubmitting,
+      }}
+      secondaryActions={[
+        {
+          content: "Save",
+          onAction: () => {
+            form.submit();
+          },
+          loading:
+            isSubmitting && navigation.formData?.get("_action") === '"update"',
+          disabled: isSubmitting,
+        },
+      ]}
       narrowWidth
     >
       <Suspense fallback="Loading...">
@@ -180,6 +221,11 @@ const EditProductReminder = () => {
           </Form>
         </Await>
       </Suspense>
+      <div
+        style={{
+          marginTop: "3rem",
+        }}
+      ></div>
     </Page>
   );
 };

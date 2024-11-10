@@ -8,7 +8,13 @@
 <div
   x-show="tab===3"
   x-init="$watch('index', value => console.log(value))"
-  x-transition
+  x-transition:enter="transition ease-out duration-200"
+  x-transition:enter-start="opacity-0 scale-90"
+  x-transition:enter-end="opacity-100 scale-100"
+  x-transition:leave="transition ease-in duration-200"
+  x-transition:leave-start="opacity-100 scale-100"
+  x-transition:leave-end="opacity-0 scale-90"
+  x-cloak
   class=" md:max-w-[90%] xl:max-w-[80%] mx-auto"
   x-cloak
 >

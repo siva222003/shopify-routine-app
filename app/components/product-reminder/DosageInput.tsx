@@ -14,7 +14,7 @@ const DosageInput = ({ form }: DosageInputProps) => {
         <TextField
           label="Dosage Quantity"
           name="dosageQty"
-          type="text"
+          type="number"
           value={form.value("dosageQty")}
           onChange={(e) => form.setValue("dosageQty", e)}
           autoComplete="off"

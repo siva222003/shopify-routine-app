@@ -54,8 +54,8 @@ export async function action({ request, params }: ActionFunctionArgs) {
   apiData.timeslotActivityBased = formattedActivityBasedTimeslots(
     apiData.timeslotActivityBased,
   ) as any;
-  
-  console.log(apiData.timeslotActivityBased)
+
+  console.log(apiData.timeslotActivityBased);
 
   const response = await addActivityReminder({
     ...apiData,
@@ -104,6 +104,11 @@ const AddActivityReminder = () => {
           navigate(`/app/${id}/reminder`);
         },
       }}
+      primaryAction={{
+        content: "Save",
+        onAction: form.submit,
+        loading: isSubmitting,
+      }}
       narrowWidth
     >
       <Form {...form.getFormProps()}>
@@ -116,25 +121,12 @@ const AddActivityReminder = () => {
           <AddActivityTimeSlot form={form} />
           <Frequency form={form} />
         </FormLayout>
-
-        <div
-          style={{
-            marginBottom: "20px",
-            marginTop: "20px",
-            textAlign: "center",
-          }}
-        >
-          <Button
-            variant="primary"
-            size="large"
-            submit
-            loading={isSubmitting}
-            disabled={isSubmitting}
-          >
-            Submit
-          </Button>
-        </div>
       </Form>
+      <div
+        style={{
+          marginTop: "3rem",
+        }}
+      ></div>
     </Page>
   );
 };

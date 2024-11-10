@@ -32,6 +32,7 @@ import {
 } from "~/components/activity-reminder";
 import { EditActivityReminderDefaultValues } from "./helper";
 import { ImageInput } from "~/components/add-routine";
+import { deleteActivityReminder } from "../app.routine.$id/api";
 
 export async function loader({ params }: LoaderFunctionArgs) {
   if (!params.id) {
@@ -60,31 +61,39 @@ export async function action({ request, params }: ActionFunctionArgs) {
 
   const data = await request.formData();
 
-  const values = JSON.parse(data.get("values") as string);
+  const _action = JSON.parse(data.get("_action") as string);
 
-  const result = await addActivityValidator.validate(values);
+  if (_action === "update") {
+    const values = JSON.parse(data.get("values") as string);
 
-  if (result.error) {
-    return json({
-      success: false,
-      toast: "Invalid Fields",
+    const result = await addActivityValidator.validate(values);
+
+    if (result.error) {
+      return json({
+        success: false,
+        toast: "Invalid Fields",
+      });
+    }
+
+    const apiData = result.data;
+
+    (apiData.duration.number as any) = parseInt(apiData.duration.number);
+
+    apiData.timeslotActivityBased = formattedActivityBasedTimeslots(
+      apiData.timeslotActivityBased,
+    ) as any;
+
+    const response = await updateActivityReminder(id, {
+      ...apiData,
+      reminderListId: routineId,
     });
+
+    return response;
+  } else if (_action === "delete") {
+    const response = await deleteActivityReminder(id);
+
+    return response;
   }
-
-  const apiData = result.data;
-
-  (apiData.duration.number as any) = parseInt(apiData.duration.number);
-
-  apiData.timeslotActivityBased = formattedActivityBasedTimeslots(
-    apiData.timeslotActivityBased,
-  ) as any;
-
-  const response = await updateActivityReminder(id, {
-    ...apiData,
-    reminderListId: routineId,
-  });
-
-  return response;
 }
 
 const AddActivityReminder = () => {
@@ -96,7 +105,10 @@ const AddActivityReminder = () => {
     defaultValues: EditActivityReminderDefaultValues(resolvedReminder),
     handleSubmit: async (values) => {
       console.log({ values });
-      submit({ values: JSON.stringify(values) }, { method: "PUT" });
+      submit(
+        { _action: JSON.stringify("update"), values: JSON.stringify(values) },
+        { method: "PUT" },
+      );
     },
   });
 
@@ -104,13 +116,13 @@ const AddActivityReminder = () => {
 
   const actionData = useActionData<typeof action>();
 
-  const navigaton = useNavigation();
+  const navigation = useNavigation();
 
   const navigate = useNavigate();
 
   const { routineId } = useParams();
 
-  const isSubmitting = navigaton.state === "submitting";
+  const isSubmitting = navigation.state === "submitting";
 
   const submit = useSubmit();
 
@@ -131,6 +143,13 @@ const AddActivityReminder = () => {
         duration: 3000,
         isError: !actionData.success,
       });
+
+      if (
+        actionData.success &&
+        actionData.toast === "Reminder deleted successfully"
+      ) {
+        navigate(`/app/routine/${routineId}`);
+      }
     }
   }, [actionData]);
 
@@ -143,6 +162,28 @@ const AddActivityReminder = () => {
           navigate(`/app/routine/${routineId}`);
         },
       }}
+      primaryAction={{
+        content: "Delete",
+        destructive: true,
+        onAction: () => {
+          submit({ _action: JSON.stringify("delete") }, { method: "delete" });
+        },
+        loading:
+          isSubmitting && navigation.formData?.get("_action") === '"delete"',
+
+        disabled: isSubmitting,
+      }}
+      secondaryActions={[
+        {
+          content: "Save",
+          onAction: () => {
+            form.submit();
+          },
+          loading:
+            isSubmitting && navigation.formData?.get("_action") === '"update"',
+          disabled: isSubmitting,
+        },
+      ]}
       narrowWidth
     >
       <Suspense fallback={<div>Loading...</div>}>
@@ -157,27 +198,14 @@ const AddActivityReminder = () => {
               <AddActivityTimeSlot form={form} />
               <Frequency form={form} />
             </FormLayout>
-
-            <div
-              style={{
-                marginBottom: "20px",
-                marginTop: "20px",
-                textAlign: "center",
-              }}
-            >
-              <Button
-                variant="primary"
-                size="large"
-                submit
-                loading={isSubmitting}
-                disabled={isSubmitting}
-              >
-                Submit
-              </Button>
-            </div>
           </Form>
         </Await>
       </Suspense>
+      <div
+        style={{
+          marginTop: "3rem",
+        }}
+      ></div>
     </Page>
   );
 };

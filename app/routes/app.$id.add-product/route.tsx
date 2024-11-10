@@ -103,6 +103,11 @@ const AddProductReminder = () => {
           navigate(`/app/${id}/reminder`);
         },
       }}
+      primaryAction={{
+        content: "Save",
+        onAction: form.submit,
+        loading: isSubmitting,
+      }}
       narrowWidth
     >
       <Form {...form.getFormProps()}>
@@ -114,25 +119,12 @@ const AddProductReminder = () => {
           <AddProductTimeSlot form={form} />
           <Frequency form={form} />
         </FormLayout>
-
-        <div
-          style={{
-            marginBottom: "20px",
-            marginTop: "20px",
-            textAlign: "center",
-          }}
-        >
-          <Button
-            variant="primary"
-            size="large"
-            submit
-            loading={isSubmitting}
-            disabled={isSubmitting}
-          >
-            Submit
-          </Button>
-        </div>
       </Form>
+      <div
+        style={{
+          marginTop: "3rem",
+        }}
+      ></div>
     </Page>
   );
 };

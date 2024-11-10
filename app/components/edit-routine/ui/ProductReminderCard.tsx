@@ -36,7 +36,7 @@ export default function ProductReminderCard({ reminder }: Props) {
         </div>
       }
       primaryAction={{
-        content: "Customize Reminder",
+        content: "Customize",
         onAction: () => {
           navigate(`/app/${reminder.reminderListId}/product/${reminder._id}`);
         },
@@ -62,16 +62,24 @@ export default function ProductReminderCard({ reminder }: Props) {
       }
       size="small"
     >
-      <img
-        alt=""
-        height="100%"
-        width="100%"
+      <div
         style={{
-          objectFit: "cover",
-          objectPosition: "center",
+          marginTop: "5px",
+          marginLeft: "5px",
         }}
-        src={reminder.image}
-      />
+      >
+        <img
+          alt=""
+          style={{
+            objectFit: "cover",
+            objectPosition: "center",
+            width: "100%",
+            height: "150px",
+            borderRadius: "8px",
+          }}
+          src={reminder.image}
+        />
+      </div>
     </MediaCard>
   );
 }

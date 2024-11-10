@@ -37,7 +37,7 @@ export default function ActivityReminderCard({ reminder }: Props) {
         </div>
       }
       primaryAction={{
-        content: "Customize Reminder",
+        content: "Customize",
         onAction: () => {
           navigate(`/app/${reminder.reminderListId}/activity/${reminder._id}`);
         },
@@ -59,16 +59,24 @@ export default function ActivityReminderCard({ reminder }: Props) {
       description={reminder.activityType === "mental" ? "Mental" : "Physical"}
       size="small"
     >
-      <img
-        alt=""
-        width="100%"
-        height="100%"
+      <div
         style={{
-          objectFit: "cover",
-          objectPosition: "center",
+          marginTop: "5px",
+          marginLeft: "5px",
         }}
-        src={reminder.image}
-      />
+      >
+        <img
+          alt=""
+          style={{
+            objectFit: "cover",
+            objectPosition: "center",
+            width: "100%",
+            height: "150px",
+            borderRadius: "8px",
+          }}
+          src={reminder.image}
+        />
+      </div>
     </MediaCard>
   );
 }

@@ -10,17 +10,17 @@ import {
   useRouteError,
   useSubmit,
 } from "@remix-run/react";
-import { Button, FormLayout, Page, Text } from "@shopify/polaris";
+import { Button, FormLayout, Page } from "@shopify/polaris";
 import { Suspense, useEffect } from "react";
 import { defer, json, LoaderFunctionArgs } from "@remix-run/node";
 import { addWeeklyBenefits, fetchRoutineForDuration } from "./api";
-import WeekIntervalsInput from "~/components/edit-routine/weekly-benfits/WeekIntervalsInput";
-import WeekIntervalsSkeleton from "~/components/edit-routine/weekly-benfits/loaders/WeekIntervalsSkeleton";
+import WeekIntervalsInput from "~/components/weekly-benfits/WeekIntervalsInput";
+import WeekIntervalsSkeleton from "~/components/weekly-benfits/loaders/WeekIntervalsSkeleton";
 import { EditRoutineResponseType } from "../app.routine.$id/types";
 import { useForm } from "@rvf/remix";
 import { benfitsValidator } from "./validator";
 import { WeeklyBenfitsDefaultValues } from "./helper";
-import WeeklyBenefitsInput from "~/components/edit-routine/weekly-benfits/WeeklyBenefitsInput";
+import WeeklyBenefitsInput from "~/components/weekly-benfits/WeeklyBenefitsInput";
 import { TitleBar } from "@shopify/app-bridge-react";
 
 export async function loader({ params }: LoaderFunctionArgs) {

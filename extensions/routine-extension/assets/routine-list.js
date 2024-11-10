@@ -1,7 +1,7 @@
 document.addEventListener("alpine:init", () => {
   Alpine.data("routineList", () => ({
     // Loading
-    isLoading: false,
+    isLoading: true,
 
     // Routines Data
     routines: [], // All routines fetched from API
@@ -25,12 +25,15 @@ document.addEventListener("alpine:init", () => {
     async exploreRoutines() {
       try {
         this.isLoading = true;
-        const response = await fetch("http://localhost:36515/explore", {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
+        const response = await fetch(
+          "http://localhost:40967/app/explore",
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+            },
           },
-        });
+        );
         const data = await response.json();
 
         console.log({ data });
@@ -51,33 +54,6 @@ document.addEventListener("alpine:init", () => {
         this.filterRoutines(); // Apply initial filtering
       }
     },
-
-    async test() {
-      try {
-        const rootUrl = window.location.origin;
-
-        console.log({ rootUrl });
-
-        const res = await fetch(`${rootUrl}/apps/routine/app/hello`, {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        });
-
-        if (!res.ok) {
-          // Log or handle non-OK responses (like 404 or 500 errors)
-          throw new Error(`Failed to fetch: ${res.status} ${res.statusText}`);
-        }
-
-        const data = await res.json();
-
-        console.log(data);
-      } catch (error) {
-        console.error("Error fetching routines:", error);
-      }
-    },
-
     // Update the number of columns based on screen width
     updateColumnCount() {
       const width = window.innerWidth;

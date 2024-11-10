@@ -6,7 +6,7 @@ document.addEventListener("alpine:init", () => {
     routine: {}, //Routine data
 
     // Loading
-    isLoading: false,
+    isLoading: true,
     isCartLoading: false,
 
     // Products
@@ -61,11 +61,12 @@ document.addEventListener("alpine:init", () => {
         this.isLoading = true;
 
         const response = await fetch(
-          `http://localhost:36515/routine?id=${id}`,
+          `http://localhost:40967/app/routine?id=${id}`,
           { method: "GET", headers: { "Content-Type": "application/json" } },
         );
 
         const data = await response.json();
+        this.isLoading = false;
         this.routine = data.routine;
 
         this.products = data.routine.productReminders.map(
@@ -84,8 +85,6 @@ document.addEventListener("alpine:init", () => {
           name: channel.name,
           checked: false,
         }));
-
-        this.isLoading = false;
 
         console.log("Routine data:", data);
       } catch (error) {
@@ -197,7 +196,7 @@ document.addEventListener("alpine:init", () => {
           };
         }
 
-        const response = await fetch(`http://localhost:36515/channel`, {
+        const response = await fetch(`http://localhost:40967/app/channel`, {
           method: "POST",
           body: JSON.stringify(channel),
         });
@@ -214,7 +213,14 @@ document.addEventListener("alpine:init", () => {
     },
 
     startRoutine() {
-      console.log(this.userRoutineStartDate);
+      const customerId = localStorage.getItem("customer");
+
+      console.log("Customer ID:", customerId);
+
+      if (customerId === "" || customerId === null) {
+        alert("Please login to start routine");
+        return;
+      }
 
       const channels = [];
 
@@ -241,7 +247,7 @@ document.addEventListener("alpine:init", () => {
         const id = new URLSearchParams(window.location.search).get("id");
 
         const response = await fetch(
-          `http://localhost:36515/template?id=${id}`,
+          `http://localhost:40967/app/template?id=${id}`,
           {
             method: "POST",
             headers: {

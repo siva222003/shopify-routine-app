@@ -118,8 +118,6 @@ import {
   FileGridType,
 } from "~/routes/app.add-routine/types";
 import { FormApi } from "@rvf/remix";
-import { DefaultRoutine } from "~/routes/app.add-routine/validator";
-import { ActivityReminderType } from "~/routes/app.$id.add-activity/validator";
 
 interface ImageInputProps {
   form: FormApi<any>;
@@ -168,7 +166,6 @@ const ImageInput = ({ form }: ImageInputProps) => {
   };
 
   const onImageChange = () => {
-    console.log({ data });
     if (data && data.files) {
       setShowModal(true);
     } else {
@@ -201,7 +198,10 @@ const ImageInput = ({ form }: ImageInputProps) => {
                 <Button
                   variant="secondary"
                   tone="critical"
-                  onClick={() => setSelectedImage(null)}
+                  onClick={() => {
+                    setSelectedImage(null);
+                    form.setValue("image", "");
+                  }}
                 >
                   Remove Image
                 </Button>

@@ -60,6 +60,8 @@ import CategoryInputSkeleton from "~/components/add-routine/loaders/CategoryInpu
 
 import { NotificationIcon, RewardIcon } from "@shopify/polaris-icons";
 import { EditRoutineDefaultValues } from "./helper";
+import WeeklyBenfitsGrid from "~/components/edit-routine/ui/WeeklyBenfitsList";
+import { deleteBenefits } from "../app.$routineId.benfits.$id/api";
 
 export async function loader({ params }: LoaderFunctionArgs) {
   if (!params.id) {
@@ -135,6 +137,19 @@ export async function action({ request, params }: ActionFunctionArgs) {
     const response = await deleteActivityReminder(id);
 
     return response;
+  } else if (_action === "weeklyBenefitsDelete") {
+    const id = JSON.parse(data.get("id") as string);
+
+    if (!id) {
+      return json({
+        success: false,
+        toast: "Invalid ID",
+      });
+    }
+
+    const response = await deleteBenefits(id);
+
+    return response;
   }
 }
 
@@ -190,6 +205,8 @@ export default function Routine() {
       );
     },
   });
+
+  // console.log({ resolvedRoutineData });
 
   // useEffect(() => {
   //   if (form.formState.isDirty) {
@@ -379,11 +396,19 @@ export default function Routine() {
       )}
       <div style={{ marginTop: "30px" }}></div>
 
+      <Divider borderWidth="050" />
+
+      <div style={{ marginTop: "30px" }}></div>
+
       {resolvedRoutineData?.benefits && (
         <div>
           <Text as="h1" variant="headingLg">
             Weekly Benefits
           </Text>
+
+          <div style={{ marginTop: "30px" }}></div>
+
+          <WeeklyBenfitsGrid benfits={resolvedRoutineData.benefits} />
 
           <div style={{ marginTop: "30px" }}></div>
         </div>

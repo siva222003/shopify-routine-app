@@ -1,6 +1,17 @@
 <link rel="stylesheet" href="{{ 'style.css' | asset_url }}">
 <link rel="stylesheet" href="{{ 'conflict.css' | asset_url }}">
 
+{% comment %}
+  <script>
+    {% if customer %}
+      console.log("Customer ID:", {{ customer.id }});
+      localStorage.setItem('customer', '{{ customer.id }}');
+    {% else %}
+     localStorage.setItem('customer', '');
+    {% endif %}
+  </script>
+{% endcomment %}
+
 <section x-data="routineList">
   <!-- Search -->
   {% render 'routine_list_search' %}
@@ -9,9 +20,14 @@
   {% render 'routine_list_categories' %}
 
   <!-- All Routines -->
-  {% render 'all_routines' %}
 
-  <button @click="test">Bro</button>
+  <section x-cloak x-transition x-show="isLoading" class="flex flex-col justify-center items-center min-h-[60vh]">
+    <h1>Loading...</h1>
+  </section>
+
+  <section x-cloak x-transition x-show="!isLoading">
+    {% render 'all_routines' %}
+  </section>
 
   <div x-show="routines.length > columnCount" x-cloak class="text-right">
     <button
@@ -26,13 +42,16 @@
   ></div>
 </section>
 
-<script src="{{ 'routine-list.js' | asset_url }}" defer="defer"></script>
-{% comment %} <script src="{{ 'alpine.js' | asset_url }}" defer="defer"></script> {% endcomment %}
-<!-- Alpine Plugins -->
-<script defer src="https://cdn.jsdelivr.net/npm/@alpinejs/focus@3.x.x/dist/cdn.min.js"></script>
+<script src="{{ 'routine-list.js' | asset_url }}" defer></script>
+<script src="{{ 'alpine.min.js' | asset_url }}" defer></script>
 
-<!-- Alpine Core -->
-<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+<!-- Alpine Plugins -->
+{% comment %}
+  <script defer src="https://cdn.jsdelivr.net/npm/@alpinejs/focus@3.x.x/dist/cdn.min.js"></script>
+
+  <!-- Alpine Core -->
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+{% endcomment %}
 
 {% schema %}
 {

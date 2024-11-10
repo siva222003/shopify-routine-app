@@ -10,7 +10,7 @@ document.addEventListener("alpine:init", () => {
     visibleReminders: [],
 
     //Loading
-    isRoutinesLoading: false,
+    isRoutinesLoading: true,
     isRemindersLoading: false,
 
     //Modals
@@ -20,10 +20,15 @@ document.addEventListener("alpine:init", () => {
     // Initialize component
     async init() {
       this.updateColumnCount(); // Adjust columns based on screen size
+
+      // const token = localStorage.getItem("token");
+
       await this.getUserRoutines();
 
       // Show initial routines after filtering
       this.visibleRoutines = this.routines.slice(0, this.columnCount);
+
+      console.log([...this.routines], [...this.visibleRoutines]);
 
       // Flatten product and activity reminders
       // const productReminders = this.routines.flatMap(
@@ -50,27 +55,36 @@ document.addEventListener("alpine:init", () => {
 
       // Fetch today's reminders
 
-      if (this.routines.length > 0) {
-        await this.getReminders();
-      }
+      // if (this.routines.length > 0) {
+      //   await this.getReminders();
+      // }
     },
 
     // Fetch User Routines from API
     async getUserRoutines() {
       try {
+        const customerId = localStorage.getItem("customer");
+
         this.isRoutinesLoading = true;
 
-        const response = await fetch(`http://localhost:36515/user-routines`, {
-          method: "GET",
-          headers: { "Content-Type": "application/json" },
-        });
+        const response = await fetch(
+          `http://localhost:40967/app/user-routines`,
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+            },
+          },
+        );
 
         const data = await response.json();
         this.routines = data.routines;
 
+        // localStorage.setItem("token", data.token ?? token);
+
         this.isRoutinesLoading = false;
 
-        console.log("User Routines:", data.routines);
+        console.log("User Routines:", data);
       } catch (error) {
         console.error("Error fetching user routines:", error);
       } finally {
@@ -79,29 +93,29 @@ document.addEventListener("alpine:init", () => {
     },
 
     //Fetch Today's Reminders
-    async getReminders() {
-      try {
-        this.isRemindersLoading = true;
+    // async getReminders() {
+    //   try {
+    //     this.isRemindersLoading = true;
 
-        const response = await fetch(`http://localhost:36515/today-reminders`, {
-          method: "GET",
-          headers: { "Content-Type": "application/json" },
-        });
+    //     const response = await fetch(`http://localhost:40967/app/today-reminders`, {
+    //       method: "GET",
+    //       headers: { "Content-Type": "application/json" },
+    //     });
 
-        const data = await response.json();
-        this.reminders = data.reminders;
+    //     const data = await response.json();
+    //     this.reminders = data.reminders;
 
-        this.isRemindersLoading = false;
+    //     this.isRemindersLoading = false;
 
-        this.visibleReminders = this.reminders.slice(0, 2);
+    //     this.visibleReminders = this.reminders.slice(0, 2);
 
-        console.log("User Todays Reminders:", data.reminders);
-      } catch (error) {
-        console.error("Error fetching user Todays Reminder:", error);
-      } finally {
-        this.isRemindersLoading = false;
-      }
-    },
+    //     console.log("User Todays Reminders:", data.reminders);
+    //   } catch (error) {
+    //     console.error("Error fetching user Todays Reminder:", error);
+    //   } finally {
+    //     this.isRemindersLoading = false;
+    //   }
+    // },
 
     // Update the number of columns based on screen width
     updateColumnCount() {
@@ -144,7 +158,7 @@ document.addEventListener("alpine:init", () => {
 
 //     this.isRemindersLoading = true;
 
-//     const response = await fetch(`http://localhost:36515/slots`, {
+//     const response = await fetch(`http://localhost:40967/app/slots`, {
 //       method: "POST",
 //       body: JSON.stringify(body),
 //       headers: { "Content-Type": "application/json" },

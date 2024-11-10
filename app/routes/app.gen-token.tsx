@@ -1,16 +1,3 @@
-// import { LoaderFunctionArgs } from "@remix-run/node";
-// import React from "react";
-// import { api } from "~/utils/axios";
-
-// export async function loader({ request, params }: LoaderFunctionArgs) {
-//   const response = await api.get("/admin/reminderlist?page=1");
-
-//   return {
-//     routines: response.data.data.docs,
-//   };
-// }
-
-import React from "react";
 import jwt from "jsonwebtoken";
 import { ActionFunctionArgs, json } from "@remix-run/node";
 import { useActionData, useSubmit } from "@remix-run/react";

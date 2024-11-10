@@ -51,12 +51,13 @@ export default function ProductCard({ form, fetchProducts }: Props) {
             display: "flex",
             justifyContent: "center",
             alignItems: "center",
-            height: "100%",
+            height: "200px",
           }}
         >
           <Spinner accessibilityLabel="Loading image" size="large" />
         </div>
       )}
+
       <img
         alt=""
         width="100%"
@@ -65,6 +66,9 @@ export default function ProductCard({ form, fetchProducts }: Props) {
           objectFit: "cover",
           objectPosition: "center",
           display: imageLoaded ? "block" : "none",
+          width: "100%",
+          height: "200px",
+          borderRadius: "8px",
         }}
         src={imageSrc}
         onLoad={handleImageLoad}

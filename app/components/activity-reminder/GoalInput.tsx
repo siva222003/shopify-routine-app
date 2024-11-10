@@ -15,7 +15,7 @@ const GoalInput = ({ form }: GoalInputProps) => {
         <TextField
           label="Goal"
           name="goal"
-          type="text"
+          type="number"
           value={form.value("goal")}
           onChange={(e) => form.setValue("goal", e)}
           autoComplete="off"

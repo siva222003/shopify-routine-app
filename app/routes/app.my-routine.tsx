@@ -12,7 +12,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
 
     const routine = await userApi.get(`/reminderlist/${id}`);
 
-    return json({ success: true, routine: routine.data.data }); 
+    return json({ success: true, routine: routine.data.data });
   } catch (error: any) {
     console.error("Error fetching routine:", error.message || error);
 

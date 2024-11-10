@@ -5,25 +5,36 @@ import db from "../db.server";
 export const action = async ({ request }: ActionFunctionArgs) => {
   const { topic, shop, session, admin } = await authenticate.webhook(request);
 
-  if (!admin && topic !== "SHOP_REDACT") {
-    // The admin context isn't returned if the webhook fired after a shop was uninstalled.
-    // The SHOP_REDACT webhook will be fired up to 48 hours after a shop uninstalls the app.
-    // Because of this, no admin context is available.
-    throw new Response();
-  }
+  console.log("Webhook received", topic);
 
-  // The topics handled here should be declared in the shopify.app.toml.
-  // More info: https://shopify.dev/docs/apps/build/cli-for-apps/app-configuration
+  // if (!admin && topic !== "SHOP_REDACT") {
+  //   console.log("Unauthorized webhook");
+  //   throw new Response();
+  // }
+
   switch (topic) {
     case "APP_UNINSTALLED":
-      if (session) {
-        await db.session.deleteMany({ where: { shop } });
-      }
-
+      console.log("App Uninstalled");
       break;
+
     case "CUSTOMERS_DATA_REQUEST":
+      // Handle customer data request here
+      // Log or process data as needed, then acknowledge receipt
+      console.log("Customer data request received");  
+      return new Response("Data request received", { status: 200 });
+
     case "CUSTOMERS_REDACT":
+      // Handle customer data redaction here
+      // Perform redaction, log, or acknowledge as required
+      return new Response("Customer redaction processed", { status: 200 });
+
     case "SHOP_REDACT":
+      // Handle shop data redaction here
+      // Perform redaction, log, or acknowledge as required
+      return new Response("Shop redaction processed", { status: 200 });
+
+    //  case "REA"
+
     default:
       throw new Response("Unhandled webhook topic", { status: 404 });
   }

@@ -239,7 +239,9 @@
     </script>
   </div>
 
-  <h1 class="font-[500] my-[25px] text-[14px]">Reminder Item Summary (19th April,2025)</h1>
+  <h1 class="font-[500] my-[25px] text-[14px]">
+    Reminder Item Summary ( <span x-text="userRoutineStartDate"></span> )
+  </h1>
 
   <template x-if="!isFetchingSlots && reminderSlots.some(obj => obj.slots && obj.slots.length > 0)">
     <template x-for="reminderSlot in reminderSlots" :key="reminderSlot?._id">

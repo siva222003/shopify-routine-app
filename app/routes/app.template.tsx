@@ -13,10 +13,10 @@ export async function action({ request }: ActionFunctionArgs) {
     const data = await request.json();
     console.log("Received Payload:", data);
 
-    const response = await userApi.post(`/reminderlist/template/clone/${id}`, {
-      startDate: "2024-10-27",
-      channels: ["sms", "whatsapp"],
-    });
+    const response = await userApi.post(
+      `/reminderlist/template/clone/${id}`,
+      data,
+    );
 
     console.log("API Response:", response.data);
 

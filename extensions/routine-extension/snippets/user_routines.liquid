@@ -7,41 +7,43 @@
   My Routines
 </h1>
 
-<div class="flex justify-center mb-[200px] px-[10px] sm:px-[20px]">
+<div class="flex justify-center mb-[20px] px-[10px] sm:px-[20px]">
   <div class="grid grid-cols-2  md:grid-cols-3 lg:grid-cols-4 gap-y-[30px] gap-x-[15px] sm:gap-x-[20px] md:gap-x-[30px] xl:gap-x-[40px]   custom-grid-gap ">
     <!-- Skeleton Loader -->
 
-    <template x-if="isRoutinesLoading">
-      <template x-for="n in columnCount*2" :key="n">
-        <div class="flex flex-col gap-3 w-full md:w-fit animate-pulse">
-          <img
-            width=""
-            height=""
-            src="{{ 'background.svg' | asset_url }}"
-            class="h-[300px] w-full sm:h-[220px] sm:w-[220px] rounded-2xl lg:h-[250px] lg:w-[250px]"
-            alt="Routine Image"
-            alt=""
-          >
+    {% comment %}
+      <template x-if="isRoutinesLoading">
+        <template x-for="n in columnCount*2" :key="n">
+          <div class="flex flex-col gap-3 w-full md:w-fit animate-pulse">
+            <img
+              width=""
+              height=""
+              src="{{ 'background.svg' | asset_url }}"
+              class="h-[300px] w-full sm:h-[220px] sm:w-[220px] rounded-2xl lg:h-[250px] lg:w-[250px]"
+              alt="Routine Image"
+              alt=""
+            >
 
-          <div class="h-4 bg-skeletonCream rounded-md w-[70%]"></div>
+            <div class="h-4 bg-skeletonCream rounded-md w-[70%]"></div>
 
-          <div class="flex gap-3 items-center">
-            <div class="w-5 h-5 bg-skeletonCream rounded-full"></div>
-            <div class="h-3 bg-skeletonCream rounded-md w-[50%]"></div>
+            <div class="flex gap-3 items-center">
+              <div class="w-5 h-5 bg-skeletonCream rounded-full"></div>
+              <div class="h-3 bg-skeletonCream rounded-md w-[50%]"></div>
+            </div>
+
+            <div class="flex gap-3 items-center">
+              <div class="w-5 h-5 bg-skeletonCream rounded-full"></div>
+              <div class="h-3 bg-skeletonCream rounded-md w-[60%]"></div>
+            </div>
+
+            <div class="flex gap-3 items-center">
+              <div class="w-5 h-5 bg-skeletonCream rounded-full"></div>
+              <div class="h-3 bg-skeletonCream rounded-md w-[80%]"></div>
+            </div>
           </div>
-
-          <div class="flex gap-3 items-center">
-            <div class="w-5 h-5 bg-skeletonCream rounded-full"></div>
-            <div class="h-3 bg-skeletonCream rounded-md w-[60%]"></div>
-          </div>
-
-          <div class="flex gap-3 items-center">
-            <div class="w-5 h-5 bg-skeletonCream rounded-full"></div>
-            <div class="h-3 bg-skeletonCream rounded-md w-[80%]"></div>
-          </div>
-        </div>
+        </template>
       </template>
-    </template>
+    {% endcomment %}
 
     <!-- Actual Data -->
 
