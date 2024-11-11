@@ -21,11 +21,11 @@
 
   <!-- All Routines -->
 
-  <section x-cloak x-transition x-show="isLoading" class="flex flex-col justify-center items-center min-h-[60vh]">
+  <section x-show="isLoading" class="flex flex-col justify-center items-center min-h-[60vh]">
     <h1>Loading...</h1>
   </section>
 
-  <section x-cloak x-transition x-show="!isLoading">
+  <section x-show="!isLoading">
     {% render 'all_routines' %}
   </section>
 

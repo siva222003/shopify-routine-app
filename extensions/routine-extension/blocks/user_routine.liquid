@@ -2,11 +2,11 @@
 <link rel="stylesheet" href="{{ 'conflict.css' | asset_url }}">
 
 <main x-data="userRoutine" class=" rounded-2xl mx-2 ssm:mx-4  sm:mx-6 ">
-  <section x-cloak x-transition x-show="isLoading" class="flex flex-col justify-center items-center min-h-screen">
+  <section x-show="isLoading" class="flex flex-col justify-center items-center min-h-screen">
     <h1>Loading...</h1>
   </section>
 
-  <section x-cloak x-transition x-show="!isLoading">
+  <section x-show="!isLoading">
     <!-- Header -->
 
     {% render 'routine_header' %}

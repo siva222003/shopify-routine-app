@@ -28,8 +28,6 @@ export default function ActionListWithDestructiveItemExample({
     } else {
       submit(formData, { method: "delete" });
     }
-
-    setActive(false);
   };
 
   const toggleActive = useCallback(() => setActive((active) => !active), []);
@@ -40,7 +38,10 @@ export default function ActionListWithDestructiveItemExample({
 
   const openDeleteModal = () => {
     setShowDeleteModal(true);
+    setActive(false);
   };
+
+  console.log({ active });
 
   const handleDelete = () => {
     handleSubmit("delete");
@@ -66,6 +67,7 @@ export default function ActionListWithDestructiveItemExample({
                     icon: ImportIcon,
                     onAction: () => {
                       handleSubmit("clone");
+                      setActive(false);
                     },
                   },
                   {

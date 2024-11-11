@@ -61,7 +61,7 @@ document.addEventListener("alpine:init", () => {
         this.isLoading = true;
 
         const response = await fetch(
-          `http://localhost:40717/app/routine?id=${id}`,
+          `http://localhost:44801/app/routine?id=${id}`,
           { method: "GET", headers: { "Content-Type": "application/json" } },
         );
 
@@ -196,10 +196,13 @@ document.addEventListener("alpine:init", () => {
           };
         }
 
-        const response = await fetch(`http://localhost:40717/app/channel`, {
-          method: "POST",
-          body: JSON.stringify(channel),
-        });
+        const response = await fetch(
+          `http://localhost:44801/app/channel`,
+          {
+            method: "POST",
+            body: JSON.stringify(channel),
+          },
+        );
 
         const data = await response.json();
 
@@ -247,7 +250,7 @@ document.addEventListener("alpine:init", () => {
         const id = new URLSearchParams(window.location.search).get("id");
 
         const response = await fetch(
-          `http://localhost:40717/app/template?id=${id}`,
+          `http://localhost:44801/app/template?id=${id}`,
           {
             method: "POST",
             headers: {

@@ -245,7 +245,7 @@ export default function IndexFiltersDefault() {
         </IndexTable.Cell>
         <IndexTable.Cell>
           <RowActions
-            key={_id}
+            key={index}
             id={_id}
             showDeleteModal={showDeleteModal}
             setShowDeleteModal={setShowDeleteModal}

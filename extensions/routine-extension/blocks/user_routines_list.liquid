@@ -24,15 +24,13 @@
   </div>
 
   <section
-    x-cloak
-    x-transition
     x-show="isRoutinesLoading"
     class="flex flex-col justify-center items-center min-h-[80vh]"
   >
     <h1>Loading...</h1>
   </section>
 
-  <div x-cloak x-transition x-show="!isRoutinesLoading">
+  <div x-show="!isRoutinesLoading">
     {% comment %} {% render 'user_today_reminders' %} {% endcomment %}
     {% render 'user_routines' %}
     {% render 'mark_complete_modal' %}

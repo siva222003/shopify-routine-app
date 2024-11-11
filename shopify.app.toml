@@ -3,11 +3,10 @@
 client_id = "ef23185581da98cf2243867d465215f8"
 name = "Routine"
 handle = "routine"
-application_url = "https://routine-app-lilac.vercel.app"
+application_url = "https://routine-app-xgu1.onrender.com/"
 embedded = true
 
 [build]
-dev_store_url = "test-store-routine.myshopify.com"
 include_config_on_deploy = true
 
 [access_scopes]
@@ -16,13 +15,18 @@ scopes = "read_files"
 
 [auth]
 redirect_urls = [
-  "https://routine-app-lilac.vercel.app/auth/callback",
-  "https://routine-app-lilac.vercel.app/auth/shopify/callback",
-  "https://routine-app-lilac.vercel.app/api/auth/callback"
+  "https://routine-app-xgu1.onrender.com/auth/callback",
+  "https://routine-app-xgu1.onrender.com/auth/shopify/callback",
+  "https://routine-app-xgu1.onrender.com/api/auth/callback"
 ]
 
 [webhooks]
 api_version = "2024-10"
+
+[app_proxy]
+url = "https://routine-app-xgu1.onrender.com/"
+subpath = "routine"
+prefix = "apps"
 
 [pos]
 embedded = false
