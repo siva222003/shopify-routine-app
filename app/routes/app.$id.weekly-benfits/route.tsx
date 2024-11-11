@@ -22,6 +22,7 @@ import { benfitsValidator } from "./validator";
 import { WeeklyBenfitsDefaultValues } from "./helper";
 import WeeklyBenefitsInput from "~/components/weekly-benfits/WeeklyBenefitsInput";
 import { TitleBar } from "@shopify/app-bridge-react";
+import GlobalErrorCard from "~/components/GlobalError";
 
 export async function loader({ params }: LoaderFunctionArgs) {
   if (!params.id) {
@@ -104,17 +105,19 @@ const WeeklyBenfits = () => {
   return (
     <Form {...form.getFormProps()}>
       <Page
-        title="Add Weekly Benfits"
+        title="Add Weekly Benefits"
         narrowWidth
         backAction={{
           content: "Back",
           onAction: () => navigate(`/app/routine/${id}`),
         }}
-        // primaryAction={{
-        //   type: "submit",
-        //   loading: navigation.state === "submitting",
-        //   content: "Save",
-        // }}
+        primaryAction={{
+          type: "submit",
+          onAction: form.submit,
+          disabled: isSubmitting,
+          loading: isSubmitting,
+          content: "Save",
+        }}
       >
         <FormLayout>
           <Suspense fallback={<WeekIntervalsSkeleton />}>
@@ -130,18 +133,12 @@ const WeeklyBenfits = () => {
 
           <WeeklyBenefitsInput form={form} />
         </FormLayout>
+        <div
+          style={{
+            marginTop: "3rem",
+          }}
+        ></div>
       </Page>
-      <div
-        style={{
-          marginBottom: "20px",
-          marginTop: "40px",
-          textAlign: "center",
-        }}
-      >
-        <Button loading={isSubmitting} variant="primary" size="large" submit>
-          Submit
-        </Button>
-      </div>
     </Form>
   );
 };
@@ -153,19 +150,14 @@ export function ErrorBoundary() {
 
   if (isRouteErrorResponse(error)) {
     return (
-      <div>
-        <h1>
-          {error.status} {error.statusText}
-        </h1>
-        <p>{error.data}</p>
-      </div>
+      <Page title="Add Weekly Benefits">
+        <GlobalErrorCard />
+      </Page>
     );
   } else if (error instanceof Error) {
     return (
-      <Page narrowWidth>
-        <TitleBar title="Add Routine" />
-        <h1>Error</h1>
-        <p>{error.message}</p>
+      <Page title="Customize Weekly Benefits">
+        <GlobalErrorCard />
       </Page>
     );
   } else {

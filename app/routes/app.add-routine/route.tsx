@@ -1,15 +1,4 @@
-import {
-  Layout,
-  Page,
-  FormLayout,
-  Button,
-  Card,
-  BlockStack,
-  InlineStack,
-  ButtonGroup,
-  Spinner,
-} from "@shopify/polaris";
-import { SaveBar, TitleBar } from "@shopify/app-bridge-react";
+import { Layout, Page, FormLayout, Card, BlockStack } from "@shopify/polaris";
 import {
   Form,
   useActionData,
@@ -31,11 +20,12 @@ import {
   RoutineInput,
   StatusInput,
 } from "~/components/add-routine";
-import { addRoutine, fetchCategories, uploadImage } from "./api";
+import { addRoutine, fetchCategories } from "./api";
 import { addRoutineValidator } from "./validator";
 import { RoutineDefaultValues } from "./types";
 import CategoryInputSkeleton from "~/components/add-routine/loaders/CategoryInputSkeleton";
 import DescriptionInput from "~/components/add-routine/DescriptionInput";
+import GlobalErrorCard from "~/components/GlobalError";
 
 export async function loader() {
   const categoriesPromise = fetchCategories();
@@ -169,18 +159,14 @@ export function ErrorBoundary() {
 
   if (isRouteErrorResponse(error)) {
     return (
-      <div>
-        <h1>
-          {error.status} {error.statusText}
-        </h1>
-        <p>{error.data}</p>
-      </div>
+      <Page title="Add Routine">
+        <GlobalErrorCard />
+      </Page>
     );
   } else if (error instanceof Error) {
     return (
-      <Page narrowWidth title="Add Routine">
-        <h1>Error</h1>
-        <p>{error.message}</p>
+      <Page title="Add Routine">
+        <GlobalErrorCard />
       </Page>
     );
   } else {

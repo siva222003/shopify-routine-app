@@ -10,13 +10,10 @@ import {
   useRouteError,
   useSubmit,
 } from "@remix-run/react";
-import { Button, FormLayout, Page } from "@shopify/polaris";
+import { FormLayout, Page } from "@shopify/polaris";
 import { Suspense, useEffect, useState } from "react";
 import { defer, json, LoaderFunctionArgs } from "@remix-run/node";
-import {
-  addWeeklyBenefits,
-  fetchRoutineForDuration,
-} from "~/routes/app.$id.weekly-benfits/api";
+import { fetchRoutineForDuration } from "~/routes/app.$id.weekly-benfits/api";
 import WeekIntervalsInput from "~/components/weekly-benfits/WeekIntervalsInput";
 import WeekIntervalsSkeleton from "~/components/weekly-benfits/loaders/WeekIntervalsSkeleton";
 import { EditRoutineResponseType } from "../app.routine.$id/types";
@@ -25,12 +22,10 @@ import {
   benfitsValidator,
   WeeklyBenefitsType,
 } from "~/routes/app.$id.weekly-benfits/validator";
-import { WeeklyBenfitsDefaultValues } from "~/routes/app.$id.weekly-benfits/helper";
 import WeeklyBenefitsInput from "~/components/weekly-benfits/WeeklyBenefitsInput";
-import { TitleBar } from "@shopify/app-bridge-react";
 import { deleteBenefits, fetchBenfits, updateBenefits } from "./api";
-import { EditActivityReminderDefaultValues } from "../app.$routineId.activity.$id/helper";
 import { EditWeeklyBenefitsDefaultValues } from "./helper";
+import GlobalErrorCard from "~/components/GlobalError";
 
 export async function loader({ params }: LoaderFunctionArgs) {
   if (!params.routineId) {
@@ -147,7 +142,7 @@ const EditWeeklyBenfits = () => {
   return (
     <Form {...form.getFormProps()}>
       <Page
-        title="Add Weekly Benfits"
+        title="Customize Weekly Benefits"
         narrowWidth
         backAction={{
           content: "Back",
@@ -185,9 +180,7 @@ const EditWeeklyBenfits = () => {
               <Suspense fallback={<WeekIntervalsSkeleton />}>
                 <Await
                   resolve={routinePromise as Promise<EditRoutineResponseType>}
-                  errorElement={
-                    <p>Some Error Occured while retrieving week intervals</p>
-                  }
+                  errorElement={<GlobalErrorCard />}
                 >
                   <WeekIntervalsInput form={form} />
                 </Await>
@@ -197,6 +190,11 @@ const EditWeeklyBenfits = () => {
             </FormLayout>
           </Await>
         </Suspense>
+        <div
+          style={{
+            marginTop: "3rem",
+          }}
+        ></div>
       </Page>
     </Form>
   );
@@ -209,19 +207,14 @@ export function ErrorBoundary() {
 
   if (isRouteErrorResponse(error)) {
     return (
-      <div>
-        <h1>
-          {error.status} {error.statusText}
-        </h1>
-        <p>{error.data}</p>
-      </div>
+      <Page title="Customize Weekly Benefits">
+        <GlobalErrorCard />
+      </Page>
     );
   } else if (error instanceof Error) {
     return (
-      <Page narrowWidth>
-        <TitleBar title="Add Routine" />
-        <h1>Error</h1>
-        <p>{error.message}</p>
+      <Page title="Customize Weekly Benefits">
+        <GlobalErrorCard />
       </Page>
     );
   } else {

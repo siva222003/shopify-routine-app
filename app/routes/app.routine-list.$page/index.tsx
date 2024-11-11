@@ -4,9 +4,7 @@ import {
   json,
   useActionData,
   useLoaderData,
-  useLocation,
   useNavigate,
-  useNavigation,
   useParams,
   useRouteError,
 } from "@remix-run/react";
@@ -22,11 +20,11 @@ import type { SortButtonChoice } from "@shopify/polaris";
 import { useState, useCallback, useEffect, Suspense } from "react";
 
 import RowActions from "~/components/routine-list/RowActions";
-import { api } from "~/utils/axios";
 import { defer, LoaderFunctionArgs } from "@remix-run/node";
 import { RoutineListType } from "./types";
 import RoutineListSkeleton from "../../components/routine-list/loaders/RoutineListSkeleton";
 import { cloneRoutine, deleteRoutine, fetchRoutineList } from "./api";
+import GlobalErrorCard from "~/components/GlobalError";
 
 export async function action({ request }: LoaderFunctionArgs) {
   const formData = await request.formData();
@@ -270,7 +268,7 @@ export default function IndexFiltersDefault() {
     >
       <Card padding="0">
         <IndexFilters
-          sortOptions={sortOptions}
+          // sortOptions={sortOptions}
           sortSelected={sortSelected}
           filters={[]}
           queryValue={queryValue}
@@ -318,7 +316,7 @@ export default function IndexFiltersDefault() {
           }}
         >
           <Suspense fallback={<RoutineListSkeleton />} key={useParams().page}>
-            <Await resolve={routines} errorElement={<p>Some Error Occured</p>}>
+            <Await resolve={routines} errorElement={<GlobalErrorCard />}>
               {rowMarkup}
             </Await>
           </Suspense>
@@ -333,18 +331,14 @@ export function ErrorBoundary() {
 
   if (isRouteErrorResponse(error)) {
     return (
-      <div>
-        <h1>
-          {error.status} {error.statusText}
-        </h1>
-        <p>{error.data}</p>
-      </div>
+      <Page fullWidth title="Routines">
+        <GlobalErrorCard />
+      </Page>
     );
   } else if (error instanceof Error) {
     return (
-      <Page narrowWidth title="Routines">
-        <h1>Error</h1>
-        <p>{error.message}</p>
+      <Page fullWidth title="Routines">
+        <GlobalErrorCard />
       </Page>
     );
   } else {

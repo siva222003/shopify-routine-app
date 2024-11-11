@@ -22,8 +22,6 @@
   {% render 'reminder_summary' %}
 </main>
 
-<script src="{{ 'user-routine.js' | asset_url }}" defer></script>
-
 <script src="{{ 'focus.min.js' | asset_url }}" defer></script>
 <script src="{{ 'alpine.min.js' | asset_url }}" defer></script>
 
@@ -37,6 +35,7 @@
 {% schema %}
 {
   "name": "User Routine",
-  "target": "section"
+  "target": "section",
+  "javascript": "user-routine.js"
 }
 {% endschema %}

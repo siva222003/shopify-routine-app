@@ -25,8 +25,12 @@ export default function App() {
         <Link unstable_viewTransition to="/app" rel="home">
           Home
         </Link>
-        <Link unstable_viewTransition to="/app/add-routine">Add Routine</Link>
-        <Link unstable_viewTransition to="/app/routine-list/1">Routine List</Link>
+        <Link unstable_viewTransition to="/app/add-routine">
+          Add Routine
+        </Link>
+        <Link unstable_viewTransition to="/app/routine-list/1">
+          Routine List
+        </Link>
       </NavMenu>
       <Outlet />
     </AppProvider>

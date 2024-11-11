@@ -1,10 +1,12 @@
 import { ActionFunctionArgs, json } from "@remix-run/node";
 import {
   Form,
+  isRouteErrorResponse,
   useActionData,
   useNavigate,
   useNavigation,
   useParams,
+  useRouteError,
   useSubmit,
 } from "@remix-run/react";
 import { Button, FormLayout, Page } from "@shopify/polaris";
@@ -26,6 +28,7 @@ import {
   GoalInput,
 } from "~/components/activity-reminder";
 import { ImageInput } from "~/components/add-routine";
+import GlobalErrorCard from "~/components/GlobalError";
 
 export async function action({ request, params }: ActionFunctionArgs) {
   const id = params.id;
@@ -132,3 +135,23 @@ const AddActivityReminder = () => {
 };
 
 export default AddActivityReminder;
+
+export function ErrorBoundary() {
+  const error = useRouteError();
+
+  if (isRouteErrorResponse(error)) {
+    return (
+      <Page title="Add Activity Reminder">
+        <GlobalErrorCard />
+      </Page>
+    );
+  } else if (error instanceof Error) {
+    return (
+      <Page title="Add Activity Reminder">
+        <GlobalErrorCard />
+      </Page>
+    );
+  } else {
+    return <h1>Unknown Error</h1>;
+  }
+}

@@ -52,13 +52,13 @@
   class="mt-[100px]"
 ></div>
 
-<script src="{{ 'user-routines-list.js' | asset_url }}" defer></script>
 <script src="{{ 'focus.min.js' | asset_url }}" defer></script>
 <script src="{{ 'alpine.min.js' | asset_url }}" defer></script>
 
 {% schema %}
 {
   "name": "User Routines List",
-  "target": "section"
+  "target": "section",
+  "javascript": "user-routines-list.js"
 }
 {% endschema %}

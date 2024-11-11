@@ -42,7 +42,6 @@
   ></div>
 </section>
 
-<script src="{{ 'routine-list.js' | asset_url }}" defer></script>
 <script src="{{ 'alpine.min.js' | asset_url }}" defer></script>
 
 <!-- Alpine Plugins -->
@@ -56,6 +55,7 @@
 {% schema %}
 {
   "name": "Routine List",
-  "target": "section"
+  "target": "section",
+  "javascript": "routine-list.js"
 }
 {% endschema %}

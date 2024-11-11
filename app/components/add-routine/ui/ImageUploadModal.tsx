@@ -97,6 +97,7 @@ export default function ImageUploadModal({
                       borderRadius="300"
                     >
                       <img
+                        style={{ objectFit: "cover", borderRadius: "10px" }}
                         height={"130px"}
                         loading="lazy"
                         width={"100%"}

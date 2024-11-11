@@ -11,7 +11,7 @@ export const genToken = (PAYLOAD: { id: number }) => {
   const JWT_SECRET = "jwt-secret-for-Doc-Backend-App";
 
   try {
-    const token = jwt.sign(PAYLOAD, JWT_SECRET, { expiresIn: "7d" });
+    const token = jwt.sign(PAYLOAD, JWT_SECRET, { expiresIn: "1y" });
 
     return token;
   } catch (error) {

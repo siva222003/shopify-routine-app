@@ -29,8 +29,6 @@
   {% render 'routine_start_modal' %}
 </main>
 
-<script src="{{ 'routine.js' | asset_url }}" defer></script>
-
 <script src="{{ 'focus.min.js' | asset_url }}" defer></script>
 <script src="{{ 'alpine.min.js' | asset_url }}" defer></script>
 
@@ -43,6 +41,7 @@
 {% schema %}
 {
   "name": "Routine",
-  "target": "section"
+  "target": "section",
+  "javascript": "routine.js"
 }
 {% endschema %}

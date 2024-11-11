@@ -7,11 +7,13 @@ import {
 import {
   Await,
   Form,
+  isRouteErrorResponse,
   useActionData,
   useLoaderData,
   useNavigate,
   useNavigation,
   useParams,
+  useRouteError,
   useSubmit,
 } from "@remix-run/react";
 import { Button, FormLayout, Page } from "@shopify/polaris";
@@ -34,6 +36,7 @@ import { fetchProductReminder, updateProductReminder } from "./api";
 import { EditProductReminderDefaultValues } from "./helper";
 import { EditProductReminderType } from "./types";
 import { deleteProductReminder } from "../app.routine.$id/api";
+import GlobalErrorCard from "~/components/GlobalError";
 
 export async function loader({ params }: LoaderFunctionArgs) {
   if (!params.id) {
@@ -190,7 +193,7 @@ const EditProductReminder = () => {
       narrowWidth
     >
       <Suspense fallback="Loading...">
-        <Await resolve={reminderPromise}>
+        <Await resolve={reminderPromise} errorElement={<GlobalErrorCard />}>
           <Form {...form.getFormProps()}>
             <FormLayout>
               <AddProduct form={form} />
@@ -231,3 +234,23 @@ const EditProductReminder = () => {
 };
 
 export default EditProductReminder;
+
+export function ErrorBoundary() {
+  const error = useRouteError();
+
+  if (isRouteErrorResponse(error)) {
+    return (
+      <Page title="Customize Product Reminder">
+        <GlobalErrorCard />
+      </Page>
+    );
+  } else if (error instanceof Error) {
+    return (
+      <Page title="Customize Product Reminder">
+        <GlobalErrorCard />
+      </Page>
+    );
+  } else {
+    return <h1>Unknown Error</h1>;
+  }
+}

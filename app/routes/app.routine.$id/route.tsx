@@ -6,13 +6,11 @@ import {
   Card,
   InlineStack,
   BlockStack,
-  InlineGrid,
   Text,
   Grid,
   Badge,
   Divider,
 } from "@shopify/polaris";
-import { SaveBar, TitleBar } from "@shopify/app-bridge-react";
 import {
   Form,
   useActionData,
@@ -62,6 +60,7 @@ import { NotificationIcon, RewardIcon } from "@shopify/polaris-icons";
 import { EditRoutineDefaultValues } from "./helper";
 import WeeklyBenfitsGrid from "~/components/edit-routine/ui/WeeklyBenfitsList";
 import { deleteBenefits } from "../app.$routineId.benfits.$id/api";
+import GlobalErrorCard from "~/components/GlobalError";
 
 export async function loader({ params }: LoaderFunctionArgs) {
   if (!params.id) {
@@ -293,7 +292,7 @@ export default function Routine() {
                       <Suspense fallback={<CategoryInputSkeleton />}>
                         <Await
                           resolve={categoriesPromise}
-                          errorElement={<p>Some Error Occured</p>}
+                          errorElement={<GlobalErrorCard />}
                         >
                           {(categories) => (
                             <CategoryInput
@@ -421,18 +420,14 @@ export function ErrorBoundary() {
 
   if (isRouteErrorResponse(error)) {
     return (
-      <div>
-        <h1>
-          {error.status} {error.statusText}
-        </h1>
-        <p>{error.data}</p>
-      </div>
+      <Page title="Customize Routine">
+        <GlobalErrorCard />
+      </Page>
     );
   } else if (error instanceof Error) {
     return (
-      <Page narrowWidth title="Customize Routine">
-        <h1>Error</h1>
-        <p>{error.message}</p>
+      <Page title="Customize Routine">
+        <GlobalErrorCard />
       </Page>
     );
   } else {

@@ -1,4 +1,21 @@
-<div>
+<style>
+  /* Styles for the overlay container */
+  .overlay {
+    position: fixed; /* Make it fixed to cover the entire viewport */
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(255, 255, 255, 0.2); /* Light overlay with some transparency */
+    backdrop-filter: blur(10px); /* Apply blur to content behind */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999; /* Ensure it is on top of everything */
+  }
+</style>
+
+<div id="productReminderModal">
   <div
     x-cloak
     x-show="productReminderModalOpen"
@@ -6,7 +23,8 @@
     x-trap.inert.noscroll="productReminderModalOpen"
     @keydown.esc.window="productReminderModalOpen = false"
     @click.self="productReminderModalOpen = false"
-    class="fixed inset-0 z-30 flex items-end justify-center  p-4 pb-8 backdrop-contrast-50   sm:items-center lg:p-8"
+    {% comment %} class="z-[1000] flex  justify-center fixed inset-0  p-4 pb-8 backdrop-contrast-50   sm:items-center lg:p-8" {% endcomment %}
+    class="overlay"
     role="dialog"
     aria-modal="true"
     aria-labelledby="defaultModalTitle"
@@ -168,3 +186,9 @@
     </div>
   </div>
 </div>
+{% comment %} 
+<script>
+  const productReminderModal = document.getElementById('productReminderModal');
+
+  document.body.appendChild(productReminderModal);
+</script> {% endcomment %}

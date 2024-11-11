@@ -11,7 +11,13 @@ import {
   Text,
 } from "@shopify/polaris";
 import { PlusIcon } from "@shopify/polaris-icons";
-import { useNavigate, useParams } from "@remix-run/react";
+import {
+  isRouteErrorResponse,
+  useNavigate,
+  useParams,
+  useRouteError,
+} from "@remix-run/react";
+import GlobalErrorCard from "~/components/GlobalError";
 
 export default function ChooseReminder() {
   const navigate = useNavigate();
@@ -74,4 +80,24 @@ export default function ChooseReminder() {
       </Box>
     </Page>
   );
+}
+
+export function ErrorBoundary() {
+  const error = useRouteError();
+
+  if (isRouteErrorResponse(error)) {
+    return (
+      <Page title="Select Reminder">
+        <GlobalErrorCard />
+      </Page>
+    );
+  } else if (error instanceof Error) {
+    return (
+      <Page title="Select Reminder">
+        <GlobalErrorCard />
+      </Page>
+    );
+  } else {
+    return <h1>Unknown Error</h1>;
+  }
 }

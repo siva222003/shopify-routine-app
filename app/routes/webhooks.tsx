@@ -3,41 +3,41 @@ import { authenticate } from "../shopify.server";
 import db from "../db.server";
 
 export const action = async ({ request }: ActionFunctionArgs) => {
-  const { topic, shop, session, admin } = await authenticate.webhook(request);
+  try {
+    // Authenticate webhook and validate HMAC
+    const { topic, shop, session, admin } = await authenticate.webhook(request);
+    console.log("Webhook received", topic);
 
-  console.log("Webhook received", topic);
+    // Check if the request is from an admin, unless it's for "SHOP_REDACT"
+    if (!admin && topic !== "SHOP_REDACT") {
+      return new Response("Unauthorized", { status: 401 });
+    }
 
-  // if (!admin && topic !== "SHOP_REDACT") {
-  //   console.log("Unauthorized webhook");
-  //   throw new Response();
-  // }
+    switch (topic) {
+      case "APP_UNINSTALLED":
+        if (session) {
+          await db.session.deleteMany({ where: { shop } });
+          console.log(`Sessions for shop ${shop} have been deleted.`);
+        }
+        return new Response("App uninstalled data cleared", { status: 200 });
 
-  switch (topic) {
-    case "APP_UNINSTALLED":
-      console.log("App Uninstalled");
-      break;
+      case "SHOP_REDACT":
+        console.log(`Shop data for shop ${shop} has been erased.`);
+        return new Response("Shop redaction processed", { status: 200 });
 
-    case "CUSTOMERS_DATA_REQUEST":
-      // Handle customer data request here
-      // Log or process data as needed, then acknowledge receipt
-      console.log("Customer data request received");  
-      return new Response("Data request received", { status: 200 });
+      case "CUSTOMERS_DATA_REQUEST":
+        console.log("Customer data request received");
+        return new Response("Data request received", { status: 200 });
 
-    case "CUSTOMERS_REDACT":
-      // Handle customer data redaction here
-      // Perform redaction, log, or acknowledge as required
-      return new Response("Customer redaction processed", { status: 200 });
+      case "CUSTOMERS_REDACT":
+        console.log("Customer data redaction received");
+        return new Response("Customer redaction processed", { status: 200 });
 
-    case "SHOP_REDACT":
-      // Handle shop data redaction here
-      // Perform redaction, log, or acknowledge as required
-      return new Response("Shop redaction processed", { status: 200 });
-
-    //  case "REA"
-
-    default:
-      throw new Response("Unhandled webhook topic", { status: 404 });
+      default:
+        return new Response("Unhandled webhook topic", { status: 404 });
+    }
+  } catch (error) {
+    console.error("Webhook error:", error);
+    return new Response("Unauthorized", { status: 401 });
   }
-
-  throw new Response();
 };

@@ -7,11 +7,13 @@ import {
 import {
   Await,
   Form,
+  isRouteErrorResponse,
   useActionData,
   useLoaderData,
   useNavigate,
   useNavigation,
   useParams,
+  useRouteError,
   useSubmit,
 } from "@remix-run/react";
 import { Button, FormLayout, Page } from "@shopify/polaris";
@@ -33,6 +35,7 @@ import {
 import { EditActivityReminderDefaultValues } from "./helper";
 import { ImageInput } from "~/components/add-routine";
 import { deleteActivityReminder } from "../app.routine.$id/api";
+import GlobalErrorCard from "~/components/GlobalError";
 
 export async function loader({ params }: LoaderFunctionArgs) {
   if (!params.id) {
@@ -187,7 +190,7 @@ const AddActivityReminder = () => {
       narrowWidth
     >
       <Suspense fallback={<div>Loading...</div>}>
-        <Await resolve={reminderPromise}>
+        <Await resolve={reminderPromise} errorElement={<GlobalErrorCard />}>
           <Form {...form.getFormProps()}>
             <FormLayout>
               <ActivityNameInput form={form} />
@@ -211,3 +214,23 @@ const AddActivityReminder = () => {
 };
 
 export default AddActivityReminder;
+
+export function ErrorBoundary() {
+  const error = useRouteError();
+
+  if (isRouteErrorResponse(error)) {
+    return (
+      <Page title="Customize Activity Reminder">
+        <GlobalErrorCard />
+      </Page>
+    );
+  } else if (error instanceof Error) {
+    return (
+      <Page title="Customize Activity Reminder">
+        <GlobalErrorCard />
+      </Page>
+    );
+  } else {
+    return <h1>Unknown Error</h1>;
+  }
+}
