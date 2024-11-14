@@ -5,6 +5,7 @@ import {
   useActionData,
   useLoaderData,
   useNavigate,
+  useNavigation,
   useParams,
   useRouteError,
 } from "@remix-run/react";
@@ -58,6 +59,32 @@ export default function IndexFiltersDefault() {
 
   const actionData = useActionData<typeof action>();
 
+  const navigation = useNavigation();
+
+  useEffect(() => {
+    if (navigation.formData?.get("intent") === "delete") {
+      setFilteredRoutines((routines) =>
+        routines.filter((r) => r._id !== navigation.formData?.get("id")),
+      );
+    } else if (navigation.formData?.get("intent") === "clone") {
+      const id = navigation.formData?.get("id");
+
+      const clonedRoutine = resolvedRoutines.find((r) => r._id === id);
+
+      if (clonedRoutine) {
+        console.log({ clonedRoutine });
+        setFilteredRoutines((routines) => [
+          {
+            ...clonedRoutine,
+            _id: Math.random().toString(),
+            isOptimistic: true,
+          },
+          ...routines,
+        ]);
+      }
+    }
+  }, [navigation.formData?.get("intent"), navigation.formData?.get("id")]);
+
   useEffect(() => {
     if (actionData) {
       shopify.toast.show(actionData.toast, {
@@ -106,8 +133,9 @@ export default function IndexFiltersDefault() {
     [],
   );
 
-  //Page Data
+  console.log({ filteredRoutines });
 
+  //Page Data
   const [pageData, setPageData] = useState({
     page: 1,
     hasNextPage: false,
@@ -214,13 +242,29 @@ export default function IndexFiltersDefault() {
   };
 
   const rowMarkup = filteredRoutines.map(
-    ({ _id, name, draft, category, image, description, duration }, index) => (
+    (
+      {
+        _id,
+        name,
+        draft,
+        category,
+        image,
+        description,
+        duration,
+        isOptimistic = false,
+      },
+      index,
+    ) => (
       <IndexTable.Row
         id={_id}
         key={_id}
         position={index}
+        disabled={isRoutinesLoading || isOptimistic}
+        tone={isRoutinesLoading || isOptimistic ? "subdued" : undefined}
         onClick={() => {
-          navigate(`/app/routine/${_id}`);
+          if (!isRoutinesLoading && !isOptimistic) {
+            navigate(`/app/routine/${_id}`);
+          }
         }}
       >
         <IndexTable.Cell>

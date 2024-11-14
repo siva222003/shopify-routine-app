@@ -16,7 +16,7 @@ export const userApi = axios.create({
   },
 });
 
-export const apiFetch = (endpoint: string, options = {} as any) => {
+export const apiFetch = async (endpoint: string, options = {} as any) => {
   const { headers, ...restOptions } = options;
 
   return fetch(`${process.env.API_URL}${endpoint}`, {

@@ -28,4 +28,5 @@ export type RoutineListType = {
   channel: string[];
   draft: string;
   visibility: Visibility;
+  isOptimistic?: boolean;
 };

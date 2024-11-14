@@ -40,4 +40,6 @@ export type FileGridType = {
 export type FileGridResponseType = {
   success: boolean;
   files: FileGridType[];
+  hasNextPage: boolean;
+  endCursor: string | null;
 };

@@ -1,4 +1,4 @@
-import { useNavigation } from "@remix-run/react";
+import { useFetcher, useNavigation } from "@remix-run/react";
 import { Modal, TitleBar } from "@shopify/app-bridge-react";
 import {
   Box,
@@ -11,8 +11,11 @@ import {
   Spinner,
   Checkbox,
 } from "@shopify/polaris";
-import { useState } from "react";
-import { FileGridType } from "~/routes/app.add-routine/types";
+import { useState, useEffect } from "react";
+import {
+  FileGridResponseType,
+  FileGridType,
+} from "~/routes/app.add-routine/types";
 
 interface DeleteConfirmModalProps {
   open: boolean;
@@ -20,6 +23,8 @@ interface DeleteConfirmModalProps {
   onConfirm: (file: FileGridType | null) => void;
   isLoading: boolean;
   data: FileGridType[];
+  hasNextPage: boolean;
+  endCursor: string | null;
 }
 
 export default function ImageUploadModal({
@@ -28,16 +33,44 @@ export default function ImageUploadModal({
   onConfirm,
   isLoading,
   data,
+  hasNextPage,
+  endCursor,
 }: DeleteConfirmModalProps) {
   const navigation = useNavigation();
   const isSubmitting = navigation.state === "submitting";
 
-  // State to track selected images
   const [selectedImage, setSelectedImage] = useState<FileGridType | null>(null);
+  const [displayedData, setDisplayedData] = useState<FileGridType[]>(data);
+  const [loadingMore, setLoadingMore] = useState(false); // New state for loading more data
 
-  // Toggle selection state of an image
+  const fetcher = useFetcher<FileGridResponseType>();
+
+  const hasNewPage = fetcher.data?.hasNextPage ?? hasNextPage;
+  const endCursorNew = fetcher.data?.endCursor ?? endCursor;
+
+  const moreData = fetcher.data?.files;
+
+  // Only update displayedData when moreData changes, and append it to the existing data
+  useEffect(() => {
+    if (moreData) {
+      setDisplayedData((prevData) => [...prevData, ...moreData]);
+      setLoadingMore(false); // Set loadingMore to false when new data is loaded
+    }
+  }, [moreData]);
+
+  // Initialize displayedData with the prop data once, when the component first mounts
+  useEffect(() => {
+    setDisplayedData(data);
+  }, [data]);
+
   const handleCheckboxChange = (file: FileGridType) => {
     setSelectedImage(file);
+  };
+
+  const handleFetchMore = async () => {
+    if (!hasNewPage || loadingMore) return; // Prevent multiple fetches at the same time
+    setLoadingMore(true); // Set loadingMore to true when fetching more data
+    fetcher.load(`/app/files?after=${endCursorNew}`);
   };
 
   return (
@@ -67,7 +100,7 @@ export default function ImageUploadModal({
             <div style={{ marginBlock: "20px" }}></div>
 
             <Grid columns={{ xs: 2, sm: 3, md: 6 }}>
-              {data.map((file) => (
+              {displayedData.map((file) => (
                 <Grid.Cell key={file.id}>
                   <div style={{ position: "relative" }}>
                     <div
@@ -81,11 +114,7 @@ export default function ImageUploadModal({
                       <Checkbox
                         label=""
                         checked={
-                          selectedImage
-                            ? selectedImage.id === file.id
-                              ? true
-                              : false
-                            : false
+                          selectedImage ? selectedImage.id === file.id : false
                         }
                         onChange={() => handleCheckboxChange(file)}
                       />
@@ -102,7 +131,7 @@ export default function ImageUploadModal({
                         loading="lazy"
                         width={"100%"}
                         src={file.preview.image.url}
-                        alt="Black choker necklace"
+                        alt="Image"
                       />
                     </Box>
                   </div>
@@ -110,6 +139,36 @@ export default function ImageUploadModal({
               ))}
             </Grid>
           </Box>
+        )}
+
+        {hasNewPage && !loadingMore && (
+          <Box padding={"400"}>
+            <InlineStack align="end">
+              <ButtonGroup>
+                <Button
+                  loading={isLoading}
+                  disabled={isLoading || loadingMore || !hasNewPage}
+                  onClick={handleFetchMore}
+                  variant="primary"
+                >
+                  Load More
+                </Button>
+              </ButtonGroup>
+            </InlineStack>
+          </Box>
+        )}
+
+        {loadingMore && (
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              height: "100px",
+            }}
+          >
+            <Spinner size="large" />
+          </div>
         )}
 
         <Divider />
@@ -120,8 +179,8 @@ export default function ImageUploadModal({
               <Button onClick={onClose}>Cancel</Button>
               <Button
                 loading={isSubmitting}
-                disabled={isSubmitting}
-                onClick={() => onConfirm(selectedImage)}
+                disabled={isSubmitting || !selectedImage}
+                onClick={() => selectedImage && onConfirm(selectedImage)}
                 variant="primary"
               >
                 Add

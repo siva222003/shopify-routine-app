@@ -178,6 +178,8 @@ const ImageInput = ({ form }: ImageInputProps) => {
     <>
       <ImageUploadModal
         data={(data && data.files) ?? []}
+        hasNextPage={data?.hasNextPage ?? false}
+        endCursor={data?.endCursor ?? null}
         isLoading={fileFetcher.state === "loading"}
         open={showModal}
         onClose={onClose}

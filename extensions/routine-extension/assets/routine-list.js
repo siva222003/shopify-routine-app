@@ -25,15 +25,12 @@ document.addEventListener("alpine:init", () => {
     async exploreRoutines() {
       try {
         this.isLoading = true;
-        const response = await fetch(
-          "http://localhost:44801/app/explore",
-          {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-            },
+        const response = await fetch(`${window.location.origin}/apps/routine/app/explore`, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
           },
-        );
+        });
         const data = await response.json();
 
         console.log({ data });

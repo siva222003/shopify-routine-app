@@ -41,8 +41,6 @@ export default function ActionListWithDestructiveItemExample({
     setActive(false);
   };
 
-  console.log({ active });
-
   const handleDelete = () => {
     handleSubmit("delete");
   };
@@ -65,6 +63,7 @@ export default function ActionListWithDestructiveItemExample({
                   {
                     content: "Clone",
                     icon: ImportIcon,
+                    disabled: isSubmitting || navigation.state === "loading",
                     onAction: () => {
                       handleSubmit("clone");
                       setActive(false);
@@ -73,6 +72,7 @@ export default function ActionListWithDestructiveItemExample({
                   {
                     destructive: true,
                     content: "Delete",
+                    disabled: isSubmitting || navigation.state === "loading",
                     icon: DeleteIcon,
                     onAction: openDeleteModal,
                   },

@@ -19,6 +19,13 @@ document.addEventListener("alpine:init", () => {
 
     // Initialize component
     async init() {
+      const customerId = localStorage.getItem("customer");
+
+      if (!customerId || customerId === "") {
+        window.location.href = "/account/login";
+        return;
+      }
+
       this.updateColumnCount(); // Adjust columns based on screen size
 
       // const token = localStorage.getItem("token");
@@ -68,7 +75,7 @@ document.addEventListener("alpine:init", () => {
         this.isRoutinesLoading = true;
 
         const response = await fetch(
-          `http://localhost:44801/app/user-routines`,
+          `${window.location.origin}/apps/routine/app/user-routines`,
           {
             method: "GET",
             headers: {
@@ -97,7 +104,7 @@ document.addEventListener("alpine:init", () => {
     //   try {
     //     this.isRemindersLoading = true;
 
-    //     const response = await fetch(`http://localhost:44801/app/today-reminders`, {
+    //     const response = await fetch(`${window.Shopify.routes.root}/apps/routine/app/today-reminders`, {
     //       method: "GET",
     //       headers: { "Content-Type": "application/json" },
     //     });
@@ -158,7 +165,7 @@ document.addEventListener("alpine:init", () => {
 
 //     this.isRemindersLoading = true;
 
-//     const response = await fetch(`http://localhost:44801/app/slots`, {
+//     const response = await fetch(`${window.Shopify.routes.root}/apps/routine/app/slots`, {
 //       method: "POST",
 //       body: JSON.stringify(body),
 //       headers: { "Content-Type": "application/json" },

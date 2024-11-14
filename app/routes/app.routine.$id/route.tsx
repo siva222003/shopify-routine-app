@@ -204,19 +204,6 @@ export default function Routine() {
       );
     },
   });
-
-  // console.log({ resolvedRoutineData });
-
-  // useEffect(() => {
-  //   if (form.formState.isDirty) {
-  //     setShowSaveBar(true);
-  //   } else {
-  //     setShowSaveBar(false);
-  //   }
-  // }, [form.formState.isDirty]);
-
-  // console.log(form.value("image"));
-
   const submit = useSubmit();
 
   const { id } = useParams();

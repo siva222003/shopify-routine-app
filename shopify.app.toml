@@ -23,6 +23,10 @@ redirect_urls = [
 [webhooks]
 api_version = "2024-10"
 
+[[webhooks.subscriptions]]
+compliance_topics = ["customers/data_request", "customers/redact", "shop/redact"]
+uri = "https://routine-app-xgu1.onrender.com/webhooks"
+
 [app_proxy]
 url = "https://routine-app-xgu1.onrender.com/"
 subpath = "routine"
