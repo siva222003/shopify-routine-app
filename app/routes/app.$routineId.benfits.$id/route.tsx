@@ -150,6 +150,7 @@ const EditWeeklyBenfits = () => {
         }}
         primaryAction={{
           content: "Delete",
+          destructive: true,
           loading:
             isSubmitting && navigation.formData?.get("_action") === '"delete"',
           disabled: isSubmitting,

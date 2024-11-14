@@ -41,6 +41,7 @@
     "googleapis": "^144.0.0",
     "isbot": "^5.1.0",
     "jsonwebtoken": "^9.0.2",
+    "node-cron": "^3.0.3",
     "prisma": "^5.22.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",

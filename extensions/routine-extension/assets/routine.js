@@ -70,11 +70,11 @@ document.addEventListener("alpine:init", () => {
         this.routine = data.routine;
 
         this.products = data.routine.productReminders.map(
-          ({ variationId, name, image }) => ({
+          ({ variationId, name, image, dosageQty }) => ({
             name,
             image,
             variationId,
-            quantity: 1,
+            quantity: dosageQty,
           }),
         );
 
