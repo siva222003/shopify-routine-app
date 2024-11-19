@@ -263,7 +263,9 @@ export default function IndexFiltersDefault() {
         tone={isRoutinesLoading || isOptimistic ? "subdued" : undefined}
         onClick={() => {
           if (!isRoutinesLoading && !isOptimistic) {
-            navigate(`/app/routine/${_id}`);
+            navigate(`/app/routine/${_id}`, {
+              unstable_viewTransition: true,
+            });
           }
         }}
       >
@@ -306,7 +308,9 @@ export default function IndexFiltersDefault() {
       primaryAction={{
         content: "Add Routine",
         onAction: () => {
-          navigate("/app/add-routine/");
+          navigate("/app/add-routine/", {
+            unstable_viewTransition: true,
+          });
         },
       }}
     >
@@ -352,10 +356,14 @@ export default function IndexFiltersDefault() {
             hasNext: pageData.hasNextPage,
             hasPrevious: pageData.hasPrevPage,
             onNext: () => {
-              navigate(`/app/routine-list/${pageData.page + 1}`);
+              navigate(`/app/routine-list/${pageData.page + 1}`, {
+                unstable_viewTransition: true,
+              });
             },
             onPrevious: () => {
-              navigate(`/app/routine-list/${pageData.page - 1}`);
+              navigate(`/app/routine-list/${pageData.page - 1}`, {
+                unstable_viewTransition: true,
+              });
             },
           }}
         >

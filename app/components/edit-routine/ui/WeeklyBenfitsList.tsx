@@ -91,7 +91,9 @@ export default function WeeklyBenfitsGrid({ benfits }: WeeklyBenfitsListProps) {
           </Button>
           <Button
             variant="primary"
-            onClick={() => navigate(`/app/${id}/benfits/${benfits._id}`)}
+            onClick={() => navigate(`/app/${id}/benfits/${benfits._id}`,{
+              unstable_viewTransition : true,
+            })}
             accessibilityLabel="Add tracking number"
           >
             Customize

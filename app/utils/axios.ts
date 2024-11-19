@@ -12,7 +12,7 @@ export const userApi = axios.create({
   baseURL: process.env.CUSTOMER_API_URL,
   headers: {
     Authorization:
-      "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Nzc5MDMzNTgyMDAyOSwiaWF0IjoxNzMxMjQwMTgyLCJleHAiOjE3MzE4NDQ5ODJ9.HCKLrEuxotI1aC8_-hIirtBR8GDgHHcXyugagdc3ze8",
+      "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Nzc5MDMzNTgyMDAyOSwiaWF0IjoxNzMyMDQ4NjY3LCJleHAiOjE3NjM2MDYyNjd9.DIJmmUM6Kxh234VUKjGXq7SewOZSXS3QL_jEUPmYFw0",
   },
 });
 

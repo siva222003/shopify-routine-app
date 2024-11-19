@@ -186,7 +186,9 @@ export default function Routine() {
         actionData.success &&
         actionData.toast === "Routine deleted successfully"
       ) {
-        navigate(`/app/routine-list/1`);
+        navigate(`/app/routine-list/1`, {
+          unstable_viewTransition: true,
+        });
       }
     }
   }, [actionData]);
@@ -213,7 +215,9 @@ export default function Routine() {
       title="Customize Routine"
       backAction={{
         content: "Back",
-        onAction: () => navigate(`/app/routine-list/1`),
+        onAction: () => navigate(`/app/routine-list/1`,{
+          unstable_viewTransition: true
+        }),
       }}
       titleMetadata={
         <Badge tone={form.value("draft") === "draft" ? "info" : "success"}>
@@ -330,14 +334,18 @@ export default function Routine() {
             <InlineStack gap={"400"}>
               <Button
                 icon={NotificationIcon}
-                onClick={() => navigate(`/app/${id}/reminder`)}
+                onClick={() => navigate(`/app/${id}/reminder`,{
+                  unstable_viewTransition: true
+                })}
               >
                 Add Reminder
               </Button>
               {resolvedRoutineData.benefits ? null : (
                 <Button
                   icon={RewardIcon}
-                  onClick={() => navigate(`/app/${id}/weekly-benfits`)}
+                  onClick={() => navigate(`/app/${id}/weekly-benfits`,{
+                    unstable_viewTransition: true
+                  })}
                 >
                   Add Weekly Benfits
                 </Button>

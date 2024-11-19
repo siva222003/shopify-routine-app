@@ -111,14 +111,14 @@
 {% endcomment %}
 
 <section
-  x-show="tab===1 && !isLoading"
-  class=" flex max-md:flex-col max-md:items-center md:justify-center my-10 gap-10 md:gap-6 lg:gap-14"
-  x-transition:enter="transition ease-out duration-200"
-  x-transition:enter-start="opacity-0 scale-90"
-  x-transition:enter-end="opacity-100 scale-100"
-  x-transition:leave="transition ease-in duration-200"
-  x-transition:leave-start="opacity-100 scale-100"
-  x-transition:leave-end="opacity-0 scale-90"
+  x-show="tab === 1 && !isLoading"
+  class="flex max-md:flex-col max-md:items-center md:justify-center my-10 gap-10 md:gap-6 lg:gap-14"
+  x-transition:enter="transition-transform ease-out duration-300"
+  x-transition:enter-start="opacity-0 -translate-x-full"
+  x-transition:enter-end="opacity-100 translate-x-0"
+  x-transition:leave="transition-transform ease-in duration-300"
+  x-transition:leave-start="opacity-100 translate-x-0"
+  x-transition:leave-end="opacity-0 translate-x-full"
   x-cloak
 >
   <!-- Routine Thumbnail -->
@@ -127,6 +127,7 @@
     width="100"
     height="100"
     :src="routine.image"
+    style="object-fit: cover; object-position: center; aspect-ratio: 1/1;"
     alt="Routine Thumbnail"
     class="rounded-2xl max-md:min-w-[100%] md:h-[33rem] md:w-[33rem] lg:h-[47rem] lg:w-[47rem] lMd:h-[40rem] lMd:w-[40rem] xl:h-[50rem] xl:w-[50rem] "
     alt=""
@@ -178,6 +179,8 @@
               width="50"
               height="50"
               :src="product.image"
+              style="object-fit: cover; object-position: center; aspect-ratio: 1/1;"
+
               class="h-[70px] w-[70px] rounded-full"
               alt=""
             >
@@ -188,7 +191,7 @@
     </div>
 
     <!-- Description & Weekly Benfits -->
-    <div class="flex flex-col gap-1 px-[20px] md:max-w-[50rem] lg:max-w-[60rem] bg-primaryCream  md:px-[18px] lg:px-[24px] py-[22px] rounded-2xl  w-fit">
+    <div class="flex flex-col gap-1 px-[20px] md:w-[50rem] lg:w-[60rem] bg-primaryCream  md:px-[18px] lg:px-[24px] py-[22px] rounded-2xl w-[93vw] ">
       <!-- Description -->
 
       <div class="flex flex-col gap-4">
@@ -197,11 +200,12 @@
             width="50"
             height="50"
             :src="routine.image"
+            style="object-fit: cover; object-position: center; aspect-ratio: 1/1;"
             class="h-[50px] w-[50px] rounded-full"
 
             alt=""
           >
-          <p x-text="routine.name" class="text-[15px] font-[500]  text-primaryGreen">Skin Care Routine</p>
+          <p x-text="routine.name" class="text-[15px] font-[500]  text-primaryGreen" x-text="routine?.name"></p>
         </div>
 
         <!-- Description -->
@@ -246,4 +250,3 @@
     </div>
   </div>
 </section>
-

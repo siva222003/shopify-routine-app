@@ -29,7 +29,9 @@ export default function ChooseReminder() {
       backAction={{
         content: "Back",
         onAction: () => {
-          navigate(`/app/routine/${id}`);
+          navigate(`/app/routine/${id}`, {
+            unstable_viewTransition: true,
+          });
         },
       }}
     >
@@ -42,7 +44,9 @@ export default function ChooseReminder() {
                   Product Based
                 </Text>
                 <Button
-                  onClick={() => navigate(`/app/${id}/add-product`)}
+                  onClick={() => navigate(`/app/${id}/add-product`,{
+                    unstable_viewTransition: true,
+                  })}
                   accessibilityLabel="Add variant"
                   icon={PlusIcon}
                 >
@@ -64,7 +68,9 @@ export default function ChooseReminder() {
                   Activity Based
                 </Text>
                 <Button
-                  onClick={() => navigate(`/app/${id}/add-activity`)}
+                  onClick={() => navigate(`/app/${id}/add-activity`,{
+                    unstable_viewTransition: true,
+                  })}
                   accessibilityLabel="Add variant"
                   icon={PlusIcon}
                 >

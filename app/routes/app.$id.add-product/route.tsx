@@ -103,7 +103,9 @@ const AddProductReminder = () => {
       backAction={{
         content: "Back",
         onAction: () => {
-          navigate(`/app/${id}/reminder`);
+          navigate(`/app/${id}/reminder`, {
+            unstable_viewTransition: true,
+          });
         },
       }}
       primaryAction={{

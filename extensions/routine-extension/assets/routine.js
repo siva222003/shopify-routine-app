@@ -61,7 +61,7 @@ document.addEventListener("alpine:init", () => {
         this.isLoading = true;
 
         const response = await fetch(
-          `${window.location.origin}/apps/routine/app/routine?id=${id}`,
+          `http://localhost:36211/app/routine?id=${id}`,
           { method: "GET", headers: { "Content-Type": "application/json" } },
         );
 
@@ -74,7 +74,8 @@ document.addEventListener("alpine:init", () => {
             name,
             image,
             variationId,
-            quantity: dosageQty,
+            quantity: 1,
+            dosageQty,
           }),
         );
 
@@ -166,7 +167,8 @@ document.addEventListener("alpine:init", () => {
         console.log("Cart response:", data);
 
         // Call updateCart to refresh the cart content after adding items
-        await this.updateCart();
+        // await this.updateCart();
+        this.refreshCartDrawer();
         // document.getElementsByTagName("cart-drawer")[0].open();
       } catch (error) {
         console.error("Error adding to cart:", error);
@@ -196,13 +198,10 @@ document.addEventListener("alpine:init", () => {
           };
         }
 
-        const response = await fetch(
-          `${window.location.origin}/apps/routine/app/channel`,
-          {
-            method: "POST",
-            body: JSON.stringify(channel),
-          },
-        );
+        const response = await fetch(`http://localhost:36211/app/channel`, {
+          method: "POST",
+          body: JSON.stringify(channel),
+        });
 
         const data = await response.json();
 
@@ -250,7 +249,7 @@ document.addEventListener("alpine:init", () => {
         const id = new URLSearchParams(window.location.search).get("id");
 
         const response = await fetch(
-          `${window.location.origin}/apps/routine/app/template?id=${id}`,
+          `http://localhost:36211/app/template?id=${id}`,
           {
             method: "POST",
             headers: {
@@ -273,40 +272,45 @@ document.addEventListener("alpine:init", () => {
       }
     },
 
-    // Fetches new cart HTML and replaces specified content block
-    async fetchAndReplaceHtml(newContentBlock) {
-      try {
-        const url =
-          window.Shopify.routes.root + "cart?section_id=main-cart-items";
-        const response = await fetch(url);
-
-        if (!response.ok) throw new Error("Failed to fetch cart content");
-
-        const responseText = await response.text();
-        const parser = new DOMParser();
-        const newHtml = parser
-          .parseFromString(responseText, "text/html")
-          .getElementById("main-cart-items").innerHTML;
-
-        if (newHtml) {
-          document.getElementById(newContentBlock).innerHTML = newHtml.trim();
-          return document.getElementById(newContentBlock).innerHTML;
-        } else {
-          throw new Error("Cart items element not found");
+    refreshCartDrawer() {
+      // Check if cart-drawer-items exists
+      let cartDrawerItems = document.querySelector("cart-drawer-items");
+      // Find the cart-drawer element
+      const cartDrawer = document.querySelector("cart-drawer");
+      if (cartDrawer) {
+        // Remove the is-empty class from cart-drawer if it exists
+        if (cartDrawer.classList.contains("is-empty")) {
+          cartDrawer.classList.remove("is-empty");
         }
-      } catch (error) {
-        console.error("Error fetching and replacing cart HTML:", error);
+        // Remove the div with class 'drawer__inner-empty'
+        const emptyDrawerElement = cartDrawer.querySelector(
+          ".drawer__inner-empty",
+        );
+        if (emptyDrawerElement) {
+          emptyDrawerElement.remove();
+        }
+        // Make the form tag's class 'cart__contents' display as block
+        const cartContentsForm = document.querySelector(".cart__contents");
+        if (cartContentsForm) {
+          cartContentsForm.style.display = "block";
+        }
       }
-    },
-
-    // Updates cart content and opens cart drawer
-    async updateCart() {
-      const response = await this.fetchAndReplaceHtml("CartDrawer-CartItems");
-      if (response) {
-        console.log("Cart updated successfully:", response);
-        document.getElementsByTagName("cart-drawer")[0].open();
-      } else {
-        console.error("Failed to update cart.");
+      // If cart-drawer-items doesn't exist, create it
+      if (!cartDrawerItems) {
+        cartDrawerItems = document.createElement("cart-drawer-items");
+        // Find the drawer__header element
+        const drawerHeader = document.querySelector(".drawer__header");
+        if (drawerHeader) {
+          // Insert the newly created cart-drawer-items after the drawer__header
+          drawerHeader.insertAdjacentElement("afterend", cartDrawerItems);
+        }
+      }
+      // Call the onCartUpdate method to refresh the cart drawer contents
+      document.querySelector("cart-drawer-items").onCartUpdate();
+      document.getElementById("CartDrawer-Checkout").disabled = false;
+      // Open the cart drawer and apply necessary classes for animation
+      if (cartDrawer) {
+        cartDrawer.open();
       }
     },
   }));

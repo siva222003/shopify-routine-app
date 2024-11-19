@@ -1,9 +1,9 @@
 # Learn more about configuring your app at https://shopify.dev/docs/apps/tools/cli/configuration
 
 client_id = "4dafbcbfcd37dcde3f18a13eb245dd16"
-name = "routine-dev"
-handle = "routine-dev"
-application_url = "https://101e-2405-201-a40b-aae-4071-1887-b7e7-b4d0.ngrok-free.app"
+name = "minga-routines-dev"
+handle = "minga-routines-dev"
+application_url = "https://7a9b-2405-201-a40b-aae-bd23-7de4-ee0e-99f2.ngrok-free.app"
 embedded = true
 
 [build]
@@ -16,16 +16,16 @@ scopes = "read_files"
 
 [auth]
 redirect_urls = [
-  "https://101e-2405-201-a40b-aae-4071-1887-b7e7-b4d0.ngrok-free.app/auth/callback",
-  "https://101e-2405-201-a40b-aae-4071-1887-b7e7-b4d0.ngrok-free.app/auth/shopify/callback",
-  "https://101e-2405-201-a40b-aae-4071-1887-b7e7-b4d0.ngrok-free.app/api/auth/callback"
+  "https://7a9b-2405-201-a40b-aae-bd23-7de4-ee0e-99f2.ngrok-free.app/auth/callback",
+  "https://7a9b-2405-201-a40b-aae-bd23-7de4-ee0e-99f2.ngrok-free.app/auth/shopify/callback",
+  "https://7a9b-2405-201-a40b-aae-bd23-7de4-ee0e-99f2.ngrok-free.app/api/auth/callback",
 ]
 
 [webhooks]
 api_version = "2024-10"
 
 [app_proxy]
-url = "https://101e-2405-201-a40b-aae-4071-1887-b7e7-b4d0.ngrok-free.app"
+url = "https://7a9b-2405-201-a40b-aae-bd23-7de4-ee0e-99f2.ngrok-free.app"
 subpath = "routine"
 prefix = "apps"
 

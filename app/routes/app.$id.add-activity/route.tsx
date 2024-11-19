@@ -104,7 +104,9 @@ const AddActivityReminder = () => {
       backAction={{
         content: "Back",
         onAction: () => {
-          navigate(`/app/${id}/reminder`);
+          navigate(`/app/${id}/reminder`,{
+            replace: true,
+          });
         },
       }}
       primaryAction={{

@@ -21,10 +21,12 @@ document.addEventListener("alpine:init", () => {
     async init() {
       const customerId = localStorage.getItem("customer");
 
-      if (!customerId || customerId === "") {
-        window.location.href = "/account/login";
-        return;
-      }
+      const isEditor = window.location?.pathname?.includes("editor");
+
+      // if ((!customerId || customerId === "") && !isEditor) {
+      //   window.location.href = "/account/login";
+      //   return;
+      // }
 
       this.updateColumnCount(); // Adjust columns based on screen size
 
@@ -75,7 +77,7 @@ document.addEventListener("alpine:init", () => {
         this.isRoutinesLoading = true;
 
         const response = await fetch(
-          `${window.location.origin}/apps/routine/app/user-routines`,
+          `http://localhost:36211/app/user-routines`,
           {
             method: "GET",
             headers: {

@@ -109,7 +109,9 @@ const WeeklyBenfits = () => {
         narrowWidth
         backAction={{
           content: "Back",
-          onAction: () => navigate(`/app/routine/${id}`),
+          onAction: () => navigate(`/app/routine/${id}`,{
+            unstable_viewTransition: true,
+          }),
         }}
         primaryAction={{
           type: "submit",

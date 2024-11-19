@@ -23,9 +23,11 @@
   <div class="flex justify-center mx-[5px]">
     <div
       id="reminder-channels-grid"
-      class="grid grid-cols-1 sm:grid-cols-4 xl:grid-cols-4 gap-10 sm:gap-6 md:gap-14 my-4 w-[100%]"
+      :class="routine?.channel?.length === 2 ? 'sm:grid-cols-4' : 'sm:grid-cols-2'"
+      class="grid grid-cols-1 gap-10 sm:gap-6 md:gap-14 my-4 w-[100%] "
     >
       <div
+        :class="routine?.channel?.includes('whatsapp') ? '' : 'sm:w-[50%] sm:mx-auto'"
         x-show="routine?.channel?.includes('sms')"
         style="border: 1px solid #e5e7eb"
         class=" col-span-2 flex flex-col gap-8 p-6  rounded-2xl "
@@ -70,6 +72,7 @@
       </div>
 
       <div
+        :class="routine?.channel?.includes('sms') ? '' : 'sm:w-[50%] sm:mx-auto'"
         :checked="index.includes(1)"
         x-show="routine?.channel?.includes('whatsapp')"
         style="border: 1px solid #e5e7eb"

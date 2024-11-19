@@ -10,7 +10,7 @@ export async function action({ request }: ActionFunctionArgs) {
   const JWT_SECRET = "jwt-secret-for-Doc-Backend-App";
 
   try {
-    const token = jwt.sign(PAYLOAD, JWT_SECRET, { expiresIn: "7d" });
+    const token = jwt.sign(PAYLOAD, JWT_SECRET, { expiresIn: "1y" });
 
     return json({ success: true, token });
   } catch (error) {

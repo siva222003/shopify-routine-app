@@ -49,7 +49,7 @@ document.addEventListener("alpine:init", () => {
 
         this.isLoading = true;
 
-        const response = await fetch(`${window.location.origin}/apps/routine/app/my-routine?id=${id}`, {
+        const response = await fetch(`http://localhost:36211/app/my-routine?id=${id}`, {
           method: "GET",
           headers: { "Content-Type": "application/json" },
         });
@@ -101,7 +101,7 @@ document.addEventListener("alpine:init", () => {
 
         this.isFetchingSlots = true;
 
-        const response = await fetch(`${window.location.origin}/apps/routine/app/slots`, {
+        const response = await fetch(`http://localhost:36211/app/slots`, {
           method: "POST",
           body: JSON.stringify(body),
           headers: { "Content-Type": "application/json" },
@@ -130,7 +130,7 @@ document.addEventListener("alpine:init", () => {
           status: !slot.marked,
         };
 
-        const response = await fetch(`${window.location.origin}/apps/routine/app/mark-slot`, {
+        const response = await fetch(`http://localhost:36211/app/mark-slot`, {
           method: "POST",
           body: JSON.stringify(body),
           headers: { "Content-Type": "application/json" },
