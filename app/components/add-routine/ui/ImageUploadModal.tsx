@@ -39,6 +39,10 @@ export default function ImageUploadModal({
   const navigation = useNavigation();
   const isSubmitting = navigation.state === "submitting";
 
+  const [loaded, setLoaded] = useState<string[]>([]);
+
+  console.log({ loaded });
+
   const [selectedImage, setSelectedImage] = useState<FileGridType | null>(null);
   const [displayedData, setDisplayedData] = useState<FileGridType[]>(data);
   const [loadingMore, setLoadingMore] = useState(false); // New state for loading more data
@@ -64,7 +68,11 @@ export default function ImageUploadModal({
   }, [data]);
 
   const handleCheckboxChange = (file: FileGridType) => {
-    setSelectedImage(file);
+    if (selectedImage && selectedImage.id === file.id) {
+      setSelectedImage(null);
+    } else {
+      setSelectedImage(file);
+    }
   };
 
   const handleFetchMore = async () => {
@@ -79,13 +87,16 @@ export default function ImageUploadModal({
         <TitleBar title="Select Image" />
 
         {isLoading ? (
-          <Box minHeight="300px">
+          <Box minHeight="400px">
             <div
               style={{
                 display: "flex",
                 justifyContent: "center",
                 alignItems: "center",
-                height: "300px",
+                height: "400px",
+                opacity: 1, // Default opacity
+                transform: "scale(1)", // Default scale
+                animation: "fadeInOut 0.5s ease-in-out",
               }}
             >
               <Spinner />
@@ -99,7 +110,7 @@ export default function ImageUploadModal({
 
             <div style={{ marginBlock: "20px" }}></div>
 
-            <Grid columns={{ xs: 2, sm: 3, md: 6 }}>
+            <Grid columns={{ xs: 3, sm: 3, md: 6 }}>
               {displayedData.map((file) => (
                 <Grid.Cell key={file.id}>
                   <div style={{ position: "relative" }}>
@@ -119,21 +130,54 @@ export default function ImageUploadModal({
                         onChange={() => handleCheckboxChange(file)}
                       />
                     </div>
-                    <Box
-                      padding={"100"}
-                      borderWidth="025"
-                      borderColor="border-brand"
-                      borderRadius="300"
+                    <div
+                      style={{
+                        border: "1px solid #dfe3e8",
+                        borderRadius: "0.5rem",
+                        padding: "5px",
+                        maxWidth: "fit-content",
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center",
+                        transition: "transform 0.5s ease, opacity 0.5s ease",
+                      }}
                     >
+                      {!loaded.includes(file.id) && (
+                        <div
+                          style={{
+                            display: "flex",
+                            justifyContent: "center",
+                            alignItems: "center",
+                            height: "110px",
+                            width: "110px",
+                          }}
+                        >
+                          <Spinner
+                            accessibilityLabel="Loading image"
+                            size="large"
+                          />
+                        </div>
+                      )}
                       <img
-                        style={{ objectFit: "cover", borderRadius: "10px" }}
-                        height={"130px"}
-                        loading="lazy"
-                        width={"100%"}
+                        style={{
+                          height: "110px",
+                          width: "110px",
+                          objectFit: "cover",
+                          borderRadius: "10px",
+                          objectPosition: "center",
+                          aspectRatio: "1/1",
+                          display: loaded.includes(file.id) ? "block" : "none",
+                          transition: "opacity 0.5s ease, transform 0.5s ease",
+                        }}
+                        onLoad={() =>
+                          setLoaded((prevLoaded) => [
+                            ...new Set([...prevLoaded, file.id]),
+                          ])
+                        }
                         src={file.preview.image.url}
                         alt="Image"
                       />
-                    </Box>
+                    </div>
                   </div>
                 </Grid.Cell>
               ))}
