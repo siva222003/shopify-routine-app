@@ -17,12 +17,6 @@ const DescriptionInput = ({ form }: Props) => {
       value={form.value("description") || ""}
       onChange={(e) => form.setValue("description", e)}
       multiline={6}
-      helpText={
-        <span>
-          We'll use this email address to inform you on future changes to
-          Polaris.
-        </span>
-      }
       error={form.error("description") || undefined}
     />
   );

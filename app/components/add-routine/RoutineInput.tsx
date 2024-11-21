@@ -16,11 +16,6 @@ const RoutineInput = ({ form }: Props) => {
         type="text"
         value={form.value("name") || ""}
         onChange={(e) => form.setValue("name", e)}
-        helpText={
-          <span>
-            The name of the routine. This will be displayed on the routine page.
-          </span>
-        }
         error={form.error("name") || undefined}
       />
     </Card>

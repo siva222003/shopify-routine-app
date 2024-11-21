@@ -60,8 +60,6 @@ export default function ProductCard({ form, fetchProducts }: Props) {
 
       <img
         alt=""
-        width="100%"
-        height="100%"
         style={{
           objectFit: "cover",
           objectPosition: "center",

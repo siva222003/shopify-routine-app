@@ -10,7 +10,6 @@ import {
   Select,
   FormLayout,
   TextField,
-  RadioButton,
   Box,
 } from "@shopify/polaris";
 import { PlusCircleIcon } from "@shopify/polaris-icons";

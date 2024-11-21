@@ -2,7 +2,6 @@ import {
   BlockStack,
   Card,
   SkeletonBodyText,
-  Text,
   TextField,
 } from "@shopify/polaris";
 

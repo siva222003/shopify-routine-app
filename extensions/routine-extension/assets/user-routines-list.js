@@ -21,12 +21,13 @@ document.addEventListener("alpine:init", () => {
     async init() {
       const customerId = localStorage.getItem("customer");
 
-      const isEditor = window.location?.pathname?.includes("editor");
+      const isThemeEditor =
+        typeof Shopify !== "undefined" && Shopify.designMode;
 
-      // if ((!customerId || customerId === "") && !isEditor) {
-      //   window.location.href = "/account/login";
-      //   return;
-      // }
+      if ((!customerId || customerId === "") && !isThemeEditor) {
+        window.location.href = "/account/login";
+        return;
+      }
 
       this.updateColumnCount(); // Adjust columns based on screen size
 
@@ -77,7 +78,7 @@ document.addEventListener("alpine:init", () => {
         this.isRoutinesLoading = true;
 
         const response = await fetch(
-          `http://localhost:36211/app/user-routines`,
+          `http://localhost:41445/app/user-routines`,
           {
             method: "GET",
             headers: {

@@ -8,7 +8,6 @@ import {
   InlineStack,
 } from "@shopify/polaris";
 import { PlusIcon } from "@shopify/polaris-icons";
-import { useMemo } from "react";
 import { WeeklyBenefitsType } from "~/routes/app.$id.weekly-benfits/validator";
 
 interface WeeklyBenefitsInputProps {

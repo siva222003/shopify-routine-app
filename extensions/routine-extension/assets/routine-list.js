@@ -26,7 +26,7 @@ document.addEventListener("alpine:init", () => {
       try {
         this.isLoading = true;
         const response = await fetch(
-          `http://localhost:36211/app/explore`,
+          `http://localhost:41445/app/explore`,
           {
             method: "GET",
             headers: {

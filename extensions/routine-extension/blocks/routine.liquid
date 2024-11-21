@@ -8,15 +8,19 @@
     <h1>Loading...</h1>
   </section>
 
-  <section x-show="!isLoading">
+  <section x-show="!isLoading" style="z-index: 9999999;">
     {% render 'routine_header' %}
 
     <!-- Reminders -->
     {% render 'routine_reminders' %}
   </section>
 
-  {% render 'product_reminder_modal' %}
-  {% render 'activity_reminder_modal' %}
+  {% comment %} <div class=" fixed right-1/2 h-[1000px] w-[100px] bg-black"></div> {% endcomment %}
+
+  <section>
+    {% render 'product_reminder_modal' %}
+    {% render 'activity_reminder_modal' %}
+  </section>
 
   <!-- Add To Cart Products -->
   {% render 'routine_addToCart' %}

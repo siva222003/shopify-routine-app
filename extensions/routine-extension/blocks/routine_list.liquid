@@ -27,10 +27,10 @@
     {% render 'all_routines' %}
   </section>
 
-  <div x-show="routines.length > columnCount" x-cloak class="text-right">
+  <div x-show="filteredRoutines.length > columnCount" x-cloak class="text-right">
     <button
-      x-text="visibleRoutines.length >= routines.length ? 'Show Less' : 'Show More'"
-      @click="visibleRoutines.length >= routines.length ? showLess() : showMore()"
+      x-text="visibleRoutines.length >= filteredRoutines.length ? 'Show Less' : 'Show More'"
+      @click="visibleRoutines.length >= filteredRoutines.length ? showLess() : showMore()"
       class="text-primaryGreen font-[500] text-[13px] my-6 md:my-8 mr-[20px] md:mr-[40px]"
     ></button>
   </div>

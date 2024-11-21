@@ -26,6 +26,7 @@ import WeeklyBenefitsInput from "~/components/weekly-benfits/WeeklyBenefitsInput
 import { deleteBenefits, fetchBenfits, updateBenefits } from "./api";
 import { EditWeeklyBenefitsDefaultValues } from "./helper";
 import GlobalErrorCard from "~/components/GlobalError";
+import WeeklyBenefitsSkeleton from "~/components/weekly-benfits/loaders/WeeklyBenefitsSkeleton";
 
 export async function loader({ params }: LoaderFunctionArgs) {
   if (!params.routineId) {
@@ -133,7 +134,7 @@ const EditWeeklyBenfits = () => {
         actionData.success &&
         actionData.toast === "Benefits deleted successfully"
       ) {
-        navigate(`/app/routine/${routineId}`,{
+        navigate(`/app/routine/${routineId}`, {
           unstable_viewTransition: true,
         });
         return;
@@ -148,9 +149,10 @@ const EditWeeklyBenfits = () => {
         narrowWidth
         backAction={{
           content: "Back",
-          onAction: () => navigate(`/app/routine/${routineId}`,{
-            unstable_viewTransition: true,
-          }),
+          onAction: () =>
+            navigate(`/app/routine/${routineId}`, {
+              unstable_viewTransition: true,
+            }),
         }}
         primaryAction={{
           content: "Delete",
@@ -176,7 +178,7 @@ const EditWeeklyBenfits = () => {
           },
         ]}
       >
-        <Suspense fallback={<p>Loading...</p>}>
+        <Suspense fallback={<WeeklyBenefitsSkeleton />}>
           <Await
             resolve={benfitsPromise}
             errorElement={<p>Some Error Occured</p>}

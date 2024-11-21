@@ -111,14 +111,14 @@
 {% endcomment %}
 
 <section
-  x-show="tab === 1 && !isLoading"
-  class="flex max-md:flex-col max-md:items-center md:justify-center my-10 gap-10 md:gap-6 lg:gap-14"
-  x-transition:enter="transition-transform ease-out duration-300"
-  x-transition:enter-start="opacity-0 -translate-x-full"
-  x-transition:enter-end="opacity-100 translate-x-0"
-  x-transition:leave="transition-transform ease-in duration-300"
-  x-transition:leave-start="opacity-100 translate-x-0"
-  x-transition:leave-end="opacity-0 translate-x-full"
+  x-show="tab===1 && !isLoading"
+  class=" flex max-md:flex-col max-md:items-center md:justify-center my-10 gap-10 md:gap-6 lg:gap-14"
+  x-transition:enter="transition ease-out duration-200"
+  x-transition:enter-start="opacity-0 scale-90"
+  x-transition:enter-end="opacity-100 scale-100"
+  x-transition:leave="transition ease-in duration-200"
+  x-transition:leave-start="opacity-100 scale-100"
+  x-transition:leave-end="opacity-0 scale-90"
   x-cloak
 >
   <!-- Routine Thumbnail -->
@@ -175,14 +175,25 @@
       <div class="flex gap-3">
         <template x-for="product in products">
           <div class="flex flex-col items-center  gap-3">
+            <section
+              x-cloak
+              x-transition
+              x-show="!product.loaded"
+              class="h-[70px] w-[70px] rounded-full bg-skeletonCream animate-pulse"
+            ></section>
+ 
             <img
+              x-cloak
+              x-transition
+              x-show="product.loaded"
               width="50"
               height="50"
               :src="product.image"
               style="object-fit: cover; object-position: center; aspect-ratio: 1/1;"
-
               class="h-[70px] w-[70px] rounded-full"
-              alt=""
+              alt="Product Image"
+              @load="product.loaded = true"
+              @error="product.loaded = true"
             >
             <p x-text="product.name.slice(0,10) + '...'" class="text-[11px] text-primaryGreen"></p>
           </div>
@@ -202,7 +213,6 @@
             :src="routine.image"
             style="object-fit: cover; object-position: center; aspect-ratio: 1/1;"
             class="h-[50px] w-[50px] rounded-full"
-
             alt=""
           >
           <p x-text="routine.name" class="text-[15px] font-[500]  text-primaryGreen" x-text="routine?.name"></p>

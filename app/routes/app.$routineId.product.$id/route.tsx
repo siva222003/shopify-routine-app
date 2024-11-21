@@ -37,6 +37,7 @@ import { EditProductReminderDefaultValues } from "./helper";
 import { EditProductReminderType } from "./types";
 import { deleteProductReminder } from "../app.routine.$id/api";
 import GlobalErrorCard from "~/components/GlobalError";
+import ProductFormSkeleton from "~/components/product-reminder/loaders/ProductFormSkeleton";
 
 export async function loader({ params }: LoaderFunctionArgs) {
   if (!params.id) {
@@ -156,7 +157,7 @@ const EditProductReminder = () => {
         actionData.success &&
         actionData.toast === "Reminder deleted successfully"
       ) {
-        navigate(`/app/routine/${routineId}`,{
+        navigate(`/app/routine/${routineId}`, {
           unstable_viewTransition: true,
         });
       }
@@ -168,9 +169,10 @@ const EditProductReminder = () => {
       title="Customize Product Reminder"
       backAction={{
         content: "Back",
-        onAction: () => navigate(`/app/routine/${routineId}`,{
-          unstable_viewTransition: true,
-        }),
+        onAction: () =>
+          navigate(`/app/routine/${routineId}`, {
+            unstable_viewTransition: true,
+          }),
       }}
       primaryAction={{
         content: "Delete",
@@ -196,7 +198,7 @@ const EditProductReminder = () => {
       ]}
       narrowWidth
     >
-      <Suspense fallback="Loading...">
+      <Suspense fallback={<ProductFormSkeleton />}>
         <Await resolve={reminderPromise} errorElement={<GlobalErrorCard />}>
           <Form {...form.getFormProps()}>
             <FormLayout>

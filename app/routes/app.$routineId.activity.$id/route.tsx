@@ -36,6 +36,7 @@ import { EditActivityReminderDefaultValues } from "./helper";
 import { ImageInput } from "~/components/add-routine";
 import { deleteActivityReminder } from "../app.routine.$id/api";
 import GlobalErrorCard from "~/components/GlobalError";
+import ActivityFormSkeleton from "~/components/activity-reminder/loaders/ActivityFormSkeleton";
 
 export async function loader({ params }: LoaderFunctionArgs) {
   if (!params.id) {
@@ -193,7 +194,7 @@ const AddActivityReminder = () => {
       ]}
       narrowWidth
     >
-      <Suspense fallback={<div>Loading...</div>}>
+      <Suspense fallback={<ActivityFormSkeleton />}>
         <Await resolve={reminderPromise} errorElement={<GlobalErrorCard />}>
           <Form {...form.getFormProps()}>
             <FormLayout>
