@@ -5,221 +5,176 @@
     top: 0;
     left: 0;
     width: 100% !important;
-    height: 100% !important;
-    overflow: auto; /* Prevent modal overflow */
+    height: calc(100% - var(--parent-start-offset, 0px)) !important;
+    display: flex;
+    justify-content: center;
+    overflow: auto;
     background-color: rgba(0, 0, 0, 0.5);
-  }
-
-  .modal-overlay {
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    position: fixed !important;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    width: 100% !important;
-    height: 100% !important;
-  }
-
-  .modal-content {
-    position: relative;
-    background-color: white;
-    padding: 20px;
-    border-radius: 5px;
-    max-width: 80%;
-    max-height: 80%;
-    overflow-y: auto;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
   }
 </style>
 
 <div
-  class="modal"
-  x-cloak
-  x-transition
   x-show="productReminderModalOpen"
-  id="productReminderModal"
+  x-cloak
+  x-transition.opacity.duration.200ms
+  x-trap.inert.noscroll="productReminderModalOpen"
+  @keydown.esc.window="productReminderModalOpen = false"
+  @click.self="productReminderModalOpen = false"
+  class="modal"
 >
   <div
     x-cloak
     x-show="productReminderModalOpen"
-    x-transition.opacity.duration.200ms
-    x-trap.inert.noscroll="productReminderModalOpen"
-    @keydown.esc.window="productReminderModalOpen = false"
-    @click.self="productReminderModalOpen = false"
-    {% comment %} class="fixed inset-0 z-[9999] top-0 overflow-y-auto flex items-center justify-center bg-black bg-opacity-50" {% endcomment %}
-    class="modal-overlay"
+    x-transition:enter="transition ease-out duration-200 delay-100 motion-reduce:transition-opacity"
+    x-transition:enter-start="opacity-0 scale-50"
+    x-transition:enter-end="opacity-100 scale-100"
+    class="relative flex flex-col gap-4 rounded-xl bg-white px-6 py-10 max-w-[90%] h-fit max-h-[100%] overflow-auto"
   >
-    <!-- Modal Dialog -->
-    <div
-      x-cloak
-      x-show="productReminderModalOpen"
-      x-transition:enter="transition ease-out duration-200 delay-100 motion-reduce:transition-opacity"
-      x-transition:enter-start="opacity-0 scale-50"
-      x-transition:enter-end="opacity-100 scale-100"
-      {% comment %} class="modal-content" {% endcomment %}
-      class="relative flex flex-col gap-4 rounded-xl bg-white px-6 py-10 max-w-[90%] max-h-[90vh] overflow-y-auto"
-    >
-      <button @click="productReminderModalOpen=false" class="absolute right-10 top-10">
-        <svg
-          fill="#000000"
-          height="13px"
-          width="13px"
-          version="1.1"
-          id="Capa_1"
-          xmlns="http://www.w3.org/2000/svg"
-          xmlns:xlink="http://www.w3.org/1999/xlink"
-          viewBox="0 0 490 490"
-          xml:space="preserve"
-        >
-          <polygon points="456.851,0 245,212.564 33.149,0 0.708,32.337 212.669,245.004 0.708,457.678 33.149,490 245,277.443 456.851,490
-            489.292,457.678 277.331,245.004 489.292,32.337 "/>
-        </svg>
-      </button>
+    <button @click="productReminderModalOpen=false" class="absolute right-10 top-10">
+      <svg
+        fill="#000000"
+        height="13px"
+        width="13px"
+        version="1.1"
+        id="Capa_1"
+        xmlns="http://www.w3.org/2000/svg"
+        xmlns:xlink="http://www.w3.org/1999/xlink"
+        viewBox="0 0 490 490"
+        xml:space="preserve"
+      >
+        <polygon points="456.851,0 245,212.564 33.149,0 0.708,32.337 212.669,245.004 0.708,457.678 33.149,490 245,277.443 456.851,490
+          489.292,457.678 277.331,245.004 489.292,32.337 "/>
+      </svg>
+    </button>
 
-      <div class="flex justify-between mb-[10px]">
-        <h1 class="text-[#101018] font-[500]">Reminder Item Details</h1>
-      </div>
+    <div class="flex justify-between mb-[10px]">
+      <h1 class="text-[#101018] font-[500]">Reminder Item Details</h1>
+    </div>
 
-      <div class="flex flex-col gap-3 mb-3">
-        <h2 class="text-[#101018] text-[13px]">Reminder Type</h2>
-        <h2 class="text-[#101018] font-[500]">Product Based</h2>
-      </div>
+    <div class="flex flex-col gap-3 mb-3">
+      <h2 class="text-[#101018] text-[13px]">Reminder Type</h2>
+      <h2 class="text-[#101018] font-[500]">Product Based</h2>
+    </div>
 
-      {% comment %} Product Details {% endcomment %}
-      <div>
-        <h2 class="text-[#101018] text-[14px] my-4">Product Details</h2>
+    {% comment %} Product Details {% endcomment %}
+    <div>
+      <h2 class="text-[#101018] text-[14px] my-4">Product Details</h2>
 
-        <div class="flex md:gap-[40px] gap-[25px]  max-md:flex-col">
-          <div class="flex flex-col gap-[20px]">
-            <fieldset class="border-2 px-4 md:w-[280px] py-4 flex items-center rounded-3xl">
-              <legend class="custom-fieldset-legend text-primaryGrey text-[11px]">Product Name</legend>
-              <h1 class="text-[14px] mb-1" x-text="selectedReminder?.name"></h1>
+      <div class="flex md:gap-[40px] gap-[25px]  max-md:flex-col">
+        <div class="flex flex-col gap-[20px]">
+          <fieldset class="border-2 px-4 md:w-[280px] py-4 flex items-center rounded-3xl">
+            <legend class="custom-fieldset-legend text-primaryGrey text-[11px]">Product Name</legend>
+            <h1 class="text-[14px] mb-1" x-text="selectedReminder?.name"></h1>
+          </fieldset>
+          <div class="flex justify-between gap-10">
+            <fieldset class="border-2 px-4 w-3/5  py-4 flex items-center rounded-3xl">
+              <legend class="custom-fieldset-legend text-primaryGrey text-[11px]">Quantity</legend>
+              <h1 class="text-[14px] mb-1" x-text="selectedReminder?.dosageQty"></h1>
             </fieldset>
-            <div class="flex justify-between gap-10">
-              <fieldset class="border-2 px-4 w-3/5  py-4 flex items-center rounded-3xl">
-                <legend class="custom-fieldset-legend text-primaryGrey text-[11px]">Quantity</legend>
-                <h1 class="text-[14px] mb-1" x-text="selectedReminder?.dosageQty"></h1>
-              </fieldset>
 
-              <fieldset class="border-2 px-4  w-2/5 py-4 flex items-center rounded-3xl">
-                <legend class="custom-fieldset-legend text-primaryGrey text-[11px]">Unit</legend>
-                <h1 class="text-[14px] mb-1" x-text="selectedReminder?.dosageUnit"></h1>
-              </fieldset>
-            </div>
+            <fieldset class="border-2 px-4  w-2/5 py-4 flex items-center rounded-3xl">
+              <legend class="custom-fieldset-legend text-primaryGrey text-[11px]">Unit</legend>
+              <h1 class="text-[14px] mb-1" x-text="selectedReminder?.dosageUnit"></h1>
+            </fieldset>
           </div>
+        </div>
 
-          <div class="flex flex-col gap-[20px]">
-            <fieldset class="border-2 px-4 min-w-[280px] py-4 flex items-center rounded-3xl">
-              <legend class="custom-fieldset-legend text-primaryGrey text-[11px]">Product Type</legend>
-              <h1
-                class="text-[14px] mb-1"
-                x-text="selectedReminder?.productType === 'applicationBased' ? 'Application' : 'Consumable'"
-              ></h1>
-            </fieldset>
+        <div class="flex flex-col gap-[20px]">
+          <fieldset class="border-2 px-4 min-w-[280px] py-4 flex items-center rounded-3xl">
+            <legend class="custom-fieldset-legend text-primaryGrey text-[11px]">Product Type</legend>
+            <h1
+              class="text-[14px] mb-1"
+              x-text="selectedReminder?.productType === 'applicationBased' ? 'Application' : 'Consumable'"
+            ></h1>
+          </fieldset>
 
-            <div class="flex gap-2 px-3 py-3 bg-primaryCream rounded-xl">
-              <template
-                x-for="(shortDay, index) in ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']"
-                :key="index"
+          <div class="flex gap-2 px-3 py-3 bg-primaryCream rounded-xl">
+            <template
+              x-for="(shortDay, index) in ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']"
+              :key="index"
+            >
+              <div
+                class="rounded-xl p-4"
+                :class="
+                  selectedReminder?.frequency.map(day => day.slice(0, 3)).includes(shortDay)
+                  ? 'bg-primaryGreen text-white'
+                  : 'text-[#7F7F7F]'
+                "
               >
-                <div
-                  class="rounded-xl p-4"
+                <h3
                   :class="
                     selectedReminder?.frequency.map(day => day.slice(0, 3)).includes(shortDay)
-                    ? 'bg-primaryGreen text-white'
+                    ? 'text-white'
                     : 'text-[#7F7F7F]'
                   "
-                >
-                  <h3
-                    :class="
-                      selectedReminder?.frequency.map(day => day.slice(0, 3)).includes(shortDay)
-                      ? 'text-white'
-                      : 'text-[#7F7F7F]'
-                    "
-                    class="text-[11px]"
-                    x-text="shortDay"
-                  ></h3>
-                </div>
-              </template>
-            </div>
+                  class="text-[11px]"
+                  x-text="shortDay"
+                ></h3>
+              </div>
+            </template>
           </div>
         </div>
       </div>
+    </div>
 
-      {% comment %} Duration {% endcomment %}
-      <div>
-        <h2 class="text-[#101018] text-[14px] my-4">Duration</h2>
+    {% comment %} Duration {% endcomment %}
+    <div>
+      <h2 class="text-[#101018] text-[14px] my-4">Duration</h2>
 
-        <div class="max-w-[280px]">
-          <div class="flex gap-10">
-            <fieldset class="border-2 px-4 w-3/5  py-4 flex items-center rounded-3xl">
-              <legend class="custom-fieldset-legend text-primaryGrey text-[11px]">Duration</legend>
-              <h1 class="text-[14px] mb-1" x-text="selectedReminder?.duration?.number"></h1>
-            </fieldset>
-
-            <fieldset class="border-2 px-4 w-2/5  py-4 flex items-center rounded-3xl">
-              <legend class="custom-fieldset-legend text-primaryGrey text-[11px]">Unit</legend>
-              <h1 class="text-[14px] mb-1" x-text="selectedReminder?.duration?.unit"></h1>
-            </fieldset>
-          </div>
-        </div>
-      </div>
-
-      {% comment %} Time Slot {% endcomment %}
       <div class="max-w-[280px]">
-        <h2 class="text-[#101018] text-[14px]  my-4">Time Slot</h2>
-        <template x-if="selectedReminder?.timeSlotsAppBased?.length > 0">
-          <div class="flex flex-col gap-4 my-[13px]">
-            <template x-for="slot in selectedReminder?.timeSlotsAppBased">
-              <div class="flex gap-4 items-center">
-                <span
-                  x-text="slot.timing === 'beforeMeal' ? 'Before Meal' : 'After Meal'"
-                  class="rounded-3xl px-4 py-2 border bg-primaryCream text-[12px] text-[#7F7F7F]"
-                >
-                </span>
+        <div class="flex gap-10">
+          <fieldset class="border-2 px-4 w-3/5  py-4 flex items-center rounded-3xl">
+            <legend class="custom-fieldset-legend text-primaryGrey text-[11px]">Duration</legend>
+            <h1 class="text-[14px] mb-1" x-text="selectedReminder?.duration?.number"></h1>
+          </fieldset>
 
-                <h3 class="text-primaryGreen text-[14px]" x-text="slot.time"></h3>
-              </div>
-            </template>
-          </div>
-        </template>
-
-        <template x-if="selectedReminder?.timeSlotsConsumable?.length > 0">
-          <div class="flex flex-col gap-4 my-[13px]">
-            <template x-for="slot in selectedReminder?.timeSlotsConsumable">
-              <fieldset class="border-2 px-4  py-4 flex items-center rounded-3xl">
-                <legend class="custom-fieldset-legend text-primaryGrey text-[11px]">Meal</legend>
-                <h1 class="text-[14px] mb-1" x-text="slot.meal"></h1>
-              </fieldset>
-
-              <div class="flex gap-4 items-center">
-                <span
-                  x-text="slot.timing === 'beforeMeal' ? 'Before Meal' : 'After Meal'"
-                  class="rounded-3xl px-4 py-2 border bg-primaryCream text-[12px] text-[#7F7F7F]"
-                >
-                </span>
-
-                <h3 class="text-primaryGreen text-[14px]" x-text="slot.time"></h3>
-              </div>
-            </template>
-          </div>
-        </template>
+          <fieldset class="border-2 px-4 w-2/5  py-4 flex items-center rounded-3xl">
+            <legend class="custom-fieldset-legend text-primaryGrey text-[11px]">Unit</legend>
+            <h1 class="text-[14px] mb-1" x-text="selectedReminder?.duration?.unit"></h1>
+          </fieldset>
+        </div>
       </div>
+    </div>
+
+    {% comment %} Time Slot {% endcomment %}
+    <div class="max-w-[280px]">
+      <h2 class="text-[#101018] text-[14px]  my-4">Time Slot</h2>
+      <template x-if="selectedReminder?.timeSlotsAppBased?.length > 0">
+        <div class="flex flex-col gap-4 my-[13px]">
+          <template x-for="slot in selectedReminder?.timeSlotsAppBased">
+            <div class="flex gap-4 items-center">
+              <span
+                x-text="slot.timing === 'beforeMeal' ? 'Before Meal' : 'After Meal'"
+                class="rounded-3xl px-4 py-2 border bg-primaryCream text-[12px] text-[#7F7F7F]"
+              >
+              </span>
+
+              <h3 class="text-primaryGreen text-[14px]" x-text="slot.time"></h3>
+            </div>
+          </template>
+        </div>
+      </template>
+
+      <template x-if="selectedReminder?.timeSlotsConsumable?.length > 0">
+        <div class="flex flex-col gap-4 my-[13px]">
+          <template x-for="slot in selectedReminder?.timeSlotsConsumable">
+            <fieldset class="border-2 px-4  py-4 flex items-center rounded-3xl">
+              <legend class="custom-fieldset-legend text-primaryGrey text-[11px]">Meal</legend>
+              <h1 class="text-[14px] mb-1" x-text="slot.meal"></h1>
+            </fieldset>
+
+            <div class="flex gap-4 items-center">
+              <span
+                x-text="slot.timing === 'beforeMeal' ? 'Before Meal' : 'After Meal'"
+                class="rounded-3xl px-4 py-2 border bg-primaryCream text-[12px] text-[#7F7F7F]"
+              >
+              </span>
+
+              <h3 class="text-primaryGreen text-[14px]" x-text="slot.time"></h3>
+            </div>
+          </template>
+        </div>
+      </template>
     </div>
   </div>
 </div>
-
-{% comment %}
-  <body>
-    <div
-      class="fixed top-0 right-0 bottom-0 left-0 z-[99999999] bg-slate-100 w-full h-full"
-      style="z-index: 2147483647; position: fixed !important;"
-    ></div>
-  </body>
-{% endcomment %}

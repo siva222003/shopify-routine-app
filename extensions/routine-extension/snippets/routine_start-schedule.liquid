@@ -244,6 +244,7 @@
       <button
         :disabled="isCreatingRoutine"
         @click="startRoutine()"
+        {% comment %} @click="routineStartModalOpen=true" {% endcomment %}
         class="px-14 py-3  rounded-lg relative -z-1 bg-[#3A643B] disabled:opacity-60 text-white text-[16px] shadow-lg"
       >
         <div x-show="isCreatingRoutine" class="absolute top-5 right-1/2">

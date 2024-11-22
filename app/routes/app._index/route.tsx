@@ -19,7 +19,7 @@ const Home = () => {
 
   return (
     <Page
-      title="Routine : Your Personal Wellness & Habit Companion"
+      title="Minga Routines : Your Personal Wellness & Habit Companion"
       primaryAction={{
         content: "Create Routine",
         onAction: () =>
@@ -33,23 +33,22 @@ const Home = () => {
         <Layout.Section>
           <Card>
             <Text as="h1" variant="headingMd">
-              Welcome to Routine
+              Welcome to Minga Routines
             </Text>
 
             <div style={{ margin: "15px 0" }}></div>
 
             <BlockStack gap={"100"}>
               <p>
-                Routine is a wellness and habit companion that helps users build
-                and maintain healthy routines. With pre-made routines and
-                reminders, users can easily incorporate wellness activities into
-                their daily lives.
+                Minga Routines is a wellness and habit companion that helps
+                users build and maintain healthy routines. With pre-made
+                routines and reminders, users can easily incorporate wellness
+                activities into their daily lives.
               </p>
               <p>
-                Routine App makes it easy for users to kickstart healthier
-                habits with pre-made routines tailored to their needs. From
-                skincare to fitness, each routine can be imported and customized
-                with ease.
+                This App makes it easy for users to kickstart healthier habits
+                with pre-made routines tailored to their needs. From skincare to
+                fitness, each routine can be imported and customized with ease.
               </p>
             </BlockStack>
 

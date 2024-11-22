@@ -8,11 +8,13 @@
 <link rel="stylesheet" href="{{ 'conflict.css' | asset_url }}">
 
 <section class="" x-data="userRoutineList">
-  <div x-cloak x-show="!isRoutinesLoading && routines?.length === 0">
+  <div x-cloak x-transition x-show="!isRoutinesLoading && routines?.length === 0">
     {% render 'no_routines' %}
   </div>
 
   <section
+    x-cloak
+    x-transition
     x-show="isRoutinesLoading"
     class="flex flex-col justify-center items-center min-h-[80vh]"
   >

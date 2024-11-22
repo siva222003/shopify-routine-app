@@ -246,7 +246,12 @@
   <template x-if="!isFetchingSlots && reminderSlots.some(obj => obj.slots && obj.slots.length > 0)">
     <template x-for="reminderSlot in reminderSlots" :key="reminderSlot?._id">
       <div>
-        <h1 class="font-[500] my-[25px] text-[15px]" x-text="reminderSlot?.reminderName"></h1>
+        <h1
+          :class="reminderSlot?.slots.length > 0 ? '' : 'hidden'"
+          x-show="reminderSlot?.slots.length > 0"
+          class="font-[500] my-[25px] text-[15px]"
+          x-text="reminderSlot?.reminderName"
+        ></h1>
 
         <div class="flex flex-col gap-[30px]">
           <template x-for="slot in reminderSlot.slots" :key="slot?._id">

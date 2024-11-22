@@ -61,7 +61,7 @@ document.addEventListener("alpine:init", () => {
         this.isLoading = true;
 
         const response = await fetch(
-          `http://localhost:41445/app/routine?id=${id}`,
+          `http://localhost:45173/app/routine?id=${id}`,
           { method: "GET", headers: { "Content-Type": "application/json" } },
         );
 
@@ -104,12 +104,20 @@ document.addEventListener("alpine:init", () => {
 
     // Open product reminder modal and set selected reminder
     openProductReminderModal(reminder) {
+      window.scrollTo({
+        top: 0,
+        behavior: "smooth",
+      });
       this.selectedReminder = reminder;
       this.productReminderModalOpen = true;
     },
 
     // Open activity reminder modal and set selected reminder
     openActivityReminderModal(reminder) {
+      window.scrollTo({
+        top: 0,
+        behavior: "smooth",
+      });
       this.selectedReminder = reminder;
       this.activityReminderModalOpen = true;
     },
@@ -199,7 +207,7 @@ document.addEventListener("alpine:init", () => {
           };
         }
 
-        const response = await fetch(`http://localhost:41445/app/channel`, {
+        const response = await fetch(`http://localhost:45173/app/channel`, {
           method: "POST",
           body: JSON.stringify(channel),
         });
@@ -250,7 +258,7 @@ document.addEventListener("alpine:init", () => {
         const id = new URLSearchParams(window.location.search).get("id");
 
         const response = await fetch(
-          `http://localhost:41445/app/template?id=${id}`,
+          `http://localhost:45173/app/template?id=${id}`,
           {
             method: "POST",
             headers: {
@@ -265,6 +273,11 @@ document.addEventListener("alpine:init", () => {
         console.log("Routine Start response:", result);
 
         this.isCreatingRoutine = false;
+
+        window.scrollTo({
+          top: 0,
+          behavior: "smooth",
+        });
 
         this.routineStartModalOpen = true;
       } catch (error) {

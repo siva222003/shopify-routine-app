@@ -24,7 +24,10 @@ document.addEventListener("alpine:init", () => {
       const isThemeEditor =
         typeof Shopify !== "undefined" && Shopify.designMode;
 
-      if ((!customerId || customerId === "") && !isThemeEditor) {
+      if (
+        (!customerId || customerId === "") &&
+        (isThemeEditor === undefined || isThemeEditor === false)
+      ) {
         window.location.href = "/account/login";
         return;
       }
@@ -78,7 +81,7 @@ document.addEventListener("alpine:init", () => {
         this.isRoutinesLoading = true;
 
         const response = await fetch(
-          `http://localhost:41445/app/user-routines`,
+          `http://localhost:45173/app/user-routines`,
           {
             method: "GET",
             headers: {
