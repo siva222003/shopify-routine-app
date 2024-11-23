@@ -34,6 +34,10 @@ document.addEventListener("alpine:init", () => {
     },
     isAddingChannels: false, // Adding channels status
 
+    // Toast state
+    toastMessages: [], // To hold active toast messages
+    displayDuration: 3000, // Toast display duration in milliseconds
+
     // User routine start date
     userRoutineStartDate: "",
 
@@ -61,7 +65,7 @@ document.addEventListener("alpine:init", () => {
         this.isLoading = true;
 
         const response = await fetch(
-          `http://localhost:45173/app/routine?id=${id}`,
+          `http://localhost:44381/app/routine?id=${id}`,
           { method: "GET", headers: { "Content-Type": "application/json" } },
         );
 
@@ -207,7 +211,7 @@ document.addEventListener("alpine:init", () => {
           };
         }
 
-        const response = await fetch(`http://localhost:45173/app/channel`, {
+        const response = await fetch(`http://localhost:44381/app/channel`, {
           method: "POST",
           body: JSON.stringify(channel),
         });
@@ -221,6 +225,37 @@ document.addEventListener("alpine:init", () => {
       } finally {
         this.isAddingChannels = false;
       }
+    },
+
+    // Toast handling
+    addToast({ variant = "success", title = "", message = "" }) {
+      const id = Date.now(); // Unique ID for each toast
+      this.toastMessages.push({ id, variant, title, message });
+
+      // Auto-remove the toast after displayDuration
+      setTimeout(() => this.removeToast(id), this.displayDuration);
+    },
+
+    removeToast(id) {
+      this.toastMessages = this.toastMessages.filter(
+        (toast) => toast.id !== id,
+      );
+    },
+
+    triggerSuccessToast() {
+      this.addToast({
+        variant: "success",
+        title: "Success!",
+        message: "Your changes have been saved. Keep up the great work!",
+      });
+    },
+
+    triggerDangerToast() {
+      this.addToast({
+        variant: "danger",
+        title: "Error!",
+        message: "Something went wrong. Please try again.",
+      });
     },
 
     startRoutine() {
@@ -258,7 +293,7 @@ document.addEventListener("alpine:init", () => {
         const id = new URLSearchParams(window.location.search).get("id");
 
         const response = await fetch(
-          `http://localhost:45173/app/template?id=${id}`,
+          `http://localhost:44381/app/template?id=${id}`,
           {
             method: "POST",
             headers: {
@@ -291,6 +326,7 @@ document.addEventListener("alpine:init", () => {
       let cartDrawerItems = document.querySelector("cart-drawer-items");
       // Find the cart-drawer element
       const cartDrawer = document.querySelector("cart-drawer");
+
       if (cartDrawer) {
         // Remove the is-empty class from cart-drawer if it exists
         if (cartDrawer.classList.contains("is-empty")) {

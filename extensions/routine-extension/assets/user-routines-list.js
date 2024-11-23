@@ -81,7 +81,7 @@ document.addEventListener("alpine:init", () => {
         this.isRoutinesLoading = true;
 
         const response = await fetch(
-          `http://localhost:45173/app/user-routines`,
+          `http://localhost:44381/app/user-routines`,
           {
             method: "GET",
             headers: {

@@ -7,6 +7,15 @@
 <link rel="stylesheet" href="{{ 'style.css' | asset_url }}">
 <link rel="stylesheet" href="{{ 'conflict.css' | asset_url }}">
 
+<script>
+  {% if customer %}
+    console.log("Customer ID:", {{ customer.id }});
+    localStorage.setItem('customer', '{{ customer.id }}');
+  {% else %}
+   localStorage.setItem('customer', '');
+  {% endif %}
+</script>
+
 <section class="" x-data="userRoutineList">
   <div x-cloak x-transition x-show="!isRoutinesLoading && routines?.length === 0">
     {% render 'no_routines' %}

@@ -214,6 +214,21 @@ const Home = () => {
                     updated theme.
                   </p>
                 </List.Item>
+                <List.Item>
+                  <strong>Refer to Setup Tutorial</strong>
+                  <p>
+                    For detailed guidance, visit the step-by-step setup tutorial
+                    at:{" "}
+                    <a
+                      href="https://www.veed.io/view/53d41f3f-6648-4fcc-831c-798f875446e6?panel=share"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      style={{ color: "#007bdf" }}
+                    >
+                      Setup Tutorial
+                    </a>
+                  </p>
+                </List.Item>
               </List>
             </BlockStack>
           </Card>

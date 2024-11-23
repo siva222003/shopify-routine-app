@@ -8,7 +8,7 @@
     <h1>Loading...</h1>
   </section>
 
-  <section x-show="!isLoading">
+  <section x-transition x-show="!isLoading">
     {% render 'routine_header' %}
 
     <!-- Reminders -->

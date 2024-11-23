@@ -141,4 +141,44 @@
       </svg>
     </div>
   </div>
+  <div>
+    <!-- Button to trigger success toast -->
+    {% comment %} <div class="fixed top-0 right-0 z-50 flex flex-col gap-4 p-4">
+      <template x-for="toast in toastMessages" :key="toast.id">
+        <div
+          x-show="true"
+          class="pointer-events-auto relative rounded-md border px-4 py-3 transition-all duration-300"
+          :class="
+            {
+              'border-green-500 bg-green-50 text-green-700': toast.variant === 'success',
+              'border-red-500 bg-red-50 text-red-700': toast.variant === 'danger',
+            }
+          "
+          role="alert"
+        >
+          <div class="flex items-start">
+            <div class="flex-grow">
+              <h3 class="font-semibold" x-text="toast.title"></h3>
+              <p class="text-sm" x-text="toast.message"></p>
+            </div>
+            <button
+              type="button"
+              class="ml-4"
+              @click="removeToast(toast.id)"
+              aria-label="Dismiss"
+            >
+              <span>&times;</span>
+            </button>
+          </div>
+        </div>
+      </template>
+    </div>
+    <button
+      type="button"
+      @click="triggerSuccessToast()"
+      class="px-4 py-2 bg-green-500 text-white rounded"
+    >
+      Trigger Success Toast
+    </button> {% endcomment %}
+  </div>
 </div>
