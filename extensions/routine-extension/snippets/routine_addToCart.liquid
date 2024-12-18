@@ -90,6 +90,7 @@
               </button>
 
               <div
+                x-cloak
                 x-show="isCartLoading"
                 disabled
                 class="min-w-[20rem] opacity-50  flex justify-center items-center  py-5 rounded-lg bg-[#3A643B] max-sm:hidden text-white text-[12px]"
@@ -128,7 +129,7 @@
     <button
       disabled="{true}"
       @click="addToCart([])"
-      x-show="isCartLoading"
+      x-show="selectedProducts.length > 0 && isCartLoading"
       x-cloak
       class="text-primaryGreen font-[500] "
     >

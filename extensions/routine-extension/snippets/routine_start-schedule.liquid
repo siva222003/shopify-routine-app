@@ -13,7 +13,7 @@
   x-transition:leave-start="opacity-100 scale-100"
   x-transition:leave-end="opacity-0 scale-90"
   x-cloak
-  class="sm:max-w-[80%] mx-auto mb-[240px]"
+  class="sm:max-w-[80%] mx-auto mb-[200px]"
 >
   <h1 class="font-[500] mt-[30px] text-3xl text-[#434343] text-center">Select Start Date for the Routine</h1>
 
@@ -240,25 +240,31 @@
         Back
       </button>
 
-      <button
-        :disabled="isCreatingRoutine"
-        @click="startRoutine()"
-        {% comment %} @click="routineStartModalOpen=true" {% endcomment %}
-        class="px-14 py-3  rounded-lg relative -z-1 bg-[#3A643B] disabled:opacity-60 text-white text-[16px] shadow-lg"
-      >
-        <div x-show="isCreatingRoutine" class="absolute top-5 right-1/2">
+      <div class="flex flex-col">
+        <button
+          x-show="!isCreatingRoutine"
+          :disabled="isCreatingRoutine"
+          @click="startRoutine()"
+          class="w-[125px] h-[40px]  rounded-lg relative -z-1 bg-[#3A643B] disabled:opacity-60 text-white text-[16px] shadow-lg"
+        >
+          <span>Start Routine</span>
+        </button>
+        <div
+          x-cloak
+          x-show="isCreatingRoutine"
+          class="h-[40px] rounded-lg flex justify-center items-center w-[125px] opacity-50 mx-auto  disabled:opacity-50 bg-[#3A643B] text-white shadow-lg "
+        >
           <svg
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 24 24"
             aria-hidden="true"
-            class="size-8 fill-neutral-600 motion-safe:animate-spin dark:fill-neutral-300"
+            class="size-7 fill-neutral-600 motion-safe:animate-spin dark:fill-neutral-300"
           >
             <path d="M12,1A11,11,0,1,0,23,12,11,11,0,0,0,12,1Zm0,19a8,8,0,1,1,8-8A8,8,0,0,1,12,20Z" opacity=".25" />
             <path d="M10.14,1.16a11,11,0,0,0-9,8.92A1.59,1.59,0,0,0,2.46,12,1.52,1.52,0,0,0,4.11,10.7a8,8,0,0,1,6.66-6.61A1.42,1.42,0,0,0,12,2.69h0A1.57,1.57,0,0,0,10.14,1.16Z" />
           </svg>
         </div>
-        <span>Start Routine</span>
-      </button>
+      </div>
     </div>
   </div>
 </div>

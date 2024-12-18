@@ -4,6 +4,12 @@
 <main x-data="routine" class=" rounded-2xl mx-2 ssm:mx-4  sm:mx-6 ">
   <!-- Header -->
 
+  <a
+    id="cartLink"
+    href="/cart"
+    data-drawer-options="{ &quot;id&quot;:&quot;#t4s-mini_cart&quot; }"
+  ></a>
+
   <section x-transition x-show="isLoading" class="flex flex-col justify-center items-center min-h-screen">
     <h1>Loading...</h1>
   </section>
@@ -18,8 +24,8 @@
   {% comment %} <div class=" fixed right-1/2 h-[1000px] w-[100px] bg-black"></div> {% endcomment %}
 
   {% comment %} <section> {% endcomment %}
-    {% render 'product_reminder_modal' %}
-    {% render 'activity_reminder_modal' %}
+  {% render 'product_reminder_modal' %}
+  {% render 'activity_reminder_modal' %}
   {% comment %} </section> {% endcomment %}
 
   <!-- Add To Cart Products -->

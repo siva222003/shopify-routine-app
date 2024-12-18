@@ -65,15 +65,22 @@ document.addEventListener("alpine:init", () => {
         this.isLoading = true;
 
         const response = await fetch(
-          `http://localhost:44381/app/routine?id=${id}`,
-          { method: "GET", headers: { "Content-Type": "application/json" } },
+          `https://amrutam-routine-nodejs-dev.azurewebsites.net/api/v1/patient/reminderlist/list/templates/${id}`,
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization:
+                "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Nzc5MDMzNTgyMDAyOSwiaWF0IjoxNzMyMDQ4NjY3LCJleHAiOjE3NjM2MDYyNjd9.DIJmmUM6Kxh234VUKjGXq7SewOZSXS3QL_jEUPmYFw0",
+            },
+          },
         );
 
         const data = await response.json();
         this.isLoading = false;
-        this.routine = data.routine;
+        this.routine = data.data;
 
-        this.products = data.routine.productReminders.map(
+        this.products = data.data.productReminders.map(
           ({ variationId, name, image, dosageQty }) => ({
             name,
             image,
@@ -84,9 +91,9 @@ document.addEventListener("alpine:init", () => {
           }),
         );
 
-        this.weeklyBenefits = data.routine.benefits.weeklyBenefits;
+        this.weeklyBenefits = data.data.benefits?.weeklyBenefits;
 
-        this.userReminderChannels = data.routine.channel.map((channel) => ({
+        this.userReminderChannels = data.data.channel.map((channel) => ({
           id: channel.id,
           name: channel.name,
           checked: false,
@@ -108,20 +115,12 @@ document.addEventListener("alpine:init", () => {
 
     // Open product reminder modal and set selected reminder
     openProductReminderModal(reminder) {
-      window.scrollTo({
-        top: 0,
-        behavior: "smooth",
-      });
       this.selectedReminder = reminder;
       this.productReminderModalOpen = true;
     },
 
     // Open activity reminder modal and set selected reminder
     openActivityReminderModal(reminder) {
-      window.scrollTo({
-        top: 0,
-        behavior: "smooth",
-      });
       this.selectedReminder = reminder;
       this.activityReminderModalOpen = true;
     },
@@ -211,51 +210,35 @@ document.addEventListener("alpine:init", () => {
           };
         }
 
-        const response = await fetch(`http://localhost:44381/app/channel`, {
-          method: "POST",
-          body: JSON.stringify(channel),
-        });
+        const response = await fetch(
+          `https://amrutam-routine-nodejs-dev.azurewebsites.net/api/v1/patient/channel`,
+          {
+            method: "POST",
+            body: JSON.stringify(channel),
+            headers: {
+              "Content-Type": "application/json",
+              Authorization:
+                "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Nzc5MDMzNTgyMDAyOSwiaWF0IjoxNzMyMDQ4NjY3LCJleHAiOjE3NjM2MDYyNjd9.DIJmmUM6Kxh234VUKjGXq7SewOZSXS3QL_jEUPmYFw0",
+            },
+          },
+        );
 
         const data = await response.json();
 
         console.log("Channel data:", data);
+
+        await new Promise((resolve) => {
+          setTimeout(() => {
+            resolve();
+          }, 2000);
+        });
+
         this.isAddingChannels = false;
       } catch (error) {
         console.error("Error Adding Channels:", error);
       } finally {
         this.isAddingChannels = false;
       }
-    },
-
-    // Toast handling
-    addToast({ variant = "success", title = "", message = "" }) {
-      const id = Date.now(); // Unique ID for each toast
-      this.toastMessages.push({ id, variant, title, message });
-
-      // Auto-remove the toast after displayDuration
-      setTimeout(() => this.removeToast(id), this.displayDuration);
-    },
-
-    removeToast(id) {
-      this.toastMessages = this.toastMessages.filter(
-        (toast) => toast.id !== id,
-      );
-    },
-
-    triggerSuccessToast() {
-      this.addToast({
-        variant: "success",
-        title: "Success!",
-        message: "Your changes have been saved. Keep up the great work!",
-      });
-    },
-
-    triggerDangerToast() {
-      this.addToast({
-        variant: "danger",
-        title: "Error!",
-        message: "Something went wrong. Please try again.",
-      });
     },
 
     startRoutine() {
@@ -293,13 +276,15 @@ document.addEventListener("alpine:init", () => {
         const id = new URLSearchParams(window.location.search).get("id");
 
         const response = await fetch(
-          `http://localhost:44381/app/template?id=${id}`,
+          `https://amrutam-routine-nodejs-dev.azurewebsites.net/api/v1/patient/reminderlist/template/clone/${id}`,
           {
             method: "POST",
+            body: JSON.stringify(data),
             headers: {
               "Content-Type": "application/json",
+              Authorization:
+                "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Nzc5MDMzNTgyMDAyOSwiaWF0IjoxNzMyMDQ4NjY3LCJleHAiOjE3NjM2MDYyNjd9.DIJmmUM6Kxh234VUKjGXq7SewOZSXS3QL_jEUPmYFw0",
             },
-            body: JSON.stringify(data),
           },
         );
 
@@ -321,47 +306,87 @@ document.addEventListener("alpine:init", () => {
       }
     },
 
-    refreshCartDrawer() {
-      // Check if cart-drawer-items exists
-      let cartDrawerItems = document.querySelector("cart-drawer-items");
-      // Find the cart-drawer element
-      const cartDrawer = document.querySelector("cart-drawer");
+    // refreshCartDrawer() {
+    //   // Select cart drawer and cart-drawer-items elements
+    //   const cartDrawer = document.querySelector("cart-drawer");
+    //   let cartDrawerItems = document.querySelector("cart-drawer-items");
 
-      if (cartDrawer) {
-        // Remove the is-empty class from cart-drawer if it exists
-        if (cartDrawer.classList.contains("is-empty")) {
-          cartDrawer.classList.remove("is-empty");
-        }
-        // Remove the div with class 'drawer__inner-empty'
-        const emptyDrawerElement = cartDrawer.querySelector(
-          ".drawer__inner-empty",
-        );
-        if (emptyDrawerElement) {
-          emptyDrawerElement.remove();
-        }
-        // Make the form tag's class 'cart__contents' display as block
-        const cartContentsForm = document.querySelector(".cart__contents");
-        if (cartContentsForm) {
-          cartContentsForm.style.display = "block";
-        }
+    //   if (cartDrawer) {
+    //     // Ensure the cart-drawer is not empty
+    //     cartDrawer.classList.remove("is-empty");
+
+    //     // Remove any empty drawer content if present
+    //     const emptyDrawerElement = cartDrawer.querySelector(
+    //       ".drawer__inner-empty",
+    //     );
+    //     if (emptyDrawerElement) {
+    //       emptyDrawerElement.remove();
+    //     }
+
+    //     // Display the cart contents if hidden
+    //     const cartContentsForm = document.querySelector(".cart__contents");
+    //     if (cartContentsForm) {
+    //       cartContentsForm.style.display = "block";
+    //     }
+
+    //     // If cart-drawer-items doesn't exist, create and append it
+    //     if (!cartDrawerItems) {
+    //       cartDrawerItems = document.createElement("cart-drawer-items");
+    //       const drawerHeader = document.querySelector(".drawer__header");
+    //       if (drawerHeader) {
+    //         drawerHeader.insertAdjacentElement("afterend", cartDrawerItems);
+    //       }
+    //     }
+
+    //     // Refresh the cart items using onCartUpdate (assuming this is a custom method)
+    //     if (
+    //       cartDrawerItems &&
+    //       typeof cartDrawerItems.onCartUpdate === "function"
+    //     ) {
+    //       cartDrawerItems.onCartUpdate();
+    //     }
+
+    //     // Enable the checkout button if disabled
+    //     const checkoutButton = document.getElementById("CartDrawer-Checkout");
+    //     if (checkoutButton) {
+    //       checkoutButton.disabled = false;
+    //     }
+
+    //     // Open the cart drawer (assumes cartDrawer has an open method)
+    //     if (typeof cartDrawer.open === "function") {
+    //       cartDrawer.open();
+    //     }
+    //   } else {
+    //     console.error("Cart drawer not found!");
+    //   }
+    // },
+
+    refreshCartDrawer() {
+      const cartLink = document.getElementById("cartLink");
+      console.log("Cart link:", cartLink);
+      if (cartLink) {
+        cartLink.click();
       }
-      // If cart-drawer-items doesn't exist, create it
-      if (!cartDrawerItems) {
-        cartDrawerItems = document.createElement("cart-drawer-items");
-        // Find the drawer__header element
-        const drawerHeader = document.querySelector(".drawer__header");
-        if (drawerHeader) {
-          // Insert the newly created cart-drawer-items after the drawer__header
-          drawerHeader.insertAdjacentElement("afterend", cartDrawerItems);
-        }
-      }
-      // Call the onCartUpdate method to refresh the cart drawer contents
-      document.querySelector("cart-drawer-items").onCartUpdate();
-      document.getElementById("CartDrawer-Checkout").disabled = false;
-      // Open the cart drawer and apply necessary classes for animation
-      if (cartDrawer) {
-        cartDrawer.open();
-      }
+    },
+    // Function to handle quantity change
+    updateCartQuantity(input) {
+      const variantId = input.dataset.variantId;
+      const newQuantity = input.value;
+
+      fetch("/cart/change.js", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          id: variantId,
+          quantity: parseInt(newQuantity, 10),
+        }),
+      })
+        .then(() => refreshCart())
+        .catch((error) => {
+          console.error("Error updating cart quantity:", error);
+        });
     },
   }));
 });

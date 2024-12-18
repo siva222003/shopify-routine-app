@@ -118,23 +118,25 @@
     </div>
   </div>
 
-  <div @click="addChannels" class="text-center">
+  <div class="text-center">
     <button
+      @click="addChannels"
       x-show="!isAddingChannels"
       :disabled="!index.length"
       x-text="'Add Reminder Channels'"
-      class="px-14 py-3 rounded-lg  disabled:opacity-50 bg-[#3A643B] text-white text-[16px] shadow-lg my-[36px]"
+      class="w-[230px] py-4 rounded-lg  disabled:opacity-50 bg-[#3A643B] text-white text-[16px] shadow-lg my-[36px]"
     ></button>
 
     <div
+      x-cloak
       x-show="isAddingChannels"
-      class="px-14 py-[11px] rounded-lg flex justify-center w-[256px] opacity-50 mx-auto  disabled:opacity-50 bg-[#3A643B] text-white text-[16px] shadow-lg my-[36px]"
+      class="py-4 text-[16px] rounded-lg flex mx-auto justify-center items-center w-[230px] opacity-50  disabled:opacity-50 bg-[#3A643B] text-white shadow-lg my-[36px]"
     >
       <svg
         xmlns="http://www.w3.org/2000/svg"
         viewBox="0 0 24 24"
         aria-hidden="true"
-        class="size-7 fill-neutral-600 motion-safe:animate-spin dark:fill-neutral-300"
+        class="size-[24px] fill-neutral-600 motion-safe:animate-spin dark:fill-neutral-300"
       >
         <path d="M12,1A11,11,0,1,0,23,12,11,11,0,0,0,12,1Zm0,19a8,8,0,1,1,8-8A8,8,0,0,1,12,20Z" opacity=".25" />
         <path d="M10.14,1.16a11,11,0,0,0-9,8.92A1.59,1.59,0,0,0,2.46,12,1.52,1.52,0,0,0,4.11,10.7a8,8,0,0,1,6.66-6.61A1.42,1.42,0,0,0,12,2.69h0A1.57,1.57,0,0,0,10.14,1.16Z" />
@@ -143,42 +145,44 @@
   </div>
   <div>
     <!-- Button to trigger success toast -->
-    {% comment %} <div class="fixed top-0 right-0 z-50 flex flex-col gap-4 p-4">
-      <template x-for="toast in toastMessages" :key="toast.id">
-        <div
-          x-show="true"
-          class="pointer-events-auto relative rounded-md border px-4 py-3 transition-all duration-300"
-          :class="
-            {
-              'border-green-500 bg-green-50 text-green-700': toast.variant === 'success',
-              'border-red-500 bg-red-50 text-red-700': toast.variant === 'danger',
-            }
-          "
-          role="alert"
-        >
-          <div class="flex items-start">
-            <div class="flex-grow">
-              <h3 class="font-semibold" x-text="toast.title"></h3>
-              <p class="text-sm" x-text="toast.message"></p>
+    {% comment %}
+      <div class="fixed top-0 right-0 z-50 flex flex-col gap-4 p-4">
+        <template x-for="toast in toastMessages" :key="toast.id">
+          <div
+            x-show="true"
+            class="pointer-events-auto relative rounded-md border px-4 py-3 transition-all duration-300"
+            :class="
+              {
+                'border-green-500 bg-green-50 text-green-700': toast.variant === 'success',
+                'border-red-500 bg-red-50 text-red-700': toast.variant === 'danger',
+              }
+            "
+            role="alert"
+          >
+            <div class="flex items-start">
+              <div class="flex-grow">
+                <h3 class="font-semibold" x-text="toast.title"></h3>
+                <p class="text-sm" x-text="toast.message"></p>
+              </div>
+              <button
+                type="button"
+                class="ml-4"
+                @click="removeToast(toast.id)"
+                aria-label="Dismiss"
+              >
+                <span>&times;</span>
+              </button>
             </div>
-            <button
-              type="button"
-              class="ml-4"
-              @click="removeToast(toast.id)"
-              aria-label="Dismiss"
-            >
-              <span>&times;</span>
-            </button>
           </div>
-        </div>
-      </template>
-    </div>
-    <button
-      type="button"
-      @click="triggerSuccessToast()"
-      class="px-4 py-2 bg-green-500 text-white rounded"
-    >
-      Trigger Success Toast
-    </button> {% endcomment %}
+        </template>
+      </div>
+      <button
+        type="button"
+        @click="triggerSuccessToast()"
+        class="px-4 py-2 bg-green-500 text-white rounded"
+      >
+        Trigger Success Toast
+      </button>
+    {% endcomment %}
   </div>
 </div>

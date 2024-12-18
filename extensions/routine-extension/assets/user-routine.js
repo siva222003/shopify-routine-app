@@ -49,15 +49,22 @@ document.addEventListener("alpine:init", () => {
 
         this.isLoading = true;
 
-        const response = await fetch(`http://localhost:44381/app/my-routine?id=${id}`, {
-          method: "GET",
-          headers: { "Content-Type": "application/json" },
-        });
+        const response = await fetch(
+          `https://amrutam-routine-nodejs-dev.azurewebsites.net/api/v1/patient/reminderlist/${id}`,
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization:
+                "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Nzc5MDMzNTgyMDAyOSwiaWF0IjoxNzMyMDQ4NjY3LCJleHAiOjE3NjM2MDYyNjd9.DIJmmUM6Kxh234VUKjGXq7SewOZSXS3QL_jEUPmYFw0",
+            },
+          },
+        );
 
         const data = await response.json();
-        this.routine = data.routine;
+        this.routine = data.data;
 
-        this.products = data.routine.productReminders.map(
+        this.products = data.data.productReminders.map(
           ({ variationId, name, image }) => ({
             name,
             image,
@@ -66,12 +73,12 @@ document.addEventListener("alpine:init", () => {
           }),
         );
 
-        this.weeklyBenefits = data.routine.benefits.weeklyBenefits;
+        this.weeklyBenefits = data.data.benefits?.weeklyBenefits ?? [];
 
-        const productReminderIds = data.routine.productReminders.map(
+        const productReminderIds = data.data.productReminders.map(
           (reminder) => reminder?._id,
         );
-        const activityReminderIds = data.routine.activityReminders.map(
+        const activityReminderIds = data.data.activityReminders.map(
           (reminder) => reminder?._id,
         );
 
@@ -101,18 +108,24 @@ document.addEventListener("alpine:init", () => {
 
         this.isFetchingSlots = true;
 
-        const response = await fetch(`http://localhost:44381/app/slots`, {
-          method: "POST",
-          body: JSON.stringify(body),
-          headers: { "Content-Type": "application/json" },
-        });
+        const response = await fetch(
+          `https://amrutam-routine-nodejs-dev.azurewebsites.net/api/v1/patient//marker/slots/by-date?reminderIds=${body.Ids}&date=${body.date}`,
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization:
+                "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Nzc5MDMzNTgyMDAyOSwiaWF0IjoxNzMyMDQ4NjY3LCJleHAiOjE3NjM2MDYyNjd9.DIJmmUM6Kxh234VUKjGXq7SewOZSXS3QL_jEUPmYFw0",
+            },
+          },
+        );
 
         const data = await response.json();
-        this.reminderSlots = data.reminders;
+        this.reminderSlots = data.data;
 
         this.isFetchingSlots = false;
 
-        console.log("Reminder Slots:", data.reminders);
+        console.log("Reminder Slots:", data.data);
       } catch (error) {
         console.error("Error while fetching reminder slots:", error);
       } finally {
@@ -130,15 +143,22 @@ document.addEventListener("alpine:init", () => {
           status: !slot.marked,
         };
 
-        const response = await fetch(`http://localhost:44381/app/mark-slot`, {
-          method: "POST",
-          body: JSON.stringify(body),
-          headers: { "Content-Type": "application/json" },
-        });
+        const response = await fetch(
+          `https://amrutam-routine-nodejs-dev.azurewebsites.net/api/v1/patient/marker/${reminderId}`,
+          {
+            method: "PATCH",
+            body: JSON.stringify(body),
+            headers: {
+              "Content-Type": "application/json",
+              Authorization:
+                "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Nzc5MDMzNTgyMDAyOSwiaWF0IjoxNzMyMDQ4NjY3LCJleHAiOjE3NjM2MDYyNjd9.DIJmmUM6Kxh234VUKjGXq7SewOZSXS3QL_jEUPmYFw0",
+            },
+          },
+        );
 
         const data = await response.json();
 
-        const { response: updatedSlot } = data;
+        const updatedSlot = data.data;
 
         console.log("Reminder updated:", data);
 

@@ -25,26 +25,44 @@ document.addEventListener("alpine:init", () => {
     async exploreRoutines() {
       try {
         this.isLoading = true;
-        const response = await fetch(
-          `http://localhost:44381/app/explore`,
-          {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-            },
-          },
-        );
-        const data = await response.json();
 
-        console.log({ data });
+        const [routinesResponse, categoriesResponse] = await Promise.all([
+          fetch(
+            "https://amrutam-routine-nodejs-dev.azurewebsites.net/api/v1/patient/reminderlist/list/templates",
+            {
+              method: "GET",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization:
+                  "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Nzc5MDMzNTgyMDAyOSwiaWF0IjoxNzMyMDQ4NjY3LCJleHAiOjE3NjM2MDYyNjd9.DIJmmUM6Kxh234VUKjGXq7SewOZSXS3QL_jEUPmYFw0",
+              },
+            },
+          ),
+          fetch(
+            "https://amrutam-routine-nodejs-dev.azurewebsites.net/api/v1/patient/category",
+            {
+              method: "GET",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization:
+                  "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Nzc5MDMzNTgyMDAyOSwiaWF0IjoxNzMyMDQ4NjY3LCJleHAiOjE3NjM2MDYyNjd9.DIJmmUM6Kxh234VUKjGXq7SewOZSXS3QL_jEUPmYFw0",
+              },
+            },
+          ),
+        ]);
+
+        const routinesData = await routinesResponse.json();
+        const categoriesData = await categoriesResponse.json();
+
+        console.log({ routinesData, categoriesData });
 
         // Store routines with `loaded` flag for lazy loading
-        this.routines = data.routines.map((routine) => ({
+        this.routines = routinesData.data.map((routine) => ({
           ...routine,
           loaded: false,
         }));
 
-        const categories = [{ name: "All" }, ...data.categories];
+        const categories = [{ name: "All" }, ...categoriesData.data];
 
         this.categories = categories;
       } catch (error) {

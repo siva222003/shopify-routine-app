@@ -19,18 +19,18 @@ document.addEventListener("alpine:init", () => {
 
     // Initialize component
     async init() {
-      const customerId = localStorage.getItem("customer");
+      // const customerId = localStorage.getItem("customer");
 
-      const isThemeEditor =
-        typeof Shopify !== "undefined" && Shopify.designMode;
+      // const isThemeEditor =
+      //   typeof Shopify !== "undefined" && Shopify.designMode;
 
-      if (
-        (!customerId || customerId === "") &&
-        (isThemeEditor === undefined || isThemeEditor === false)
-      ) {
-        window.location.href = "/account/login";
-        return;
-      }
+      // if (
+      //   (!customerId || customerId === "") &&
+      //   (isThemeEditor === undefined || isThemeEditor === false)
+      // ) {
+      //   window.location.href = "/account/login";
+      //   return;
+      // }
 
       this.updateColumnCount(); // Adjust columns based on screen size
 
@@ -42,35 +42,6 @@ document.addEventListener("alpine:init", () => {
       this.visibleRoutines = this.routines.slice(0, this.columnCount);
 
       console.log([...this.routines], [...this.visibleRoutines]);
-
-      // Flatten product and activity reminders
-      // const productReminders = this.routines.flatMap(
-      //   (routine) => routine.productReminders ?? [],
-      // );
-      // const activityReminders = this.routines.flatMap(
-      //   (routine) => routine.activityReminders ?? [],
-      // );
-
-      // // Extract IDs safely using optional chaining
-      // const productReminderIds = productReminders.map(
-      //   (reminder) => reminder?._id,
-      // );
-      // const activityReminderIds = activityReminders.map(
-      //   (reminder) => reminder?._id,
-      // );
-
-      // // Concatenate both sets of reminder IDs
-      // const Ids = productReminderIds.concat(activityReminderIds);
-
-      // const date = new Date().toLocaleDateString("en-CA");
-
-      // const body = { date, Ids };
-
-      // Fetch today's reminders
-
-      // if (this.routines.length > 0) {
-      //   await this.getReminders();
-      // }
     },
 
     // Fetch User Routines from API
@@ -81,17 +52,19 @@ document.addEventListener("alpine:init", () => {
         this.isRoutinesLoading = true;
 
         const response = await fetch(
-          `http://localhost:44381/app/user-routines`,
+          "https://amrutam-routine-nodejs-dev.azurewebsites.net/api/v1/patient/reminderlist",
           {
             method: "GET",
             headers: {
               "Content-Type": "application/json",
+              Authorization:
+                "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Nzc5MDMzNTgyMDAyOSwiaWF0IjoxNzMyMDQ4NjY3LCJleHAiOjE3NjM2MDYyNjd9.DIJmmUM6Kxh234VUKjGXq7SewOZSXS3QL_jEUPmYFw0",
             },
           },
         );
 
         const data = await response.json();
-        this.routines = data.routines;
+        this.routines = data.data;
 
         // localStorage.setItem("token", data.token ?? token);
 
@@ -104,31 +77,6 @@ document.addEventListener("alpine:init", () => {
         this.isRoutinesLoading = false;
       }
     },
-
-    //Fetch Today's Reminders
-    // async getReminders() {
-    //   try {
-    //     this.isRemindersLoading = true;
-
-    //     const response = await fetch(`${window.Shopify.routes.root}/apps/routine/app/today-reminders`, {
-    //       method: "GET",
-    //       headers: { "Content-Type": "application/json" },
-    //     });
-
-    //     const data = await response.json();
-    //     this.reminders = data.reminders;
-
-    //     this.isRemindersLoading = false;
-
-    //     this.visibleReminders = this.reminders.slice(0, 2);
-
-    //     console.log("User Todays Reminders:", data.reminders);
-    //   } catch (error) {
-    //     console.error("Error fetching user Todays Reminder:", error);
-    //   } finally {
-    //     this.isRemindersLoading = false;
-    //   }
-    // },
 
     // Update the number of columns based on screen width
     updateColumnCount() {
@@ -164,30 +112,3 @@ document.addEventListener("alpine:init", () => {
     },
   }));
 });
-
-// async getReminders() {
-//   try {
-//     // console.log({ body });
-
-//     this.isRemindersLoading = true;
-
-//     const response = await fetch(`${window.Shopify.routes.root}/apps/routine/app/slots`, {
-//       method: "POST",
-//       body: JSON.stringify(body),
-//       headers: { "Content-Type": "application/json" },
-//     });
-
-//     const data = await response.json();
-//     this.reminders = data.reminders;
-
-//     this.isRemindersLoading = false;
-
-//     this.visibleReminders = this.reminders.slice(0, 1);
-
-//     console.log("User Todays Reminders:", data.reminders);
-//   } catch (error) {
-//     console.error("Error fetching user Todays Reminder:", error);
-//   } finally {
-//     this.isRemindersLoading = false;
-//   }
-// },

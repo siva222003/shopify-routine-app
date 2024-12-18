@@ -243,7 +243,7 @@
     Reminder Item Summary ( <span x-text="userRoutineStartDate"></span> )
   </h1>
 
-  <template x-if="!isFetchingSlots && reminderSlots.some(obj => obj.slots && obj.slots.length > 0)">
+  <template x-if="!isFetchingSlots && reminderSlots?.some(obj => obj.slots && obj.slots.length > 0)">
     <template x-for="reminderSlot in reminderSlots" :key="reminderSlot?._id">
       <div>
         <h1
@@ -254,7 +254,7 @@
         ></h1>
 
         <div class="flex flex-col gap-[30px]">
-          <template x-for="slot in reminderSlot.slots" :key="slot?._id">
+          <template x-for="slot in reminderSlot?.slots" :key="slot?._id">
             <div class="flex gap-4 items-center">
               <div class="flex gap-2 items-center">
                 <img
@@ -284,7 +284,7 @@
               <div class="flex gap-3 items-center">
                 <label class="relative inline-flex items-center cursor-pointer">
                   <input
-                    @change="markSlot(slot,reminderSlot.reminderId)"
+                    @change="markSlot(slot,reminderSlot?.reminderId)"
                     :checked="slot?.marked"
                     id="default-checkbox"
                     type="checkbox"
@@ -335,7 +335,7 @@
 
   <div
     x-cloak
-    x-show="!isFetchingSlots && !reminderSlots.some(obj => obj.slots && obj.slots.length > 0);"
+    x-show="!isFetchingSlots && !reminderSlots?.some(obj => obj.slots && obj.slots.length > 0);"
   >
     <h2 class="text-[#868686] my-2 text-[18px] ">No Reminders</h2>
   </div>
