@@ -33,7 +33,7 @@
     "@rvf/core": "^7.0.1",
     "@rvf/remix": "^6.3.0",
     "@rvf/set-get": "^7.0.0",
-    "@rvf/zod": "^6.0.3",
+    "@rvf/zod": "^7.0.1",
     "@shopify/app-bridge-react": "^4.1.2",
     "@shopify/polaris": "^12.0.0",
     "@shopify/shopify-app-remix": "^3.0.2",
