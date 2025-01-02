@@ -4,6 +4,7 @@ document.addEventListener("alpine:init", () => {
     isUserRoutine: true, //Flag to check if user routine
 
     routine: {}, //Routine data
+    isMarkCompleteModalOpen: false,
 
     // Loading
     isLoading: true,
@@ -18,19 +19,8 @@ document.addEventListener("alpine:init", () => {
     reminderSlots: [],
     currentSlot: null,
 
-    // Products
-    products: [], // All products fetched from API
-
-    // Description
-    expanded: false, // Expanded status
-
     //Weekly Benefits
     weeklyBenefits: [],
-
-    // Reminder Modals
-    selectedReminder: null, // Store selected reminder data
-    productReminderModalOpen: false,
-    activityReminderModalOpen: false,
 
     // Initialize routine data on Alpine init
     init() {
@@ -95,6 +85,7 @@ document.addEventListener("alpine:init", () => {
       } catch (error) {
         console.error("Error fetching routine:", error);
       } finally {
+        document.querySelector("#routine-skeleton").style.display = "none";
         this.isLoading = false;
       }
     },
@@ -181,18 +172,6 @@ document.addEventListener("alpine:init", () => {
       }
 
       console.log({ slot });
-    },
-
-    // Open product reminder modal and set selected reminder
-    openProductReminderModal(reminder) {
-      this.selectedReminder = reminder;
-      this.productReminderModalOpen = true;
-    },
-
-    // Open activity reminder modal and set selected reminder
-    openActivityReminderModal(reminder) {
-      this.selectedReminder = reminder;
-      this.activityReminderModalOpen = true;
     },
   }));
 });

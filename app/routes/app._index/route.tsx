@@ -24,7 +24,7 @@ const Home = () => {
         content: "Create Routine",
         onAction: () =>
           navigate("/app/add-routine", {
-            unstable_viewTransition: true,
+            viewTransition: true,
           }),
       }}
     >

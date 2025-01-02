@@ -5,17 +5,8 @@ document.addEventListener("alpine:init", () => {
     visibleRoutines: [],
     columnCount: 4,
 
-    //Today's Reminders
-    reminders: [],
-    visibleReminders: [],
-
     //Loading
     isRoutinesLoading: true,
-    isRemindersLoading: false,
-
-    //Modals
-    isMarkCompleteModalOpen: false,
-    isRemindedCompleteModalOpen: false,
 
     // Initialize component
     async init() {
@@ -37,11 +28,6 @@ document.addEventListener("alpine:init", () => {
       // const token = localStorage.getItem("token");
 
       await this.getUserRoutines();
-
-      // Show initial routines after filtering
-      this.visibleRoutines = this.routines.slice(0, this.columnCount);
-
-      console.log([...this.routines], [...this.visibleRoutines]);
     },
 
     // Fetch User Routines from API
@@ -64,9 +50,13 @@ document.addEventListener("alpine:init", () => {
         );
 
         const data = await response.json();
-        this.routines = data.data;
 
-        // localStorage.setItem("token", data.token ?? token);
+        this.routines = data.data?.map((routine) => ({
+          ...routine,
+          loaded: false,
+        }));
+
+        this.visibleRoutines = this.routines.slice(0, this.columnCount);
 
         this.isRoutinesLoading = false;
 
@@ -74,6 +64,7 @@ document.addEventListener("alpine:init", () => {
       } catch (error) {
         console.error("Error fetching user routines:", error);
       } finally {
+        document.querySelector("#routine-list-skeleton").style.display = "none";
         this.isRoutinesLoading = false;
       }
     },
@@ -81,9 +72,9 @@ document.addEventListener("alpine:init", () => {
     // Update the number of columns based on screen width
     updateColumnCount() {
       const width = window.innerWidth;
-      if (width >= 1024) this.columnCount = 4;
-      else if (width >= 768) this.columnCount = 3;
-      else this.columnCount = 2;
+      if (width >= 1024) this.columnCount = 8;
+      else if (width >= 768) this.columnCount = 6;
+      else this.columnCount = 4;
     },
 
     // Show more routines based on column count
@@ -98,17 +89,6 @@ document.addEventListener("alpine:init", () => {
     // Reset to the initial set of routines
     showLess() {
       this.visibleRoutines = this.routines.slice(0, this.columnCount);
-    },
-
-    // Show more Reminders
-    showMoreReminders() {
-      const nextReminders = this.reminders.slice(2, this.reminders.length);
-      this.visibleReminders.push(...nextReminders);
-    },
-
-    // Reset to the initial set of routines
-    showLessReminders() {
-      this.visibleReminders = this.reminders.slice(0, 2);
     },
   }));
 });

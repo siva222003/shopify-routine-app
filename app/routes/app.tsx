@@ -12,7 +12,6 @@ export const links = () => [{ rel: "stylesheet", href: polarisStyles }];
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   await authenticate.admin(request);
-
   return json({ apiKey: process.env.SHOPIFY_API_KEY || "" });
 };
 
@@ -22,13 +21,13 @@ export default function App() {
   return (
     <AppProvider isEmbeddedApp apiKey={apiKey}>
       <NavMenu>
-        <Link unstable_viewTransition to="/app" rel="home">
+        <Link viewTransition to="/app" rel="home">
           Home
         </Link>
-        <Link unstable_viewTransition to="/app/add-routine">
+        <Link viewTransition to="/app/add-routine">
           Add Routine
         </Link>
-        <Link unstable_viewTransition to="/app/routine-list/1">
+        <Link viewTransition to="/app/routine-list/1">
           Routine List
         </Link>
       </NavMenu>

@@ -25,18 +25,8 @@ document.addEventListener("alpine:init", () => {
     productReminderModalOpen: false,
     activityReminderModalOpen: false,
 
-    // Reminder Channels
-    index: [], // Index of selected channels
-    userReminderChannels: {
-      // User reminder channels
-      sms: "",
-      whatsapp: "",
-    },
+    whatsapp: "",
     isAddingChannels: false, // Adding channels status
-
-    // Toast state
-    toastMessages: [], // To hold active toast messages
-    displayDuration: 3000, // Toast display duration in milliseconds
 
     // User routine start date
     userRoutineStartDate: "",
@@ -49,6 +39,7 @@ document.addEventListener("alpine:init", () => {
 
     // Initialize routine data on Alpine init
     init() {
+      window.scrollTo(0, 0);
       this.getRoutine();
     },
 
@@ -78,7 +69,7 @@ document.addEventListener("alpine:init", () => {
 
         const data = await response.json();
         this.isLoading = false;
-        this.routine = data.data;
+        this.routine = { ...data.data, loaded: false };
 
         this.products = data.data.productReminders.map(
           ({ variationId, name, image, dosageQty }) => ({
@@ -90,6 +81,8 @@ document.addEventListener("alpine:init", () => {
             loaded: false,
           }),
         );
+
+        this.products = [...this.products, ...this.products, ...this.products];
 
         this.weeklyBenefits = data.data.benefits?.weeklyBenefits;
 
@@ -103,6 +96,7 @@ document.addEventListener("alpine:init", () => {
       } catch (error) {
         console.error("Error fetching routine:", error);
       } finally {
+        document.querySelector("#routine-skeleton").style.display = "none";
         this.isLoading = false;
       }
     },
@@ -177,11 +171,7 @@ document.addEventListener("alpine:init", () => {
 
         const data = await response.json();
         console.log("Cart response:", data);
-
-        // Call updateCart to refresh the cart content after adding items
-        // await this.updateCart();
-        this.refreshCartDrawer();
-        // document.getElementsByTagName("cart-drawer")[0].open();
+        this.refreshCart();
       } catch (error) {
         console.error("Error adding to cart:", error);
       } finally {
@@ -267,7 +257,6 @@ document.addEventListener("alpine:init", () => {
       console.log({ channels, startDate });
 
       this.createRoutine({ startDate, channels });
-      // this.routineStartModalOpen = true;
     },
 
     async createRoutine(data) {
@@ -306,87 +295,71 @@ document.addEventListener("alpine:init", () => {
       }
     },
 
-    // refreshCartDrawer() {
-    //   // Select cart drawer and cart-drawer-items elements
-    //   const cartDrawer = document.querySelector("cart-drawer");
-    //   let cartDrawerItems = document.querySelector("cart-drawer-items");
+    refreshCart() {
+      fetch("/cart.js")
+        .then((response) => response.json())
+        .then((data) => {
+          // Update cart UI using `data.items`
+          console.log("Cart data:", data);
+          this.refreshCartDrawer(data);
+        })
+        .catch((error) => console.error("Error refreshing cart:", error));
+    },
+    refreshCartDrawer(cartData) {
+      const cartDrawer = document.querySelector("[data-cart-items]");
+      cartDrawer.innerHTML = "";
 
-    //   if (cartDrawer) {
-    //     // Ensure the cart-drawer is not empty
-    //     cartDrawer.classList.remove("is-empty");
+      if (!cartData.items.length) {
+        cartItemsContainer.innerHTML = "<p>Your cart is empty.</p>";
+        return;
+      }
 
-    //     // Remove any empty drawer content if present
-    //     const emptyDrawerElement = cartDrawer.querySelector(
-    //       ".drawer__inner-empty",
-    //     );
-    //     if (emptyDrawerElement) {
-    //       emptyDrawerElement.remove();
-    //     }
+      cartData.items.forEach((item) => {
+        const itemHTML = `
+            <div data-cart-item class="t4s-mini_cart__item cart_item_${item.id} t4s-d-flex t4s-align-items-center t4s-pr t4s-oh${item.gift_pr_id === item.product_id ? " is--gift" : ""}">
+              <a href="${item.url}" class="t4s-mini_cart__img t4s-pr t4s-oh t4s_ratio t4s-bg-11" style="background: url(${item.image ? item.image : ""}); --aspect-ratioapt:${item.image ? item.image.aspect_ratio || 1 : 1}">
+                ${item.image ? `<img class="lazyloadt4s" width="120" height="${Math.ceil(120 / (item.image.aspect_ratio || 1))}" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" data-src="${item.image}" alt="${item.alt}">` : ""}
+              </a>
+              <div class="t4s-mini_cart__info">
+                <a href="${item.url}" class="t4s-mini_cart__title t4s-truncate">${item.title}</a>
+                <div class="t4s-mini_cart__meta">
+                  ${item.variant_title ? `<p class="t4s-cart_meta_variant">${item.variant_title}</p>` : ""}
+                  <div class="t4s-cart_meta_price">
+                    ${
+                      item.original_price !== item.final_price
+                        ? `<del>${item.original_price}</del><ins>${item.final_price}</ins>`
+                        : `<span>${item.final_price}</span>`
+                    }
+                  </div>
+                </div>
+                <div class="t4s-mini_cart__actions">
+                  <div data-quantity-wrapper class="t4s-quantity-wrapper t4s-quantity-cart-item"> 
+                    <button data-quantity-selector data-decrease-qty type="button" class="t4s-quantity-selector is--minus">
+                      ${
+                        item.quantity > 1
+                          ? '<svg focusable="false" class="icon icon--minus" viewBox="0 0 10 2" role="presentation"><path d="M10 0v2H0V0z" fill="currentColor"></path></svg>'
+                          : '<svg viewBox="0 0 24 24" width="17"><use href="#icon-cart-remove"/></svg>'
+                      }
+                    </button>
+                    <input type="number" data-quantity-value id="miniupdates_${item.key}" value="${item.quantity}" class="t4s-quantity-input" />
+                    <button data-quantity-selector data-increase-qty type="button" class="t4s-quantity-selector is--plus">
+                      <svg focusable="false" class="icon icon--plus" viewBox="0 0 10 10" role="presentation"><path d="M6 4h4v2H6v4H4V6H0V4h4V0h2v4z" fill="currentColor" fill-rule="evenodd"></path></svg>
+                    </button>
+                  </div>
+                  <a href="${cartData.cart_change_url}?quantity=0&amp;id=${item.key}" class="t4s-mini_cart__remove" data-cart-remove>
+                    <svg viewBox="0 0 24 24" width="17"><use href="#icon-cart-remove"/></svg>
+                  </a>
+                </div>
+              </div>
+            </div>`;
 
-    //     // Display the cart contents if hidden
-    //     const cartContentsForm = document.querySelector(".cart__contents");
-    //     if (cartContentsForm) {
-    //       cartContentsForm.style.display = "block";
-    //     }
+        cartDrawer.insertAdjacentHTML("beforeend", itemHTML);
+      });
 
-    //     // If cart-drawer-items doesn't exist, create and append it
-    //     if (!cartDrawerItems) {
-    //       cartDrawerItems = document.createElement("cart-drawer-items");
-    //       const drawerHeader = document.querySelector(".drawer__header");
-    //       if (drawerHeader) {
-    //         drawerHeader.insertAdjacentElement("afterend", cartDrawerItems);
-    //       }
-    //     }
-
-    //     // Refresh the cart items using onCartUpdate (assuming this is a custom method)
-    //     if (
-    //       cartDrawerItems &&
-    //       typeof cartDrawerItems.onCartUpdate === "function"
-    //     ) {
-    //       cartDrawerItems.onCartUpdate();
-    //     }
-
-    //     // Enable the checkout button if disabled
-    //     const checkoutButton = document.getElementById("CartDrawer-Checkout");
-    //     if (checkoutButton) {
-    //       checkoutButton.disabled = false;
-    //     }
-
-    //     // Open the cart drawer (assumes cartDrawer has an open method)
-    //     if (typeof cartDrawer.open === "function") {
-    //       cartDrawer.open();
-    //     }
-    //   } else {
-    //     console.error("Cart drawer not found!");
-    //   }
-    // },
-
-    refreshCartDrawer() {
       const cartLink = document.getElementById("cartLink");
-      console.log("Cart link:", cartLink);
       if (cartLink) {
         cartLink.click();
       }
-    },
-    // Function to handle quantity change
-    updateCartQuantity(input) {
-      const variantId = input.dataset.variantId;
-      const newQuantity = input.value;
-
-      fetch("/cart/change.js", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          id: variantId,
-          quantity: parseInt(newQuantity, 10),
-        }),
-      })
-        .then(() => refreshCart())
-        .catch((error) => {
-          console.error("Error updating cart quantity:", error);
-        });
     },
   }));
 });

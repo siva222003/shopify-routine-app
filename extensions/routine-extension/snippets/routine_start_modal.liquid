@@ -1,6 +1,8 @@
 <style>
-  .modal-start {
-    background-color: rgba(0, 0, 0, 0.5);
+  .explore-routines:hover {
+    background-color: #fff7e2 !important;
+    text-decoration: underline;
+    color: #3a643b;
   }
 </style>
 
@@ -10,8 +12,7 @@
   x-transition.opacity.duration.200ms
   x-trap.inert.noscroll="routineStartModalOpen"
   @keydown.esc.window="routineStartModalOpen = false"
-  {% comment %} @click.self="routineStartModalOpen = false" {% endcomment %}
-  class="fixed inset-0 z-30 flex justify-center p-4 pb-8 backdrop-contrast-10 items-center lg:p-8 modal-start"
+  class="flex items-center modal"
   role="dialog"
   aria-modal="true"
   aria-labelledby="defaultModalTitle"
@@ -22,16 +23,16 @@
     x-transition:enter="transition ease-out duration-200 delay-100 motion-reduce:transition-opacity"
     x-transition:enter-start="opacity-0 scale-50"
     x-transition:enter-end="opacity-100 scale-100"
-    class="flex max-w-[40rem] flex-col gap-4 overflow-hidden rounded-xl bg-primaryCream"
+    class="flex max-w-[40rem] flex-col mx-[10px] gap-4 overflow-hidden rounded-3xl bg-primaryCream"
   >
-    <div class="flex flex-col items-center rounded-4xl gap-[20px] px-[20px] xsm:px-[40px] ssmd:px-[60px] min-h-[340px] justify-center">
+    <div class="flex flex-col items-center rounded-4xl gap-[20px] px-[20px] xsm:px-[40px] ssmd:px-[60px] min-h-[350px] justify-center">
       <div class="flex flex-col items-center gap-3">
         <img src="{{ 'mark-completed-tick.svg' | asset_url }}" class="w-16" width="" height="" alt="">
-        <h1 class="text-primaryGreen text-[13px]">You have started following the routine.</h1>
+        <h1 class="text-primaryGreen text-[13px] font-[500]">You have started following the routine.</h1>
       </div>
 
-      <div class="flex w-full justify-center">
-        <h1 class="text-[13px] text-center w-full break-words">
+      <div class="flex w-full justify-center  my-[10px ]">
+        <h1 class="text-[13px] text-[#333333] font-[500] text-center w-full break-words">
           Now, you can start your routine once you order and the product is delivered.
         </h1>
       </div>
@@ -39,20 +40,22 @@
       <div class="flex w-full flex-col gap-5 items-center">
         <!-- Go to My Routines -->
         <a
+          style="box-shadow: 0px 4px 14px 0px rgba(58, 100, 59, 0.25);"
           class="w-full py-5 rounded-lg bg-[#3A643B] text-center"
           href="/pages/user-routine-list"
           @click="navigateAndReplaceHistory('/pages/user-routine-list')"
         >
-          <button class="text-white text-[12px]">Go To My Routines</button>
+          <button class="text-white text-[13px] font-[600]">Go To My Routines</button>
         </a>
 
         <!-- Explore More Routines -->
         <a
+          style="box-shadow: 0px 4.38px 15.34px 0px rgba(58, 100, 59, 0.25);border: 1px solid #3A643B;"
           class="w-full py-4 rounded-lg border border-[#3A643B] text-center"
           href="/pages/routine-list"
           @click="navigateAndReplaceHistory('/pages/routine-list')"
         >
-          <button class="text-[12px] text-primaryGreen">Explore More Routines</button>
+          <button class="text-[13px] font-[600] explore-routines  text-primaryGreen">Explore More Routines</button>
         </a>
       </div>
     </div>

@@ -5,13 +5,17 @@ import db from "../db.server";
 export const action = async ({ request }: ActionFunctionArgs) => {
   try {
     // Authenticate webhook and validate HMAC
-    const { topic, shop, session, admin } = await authenticate.webhook(request);
+    const { topic, shop, session, admin, payload } =
+      await authenticate.webhook(request);
     console.log("Webhook received", topic);
 
+    // console.log("Admin:", admin);
+
     // Check if the request is from an admin, unless it's for "SHOP_REDACT"
-    if (!admin && topic !== "SHOP_REDACT") {
-      return new Response("Unauthorized", { status: 401 });
-    }
+    // if (!admin && topic !== "SHOP_REDACT") {
+    //   console.log("Unauthorized webhook request");
+    //   return new Response("Unauthorized", { status: 401 });
+    // }
 
     switch (topic) {
       case "APP_UNINSTALLED":
@@ -32,6 +36,10 @@ export const action = async ({ request }: ActionFunctionArgs) => {
       case "CUSTOMERS_REDACT":
         console.log("Customer data redaction received");
         return new Response("Customer redaction processed", { status: 200 });
+
+      case "ORDERS_CREATE":
+        console.log("Order created", payload);
+        return new Response("Order created", { status: 200 });
 
       default:
         return new Response("Unhandled webhook topic", { status: 404 });

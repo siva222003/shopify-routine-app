@@ -30,7 +30,7 @@ export default function ChooseReminder() {
         content: "Back",
         onAction: () => {
           navigate(`/app/routine/${id}`, {
-            unstable_viewTransition: true,
+            viewTransition: true,
           });
         },
       }}
@@ -45,7 +45,7 @@ export default function ChooseReminder() {
                 </Text>
                 <Button
                   onClick={() => navigate(`/app/${id}/add-product`,{
-                    unstable_viewTransition: true,
+                    viewTransition: true,
                   })}
                   accessibilityLabel="Add variant"
                   icon={PlusIcon}
@@ -69,7 +69,7 @@ export default function ChooseReminder() {
                 </Text>
                 <Button
                   onClick={() => navigate(`/app/${id}/add-activity`,{
-                    unstable_viewTransition: true,
+                    viewTransition: true,
                   })}
                   accessibilityLabel="Add variant"
                   icon={PlusIcon}

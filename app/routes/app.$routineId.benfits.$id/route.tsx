@@ -135,7 +135,7 @@ const EditWeeklyBenfits = () => {
         actionData.toast === "Benefits deleted successfully"
       ) {
         navigate(`/app/routine/${routineId}`, {
-          unstable_viewTransition: true,
+          viewTransition: true,
         });
         return;
       }
@@ -151,7 +151,7 @@ const EditWeeklyBenfits = () => {
           content: "Back",
           onAction: () =>
             navigate(`/app/routine/${routineId}`, {
-              unstable_viewTransition: true,
+              viewTransition: true,
             }),
         }}
         primaryAction={{

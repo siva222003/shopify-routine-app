@@ -9,18 +9,6 @@ import { isbot } from "isbot";
 import { addDocumentResponseHeaders } from "./shopify.server";
 
 const ABORT_DELAY = 5000;
-const CRON_INTERVAL = 3 * 60 * 1000;
-
-async function callAPI() {
-  try {
-    await fetch("https://routine-cron.onrender.com/");
-    console.log("Cron call successful");
-  } catch (error) {
-    console.error("Error during API call:", error);
-  }
-}
-
-setInterval(callAPI, CRON_INTERVAL);
 
 export default async function handleRequest(
   request: Request,

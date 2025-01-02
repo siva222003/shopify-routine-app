@@ -11,5 +11,8 @@
   "description": "",
   "devDependencies": {
     "tailwindcss": "^3.4.11"
+  },
+  "dependencies": {
+    "jsonwebtoken": "^9.0.2"
   }
 }

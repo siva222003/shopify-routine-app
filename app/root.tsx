@@ -7,7 +7,7 @@ import {
   Scripts,
   ScrollRestoration,
   useRouteError,
-  unstable_useViewTransitionState as useViewTransitionState,
+  useViewTransitionState,
 } from "@remix-run/react";
 
 import { ReactNode } from "react";

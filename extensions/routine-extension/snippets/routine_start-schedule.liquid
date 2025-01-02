@@ -2,26 +2,39 @@
   .custom-date {
     background: none;
   }
+  .custom-fieldset {
+    padding-top: 4px;
+    padding-bottom: 8px;
+  }
 </style>
 
 <div
   x-show="tab===3"
-  x-transition:enter="transition ease-out duration-200"
-  x-transition:enter-start="opacity-0 scale-90"
-  x-transition:enter-end="opacity-100 scale-100"
-  x-transition:leave="transition ease-in duration-200"
-  x-transition:leave-start="opacity-100 scale-100"
-  x-transition:leave-end="opacity-0 scale-90"
   x-cloak
-  class="sm:max-w-[80%] mx-auto mb-[200px]"
+  class="md:max-w-[90%] max-ssmdd:w-full slide-in-bottom max-ssmdd:px-[5px] max-sm:w-[80%] max-md:w-[70%] max-lMd:w-[60%] mx-auto "
 >
-  <h1 class="font-[500] mt-[30px] text-3xl text-[#434343] text-center">Select Start Date for the Routine</h1>
+  <div class="flex my-6  sm:my-10 max-sm:ml-[20px] items-center justify-center">
+    <h1 class="font-[500] flex-1 max-sm:max-w-[90%] text-center text-[24px] md:text-[26px]  text-[#434343] my-[10px] ">
+      Add Details
+    </h1>
+  </div>
 
   <div class="antialiased sans-serif ">
     <div x-data="app()" x-init="[initDate(), getNoOfDays()]" x-cloak>
-      <div class="container mx-auto px-4 md:py-10">
-        <fieldset class="border-2 px-4 py-2 flex items-center rounded-3xl w-[330px] xsm:w-[350px] mx-auto">
-          <legend class="text-primaryGrey text-[11px] custom-fieldset-legend">Start Date</legend>
+      <div class="flex max-lMd:flex-col w-full  max-lMd:gap-[26px] mt-[40px] justify-center lMd:gap-[9rem] items-center">
+        <fieldset class="border-2 px-4 w-[100%] h-[64px] ssmd:w-[380px] lg:w-[430px]  flex items-center rounded-3xl">
+          <legend class="text-primaryGrey text-[12px] custom-fieldset-legend">WhatsApp Number</legend>
+          <input
+            x-model="whatsapp"
+            type="text"
+            name="whatsapp"
+            class=" custom-fieldset custom-input-border focus:outline-none bg-transparent w-full focus:shadow-none"
+            id="whatsapp"
+          >
+        </fieldset>
+
+        <fieldset class="border-2 px-4 flex items-center rounded-3xl w-[100%] ssmd:w-[380px] lg:w-[430px] max-lMd:mx-auto ">
+          <legend class="text-primaryGrey text-[12px] custom-fieldset-legend">Start Date</legend>
 
           <div class="mb-5 h-full w-full">
             <div class="relative ">
@@ -42,15 +55,8 @@
                 </svg>
               </div>
 
-              <!--
-                <div x-text="no_of_days.length"></div>
-                <div x-text="32 - new Date(year, month, 32).getDate()"></div>
-                <div x-text="new Date(year, month).getDay()"></div>
-              -->
-
               <div
                 class="bg-white mt-12 rounded-lg shadow p-4 absolute top-4 z-10 left-0"
-                {% comment %} style="width: 17rem" {% endcomment %}
                 x-show.transition="showDatepicker"
                 @click.away="showDatepicker = false"
               >
@@ -138,133 +144,133 @@
         </fieldset>
       </div>
     </div>
-
-    <script>
-      const MONTH_NAMES = [
-        'January',
-        'February',
-        'March',
-        'April',
-        'May',
-        'June',
-        'July',
-        'August',
-        'September',
-        'October',
-        'November',
-        'December',
-      ];
-      const MONTH_SHORT_NAMES = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-      const DAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-
-      function app() {
-        return {
-          showDatepicker: false,
-          selectedDate: new Date().toLocaleDateString('en-CA'),
-          dateFormat: 'DD-MM-YYYY',
-          month: '',
-          year: '',
-          no_of_days: [],
-          blankdays: [],
-          initDate() {
-            let today;
-            if (this.selectedDate) {
-              today = new Date(Date.parse(this.selectedDate));
-            } else {
-              today = new Date();
-            }
-            this.month = today.getMonth();
-            this.year = today.getFullYear();
-            this.userRoutineStartDate = this.formatDateForDisplay(today);
-          },
-          formatDateForDisplay(date) {
-            let formattedDay = DAYS[date.getDay()];
-            let formattedDate = ('0' + date.getDate()).slice(-2); // appends 0 (zero) in single digit date
-            let formattedMonth = MONTH_NAMES[date.getMonth()];
-            let formattedMonthShortName = MONTH_SHORT_NAMES[date.getMonth()];
-            let formattedMonthInNumber = ('0' + (parseInt(date.getMonth()) + 1)).slice(-2);
-            let formattedYear = date.getFullYear();
-            if (this.dateFormat === 'DD-MM-YYYY') {
-              return `${formattedDate}-${formattedMonthInNumber}-${formattedYear}`; // 02-04-2021
-            }
-            if (this.dateFormat === 'YYYY-MM-DD') {
-              return `${formattedYear}-${formattedMonthInNumber}-${formattedDate}`; // 2021-04-02
-            }
-            if (this.dateFormat === 'D d M, Y') {
-              return `${formattedDay} ${formattedDate} ${formattedMonthShortName} ${formattedYear}`; // Tue 02 Mar 2021
-            }
-            return `${formattedDay} ${formattedDate} ${formattedMonth} ${formattedYear}`;
-          },
-          isSelectedDate(date) {
-            const d = new Date(this.year, this.month, date);
-            return this.userRoutineStartDate === this.formatDateForDisplay(d) ? true : false;
-          },
-          isToday(date) {
-            const today = new Date();
-            const d = new Date(this.year, this.month, date);
-            return today.toDateString() === d.toDateString() ? true : false;
-          },
-          getDateValue(date) {
-            let selectedDate = new Date(this.year, this.month, date);
-            this.userRoutineStartDate = this.formatDateForDisplay(selectedDate);
-            // this.$refs.date.value = selectedDate.getFullYear() + "-" + ('0' + formattedMonthInNumber).slice(-2) + "-" + ('0' + selectedDate.getDate()).slice(-2);
-            this.isSelectedDate(date);
-            this.showDatepicker = false;
-          },
-          getNoOfDays() {
-            let daysInMonth = new Date(this.year, this.month + 1, 0).getDate();
-            // find where to start calendar day of week
-            let dayOfWeek = new Date(this.year, this.month).getDay();
-            let blankdaysArray = [];
-            for (var i = 1; i <= dayOfWeek; i++) {
-              blankdaysArray.push(i);
-            }
-            let daysArray = [];
-            for (var i = 1; i <= daysInMonth; i++) {
-              daysArray.push(i);
-            }
-            this.blankdays = blankdaysArray;
-            this.no_of_days = daysArray;
-          },
-        };
-      }
-    </script>
   </div>
   <!-- Buttons -->
-  <div class="mt-[80px] mb-[60px] text-center flex flex-col gap-[18px]">
-    <div class="flex max-ssm:flex-col max-ssm:items-center gap-8 justify-center">
-      <button
-        @click="changeTab(tab-1)"
-        class="px-10 py-3 min-w-[150px] rounded-lg border border-[#3A643B] text-[#3A643B] text-[16px]"
-      >
-        Back
-      </button>
 
-      <div class="flex flex-col">
-        <button
-          x-show="!isCreatingRoutine"
-          :disabled="isCreatingRoutine"
-          @click="startRoutine()"
-          class="w-[125px] h-[40px]  rounded-lg relative -z-1 bg-[#3A643B] disabled:opacity-60 text-white text-[16px] shadow-lg"
-        >
-          <span>Start Routine</span>
-        </button>
-        <div
-          x-cloak
-          x-show="isCreatingRoutine"
-          class="h-[40px] rounded-lg flex justify-center items-center w-[125px] opacity-50 mx-auto  disabled:opacity-50 bg-[#3A643B] text-white shadow-lg "
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 24 24"
-            aria-hidden="true"
-            class="size-7 fill-neutral-600 motion-safe:animate-spin dark:fill-neutral-300"
-          >
-            <path d="M12,1A11,11,0,1,0,23,12,11,11,0,0,0,12,1Zm0,19a8,8,0,1,1,8-8A8,8,0,0,1,12,20Z" opacity=".25" />
-            <path d="M10.14,1.16a11,11,0,0,0-9,8.92A1.59,1.59,0,0,0,2.46,12,1.52,1.52,0,0,0,4.11,10.7a8,8,0,0,1,6.66-6.61A1.42,1.42,0,0,0,12,2.69h0A1.57,1.57,0,0,0,10.14,1.16Z" />
-          </svg>
-        </div>
-      </div>
+  <div class="flex flex-col items-center  ">
+    <button
+      style="box-shadow: 0px 4px 14px 0px rgba(58, 100, 59, 0.25);"
+      x-show="!isCreatingRoutine"
+      :disabled="isCreatingRoutine"
+      @click="startRoutine()"
+      class="w-[350px] h-[59px] mt-[100px] rounded-3xl bg-[#3A643B] disabled:opacity-60 text-white text-[16px]"
+    >
+      <span>Proceed</span>
+    </button>
+    <button
+      style=" border: 1px color: #3A643B;"
+      x-show="!isCreatingRoutine"
+      :disabled="isCreatingRoutine"
+      @click="changeTab(2)"
+      class="w-[350px] h-[59px] mt-[10px] mb-[200px] rounded-3xl disabled:opacity-60  text-[16px]"
+    >
+      <span>Back</span>
+    </button>
+    <div
+      x-cloak
+      x-show="isCreatingRoutine"
+      class="w-[350px] h-[59px] mt-[100px] mb-[200px] rounded-3xl flex justify-center items-center  opacity-50 mx-auto  disabled:opacity-50 bg-[#3A643B] text-white shadow-lg "
+    >
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 24 24"
+        aria-hidden="true"
+        class="size-9 fill-neutral-600 motion-safe:animate-spin dark:fill-neutral-300"
+      >
+        <path d="M12,1A11,11,0,1,0,23,12,11,11,0,0,0,12,1Zm0,19a8,8,0,1,1,8-8A8,8,0,0,1,12,20Z" opacity=".25" />
+        <path d="M10.14,1.16a11,11,0,0,0-9,8.92A1.59,1.59,0,0,0,2.46,12,1.52,1.52,0,0,0,4.11,10.7a8,8,0,0,1,6.66-6.61A1.42,1.42,0,0,0,12,2.69h0A1.57,1.57,0,0,0,10.14,1.16Z" />
+      </svg>
     </div>
   </div>
 </div>
+
+<script>
+  const MONTH_NAMES = [
+    'January',
+    'February',
+    'March',
+    'April',
+    'May',
+    'June',
+    'July',
+    'August',
+    'September',
+    'October',
+    'November',
+    'December',
+  ];
+  const MONTH_SHORT_NAMES = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  const DAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+
+  function app() {
+    return {
+      showDatepicker: false,
+      selectedDate: new Date().toLocaleDateString('en-CA'),
+      dateFormat: 'DD-MM-YYYY',
+      month: '',
+      year: '',
+      no_of_days: [],
+      blankdays: [],
+      initDate() {
+        let today;
+        if (this.selectedDate) {
+          today = new Date(Date.parse(this.selectedDate));
+        } else {
+          today = new Date();
+        }
+        this.month = today.getMonth();
+        this.year = today.getFullYear();
+        this.userRoutineStartDate = this.formatDateForDisplay(today);
+      },
+      formatDateForDisplay(date) {
+        let formattedDay = DAYS[date.getDay()];
+        let formattedDate = ('0' + date.getDate()).slice(-2); // appends 0 (zero) in single digit date
+        let formattedMonth = MONTH_NAMES[date.getMonth()];
+        let formattedMonthShortName = MONTH_SHORT_NAMES[date.getMonth()];
+        let formattedMonthInNumber = ('0' + (parseInt(date.getMonth()) + 1)).slice(-2);
+        let formattedYear = date.getFullYear();
+        if (this.dateFormat === 'DD-MM-YYYY') {
+          return `${formattedDate}-${formattedMonthInNumber}-${formattedYear}`; // 02-04-2021
+        }
+        if (this.dateFormat === 'YYYY-MM-DD') {
+          return `${formattedYear}-${formattedMonthInNumber}-${formattedDate}`; // 2021-04-02
+        }
+        if (this.dateFormat === 'D d M, Y') {
+          return `${formattedDay} ${formattedDate} ${formattedMonthShortName} ${formattedYear}`; // Tue 02 Mar 2021
+        }
+        return `${formattedDay} ${formattedDate} ${formattedMonth} ${formattedYear}`;
+      },
+      isSelectedDate(date) {
+        const d = new Date(this.year, this.month, date);
+        return this.userRoutineStartDate === this.formatDateForDisplay(d) ? true : false;
+      },
+      isToday(date) {
+        const today = new Date();
+        const d = new Date(this.year, this.month, date);
+        return today.toDateString() === d.toDateString() ? true : false;
+      },
+      getDateValue(date) {
+        let selectedDate = new Date(this.year, this.month, date);
+        this.userRoutineStartDate = this.formatDateForDisplay(selectedDate);
+        // this.$refs.date.value = selectedDate.getFullYear() + "-" + ('0' + formattedMonthInNumber).slice(-2) + "-" + ('0' + selectedDate.getDate()).slice(-2);
+        this.isSelectedDate(date);
+        this.showDatepicker = false;
+      },
+      getNoOfDays() {
+        let daysInMonth = new Date(this.year, this.month + 1, 0).getDate();
+        // find where to start calendar day of week
+        let dayOfWeek = new Date(this.year, this.month).getDay();
+        let blankdaysArray = [];
+        for (var i = 1; i <= dayOfWeek; i++) {
+          blankdaysArray.push(i);
+        }
+        let daysArray = [];
+        for (var i = 1; i <= daysInMonth; i++) {
+          daysArray.push(i);
+        }
+        this.blankdays = blankdaysArray;
+        this.no_of_days = daysArray;
+      },
+    };
+  }
+</script>

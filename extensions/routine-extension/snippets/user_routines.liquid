@@ -1,70 +1,101 @@
-<h1
-  x-show="isRoutinesLoading || visibleRoutines.length > 0"
-  x-cloak
-  x-transition
-  class="text-center text-[20px] mb-[15px]  sm:mt-[20px] sm:mb-[40px]"
->
-  My Routines
-</h1>
-
 <div class="flex justify-center mb-[20px] px-[10px] sm:px-[20px]">
-  <div class="grid grid-cols-2  md:grid-cols-3 lg:grid-cols-4 gap-y-[30px] gap-x-[15px] sm:gap-x-[20px] md:gap-x-[30px] xl:gap-x-[40px]   custom-grid-gap ">
-    <!-- Skeleton Loader -->
+  <!-- Skeleton Loader -->
+  <template x-transition x-if="isRoutinesLoading">
+    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-y-[30px] gap-x-[15px] sm:gap-x-[20px] md:gap-x-[30px] xl:gap-x-[40px] custom-grid-gap">
+      <template x-for="i in 8" :key="i">
+        <div class="flex flex-col gap-3 w-full md:w-fit">
+          <!-- Skeleton Box -->
+          <div
+            class="relative w-[45vw] h-[45vw] md:h-[220px] md:w-[220px] rounded-2xl lg:h-[250px] lg:w-[250px] bg-primaryCream overflow-hidden"
+          >
+            <!-- Infinite Loading Effect -->
+            <div class=" flex justify-center items-center absolute inset-0 ">
+              <svg
+                width="100px"
+                height="100px"
+                viewBox="0 0 187.3 93.7"
+                preserveAspectRatio="xMidYMid meet"
+                style="left: 50%; top: 50%; position: absolute; transform: translate(-50%, -50%) matrix(1, 0, 0, 1, 0, 0);"
+              >
+                <!-- Background path -->
+                <path
+                  id="outline-bg"
+                  opacity="0.05"
+                  fill="none"
+                  stroke="#FFF7E2"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-miterlimit="10"
+                  d="M93.9,46.4c9.3,9.5,13.8,17.9,23.5,17.9s17.5-7.8,17.5-17.5s-7.8-17.6-17.5-17.5c-9.7,0.1-13.3,7.2-22.1,17.1 c-8.9,8.8-15.7,17.9-25.4,17.9s-17.5-7.8-17.5-17.5s7.8-17.5,17.5-17.5S86.2,38.6,93.9,46.4z"
+                />
 
-    {% comment %}
-      <template x-if="isRoutinesLoading">
-        <template x-for="n in columnCount*2" :key="n">
-          <div class="flex flex-col gap-3 w-full md:w-fit animate-pulse">
-            <img
-              width=""
-              height=""
-              src="{{ 'background.svg' | asset_url }}"
-              class="h-[300px] w-full sm:h-[220px] sm:w-[220px] rounded-2xl lg:h-[250px] lg:w-[250px]"
-              alt="Routine Image"
-              alt=""
-            >
-
-            <div class="h-4 bg-skeletonCream rounded-md w-[70%]"></div>
-
-            <div class="flex gap-3 items-center">
-              <div class="w-5 h-5 bg-skeletonCream rounded-full"></div>
-              <div class="h-3 bg-skeletonCream rounded-md w-[50%]"></div>
-            </div>
-
-            <div class="flex gap-3 items-center">
-              <div class="w-5 h-5 bg-skeletonCream rounded-full"></div>
-              <div class="h-3 bg-skeletonCream rounded-md w-[60%]"></div>
-            </div>
-
-            <div class="flex gap-3 items-center">
-              <div class="w-5 h-5 bg-skeletonCream rounded-full"></div>
-              <div class="h-3 bg-skeletonCream rounded-md w-[80%]"></div>
+                <!-- Animated path -->
+                <path
+                  id="outline"
+                  fill="none"
+                  stroke="#3A643B"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-miterlimit="10"
+                  stroke-dasharray="150 50"
+                  stroke-dashoffset="0"
+                  d="M93.9,46.4c9.3,9.5,13.8,17.9,23.5,17.9s17.5-7.8,17.5-17.5s-7.8-17.6-17.5-17.5c-9.7,0.1-13.3,7.2-22.1,17.1 c-8.9,8.8-15.7,17.9-25.4,17.9s-17.5-7.8-17.5-17.5s7.8-17.5,17.5-17.5S86.2,38.6,93.9,46.4z">
+                  <animate
+                    attributeName="stroke-dashoffset"
+                    from="0"
+                    to="-200"
+                    dur="1s"
+                    repeatCount="indefinite"
+                  />
+                </path>
+              </svg>
             </div>
           </div>
-        </template>
+
+          <div class="h-[6px] w-[70%] bg-primaryCream  rounded "></div>
+          <div class="h-[6px] w-[60%] bg-primaryCream  rounded "></div>
+          <div class="h-[6px] w-[60%] bg-primaryCream  rounded "></div>
+        </div>
       </template>
-    {% endcomment %}
+    </div>
+  </template>
 
-    <!-- Actual Data -->
-
-    <template
-      x-if="!isRoutinesLoading && visibleRoutines.length > 0"
-    >
+  <!-- Actual Data -->
+  <template
+    x-transition.opacity.duration.300ms
+    x-if="!isRoutinesLoading && visibleRoutines.length > 0"
+  >
+    <div class="grid grid-cols-2  md:grid-cols-3 lg:grid-cols-4 gap-y-[30px] gap-x-[15px] sm:gap-x-[20px] md:gap-x-[30px] xl:gap-x-[40px]   custom-grid-gap ">
       <template
         class="mb-[200px]"
         x-for="routine in visibleRoutines"
         :key="routine?._id"
       >
-        <a :href="`/pages/user-routine?id=${routine?._id}`">
+        <a :href="`/pages/routine?id=${routine?._id}`">
           <div class="flex flex-col  gap-3 w-full md:w-fit">
-            <img
-              :src="routine?.image"
-              class="w-full sm:h-[220px] sm:w-[220px] rounded-2xl lg:h-[250px] lg:w-[250px]"
-              alt=""
-              width="1200"
-              height="1200"
-              style="object-fit: cover; object-position: center; aspect-ratio: 1/1;"
+            <div
+              class="relative w-[45vw] h-[45vw] md:h-[220px] md:w-[220px] rounded-2xl lg:h-[250px] lg:w-[250px] bg-gray-200 overflow-hidden"
             >
+              <!-- Shimmer Effect -->
+
+              <div
+                x-show="!routine.loaded"
+                class="flex justify-center items-center absolute inset-0 bg-primaryCream"
+              ></div>
+              <img
+                :src="routine?.image"
+                class="absolute inset-0 w-full h-full object-cover rounded-2xl transition-transform duration-700 ease-out scale-95"
+                alt="Routine Image"
+                width="1200"
+                height="1200"
+                :class="{ 'scale-100': routine.loaded }"
+                style="object-fit: cover; object-position: center; aspect-ratio: 1/1;"
+                @load="routine.loaded = true;"
+                @error="routine.loaded = true;"
+              >
+            </div>
             <div class="flex justify-between">
               <h1 class=" text-[12px] xsm:text-[14px] sm:text-[16px] font-[500]" x-text="routine?.name"></h1>
             </div>
@@ -85,6 +116,15 @@
           </div>
         </a>
       </template>
-    </template>
-  </div>
+    </div>
+  </template>
 </div>
+
+<style>
+  .scale-105 {
+    transform: scale(0.95);
+  }
+  .scale-100 {
+    transform: scale(1);
+  }
+</style>

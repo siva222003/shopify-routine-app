@@ -16,11 +16,11 @@
 
 <div
   x-show="tab===1 && !isLoading"
-  class="xl:max-w-[90%] 2xl:max-w-[70%] mt-[40px] mx-auto max-md:mx-3 mb-[100px]"
+  class="xl:max-w-[80%] 2xl:max-w-[70%] mt-[40px] mx-auto max-md:mx-3 mb-[100px]"
   x-cloak
   x-transition
 >
-  <h1 class="font-[500] my-[25px]">Reminder Progress Summary</h1>
+  <h1 class="font-[500] text-[20px] my-[25px]">Reminder Progress Summary</h1>
 
   <div class="antialiased sans-serif ">
     <div x-data="app()" x-init="[initDate(), getNoOfDays()]" x-cloak>
@@ -244,81 +244,38 @@
   </h1>
 
   <template x-if="!isFetchingSlots && reminderSlots?.some(obj => obj.slots && obj.slots.length > 0)">
-    <template x-for="reminderSlot in reminderSlots" :key="reminderSlot?._id">
-      <div>
-        <h1
-          :class="reminderSlot?.slots.length > 0 ? '' : 'hidden'"
-          x-show="reminderSlot?.slots.length > 0"
-          class="font-[500] my-[25px] text-[15px]"
-          x-text="reminderSlot?.reminderName"
-        ></h1>
+    <div class="flex cursor-pointer flex-col">
+      <template x-for="(slot,index) in 3" :key="index">
+        <div>
+          <div @click="isMarkCompleteModalOpen = true" class="flex gap-4 my-[20px] rounded-lg">
+            <img height="" width="" src="{{ 'today-reminder.svg' | asset_url }}" class="w-[58px] h-[58px]" alt="">
 
-        <div class="flex flex-col gap-[30px]">
-          <template x-for="slot in reminderSlot?.slots" :key="slot?._id">
-            <div class="flex gap-4 items-center">
-              <div class="flex gap-2 items-center">
-                <img
-                  width=""
-                  height=""
-                  src="{{ 'slot-clock.svg' | asset_url }}"
-                  alt=""
-                >
-                <h3 class="text-primaryGrey text-[13px]" x-text="slot?.time"></h3>
-              </div>
+            <div class="flex flex-col justify-center gap-4">
+              <h1 class="sm:text-[16px] text-[15px] font-[500]">Done</h1>
 
-              <div
-                x-show="reminderSlot?.reminderType === 'Product'"
-                class="p-2 border-primaryGrey max-ssmdd:hidden rounded-full border"
-              >
-                <h3
-                  class="text-[13px] text-primaryGrey"
-                  x-text="slot?.timing === 'beforeMeal' ? 'Before Meal' : 'After Meal'"
-                ></h3>
-              </div>
-
-              <div
-                style="border: 1px solid #e5e7eb"
-                class="min-w-[100px] sm:min-w-[200px]  md:min-w-[250px] mx-4"
-              ></div>
-
-              <div class="flex gap-3 items-center">
-                <label class="relative inline-flex items-center cursor-pointer">
-                  <input
-                    @change="markSlot(slot,reminderSlot?.reminderId)"
-                    :checked="slot?.marked"
-                    id="default-checkbox"
-                    type="checkbox"
-                    class="cartCheckBox rounded-full appearance-none bg-gray-100 border border-gray-300 checked:bg-primaryGreen peer focus:outline-none"
-                  >
-                  <svg
-                    class="absolute w-6 h-6 ml-[5px] text-white opacity-0 peer-checked:opacity-100 peer-checked:scale-100 transition-opacity  duration-200"
-                    width="12"
-                    height="8"
-                    viewBox="0 0 12 8"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path d="M10.6673 0.5L4.25065 6.91667L1.33398 4" stroke="white" stroke-linecap="round" stroke-linejoin="round"/>
-                  </svg>
-                </label>
-
-                <h3
-                  x-show="!isUpdatingSlot || currentSlot?._id !== slot?._id"
-                  class="text-primaryGreen text-[13px]"
-                  x-text="slot?.marked ? 'Unmark' : 'Mark as Done'"
-                ></h3>
-
-                <h3
-                  x-show="isUpdatingSlot && currentSlot?._id === slot?._id"
-                  class="text-primaryGreen text-[13px]"
-                  x-text="slot?.marked ? 'Unmarking' : 'Marking'"
-                ></h3>
+              <div class="flex xsm:gap-6 gap-3  ">
+                <h2 class="text-primaryGrey text-[13px] ">Product</h2>
+                <div class="flex gap-1 xsm:gap-3 items-center  text-[13px]">
+                  <img height="" width="" src="{{ 'reminder-clock.svg' | asset_url }}" alt="">
+                  <h1>9:30 AM</h1>
+                </div>
               </div>
             </div>
-          </template>
+          </div>
+
+          <div style="border: 1px solid #F0F0F0;"></div>
         </div>
+      </template>
+
+      <div class="flex justify-between sm:mb-6 mb-3  items-center ">
+        <h3
+          x-text="visibleReminders.length > 1 ? 'Less Routines' : 'More Routines'"
+          @click="visibleReminders.length > 1 ? showLessReminders() : showMoreReminders()"
+          class="text-primaryGrey  text-[12px]"
+        ></h3>
+        <img height="" width="" src="{{ 'down-arrow.svg' | asset_url }}" class="" alt="">
       </div>
-    </template>
+    </div>
   </template>
 
   <div class="ml-[100px] mt-[70px]" x-show="isFetchingSlots" x-cloak>

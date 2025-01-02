@@ -40,7 +40,7 @@ export default function ActivityReminderCard({ reminder }: Props) {
         content: "Customize",
         onAction: () => {
           navigate(`/app/${reminder.reminderListId}/activity/${reminder._id}`, {
-            unstable_viewTransition: true,
+            viewTransition: true,
           });
         },
       }}

@@ -187,7 +187,7 @@ export default function Routine() {
         actionData.toast === "Routine deleted successfully"
       ) {
         navigate(`/app/routine-list/1`, {
-          unstable_viewTransition: true,
+          viewTransition: true,
         });
       }
     }
@@ -216,7 +216,7 @@ export default function Routine() {
       backAction={{
         content: "Back",
         onAction: () => navigate(`/app/routine-list/1`,{
-          unstable_viewTransition: true
+          viewTransition: true
         }),
       }}
       titleMetadata={
@@ -335,7 +335,7 @@ export default function Routine() {
               <Button
                 icon={NotificationIcon}
                 onClick={() => navigate(`/app/${id}/reminder`,{
-                  unstable_viewTransition: true
+                  viewTransition: true
                 })}
               >
                 Add Reminder
@@ -344,7 +344,7 @@ export default function Routine() {
                 <Button
                   icon={RewardIcon}
                   onClick={() => navigate(`/app/${id}/weekly-benfits`,{
-                    unstable_viewTransition: true
+                    viewTransition: true
                   })}
                 >
                   Add Weekly Benfits

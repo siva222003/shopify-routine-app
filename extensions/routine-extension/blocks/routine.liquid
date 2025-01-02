@@ -1,57 +1,80 @@
 <link rel="stylesheet" href="{{ 'style.css' | asset_url }}">
 <link rel="stylesheet" href="{{ 'conflict.css' | asset_url }}">
 
-<main x-data="routine" class=" rounded-2xl mx-2 ssm:mx-4  sm:mx-6 ">
-  <!-- Header -->
+<style>
+  .sticky-button {
+    position: sticky;
+    bottom: 0;
+    z-index: 9999;
+    width: 100vw;
+    background-color: white;
+  }
+</style>
 
-  <a
-    id="cartLink"
-    href="/cart"
-    data-drawer-options="{ &quot;id&quot;:&quot;#t4s-mini_cart&quot; }"
-  ></a>
+<main
+  x-data="routine"
+>
+  <section
+    class="slide-in-bottom"
+  >
+    <!-- Header -->
+    <a
+      id="cartLink"
+      href="/cart"
+      data-drawer-options="{ &quot;id&quot;:&quot;#t4s-mini_cart&quot; }"
+    ></a>
 
-  <section x-transition x-show="isLoading" class="flex flex-col justify-center items-center min-h-screen">
-    <h1>Loading...</h1>
+    {% render 'routine_header_skeleton' %}
+
+    <section
+      class="rounded-2xl mx-2 ssm:mx-4 sm:mx-6"
+      x-show="!isLoading && tab===1"
+      x-cloak
+    >
+      {% render 'routine_header' %}
+
+      <!-- Reminders -->
+      {% render 'routine_reminders' %}
+      <!-- Buttons -->
+    </section>
+
+    <div
+      id="button-bro"
+      x-show="!isLoading && tab===1"
+      x-cloak
+      class="mt-[80px] slide-in-bottom py-[10px] sticky-button mb-[100px] text-center flex justify-center gap-[18px]"
+    >
+      <button
+        style="box-shadow: 0px 4px 14px 0px rgba(58, 100, 59, 0.25);"
+        @click="changeTab(tab + 1)"
+        class="px-[6rem] py-5 rounded-lg bg-[#3A643B] text-white text-[18px] shadow-lg"
+      >
+        Start Routine
+      </button>
+    </div>
+
+    <section class="rounded-2xl mx-2 ssm:mx-4 sm:mx-6">
+      <!-- Add To Cart Products -->
+      {% render 'routine_addToCart' %}
+
+      <!-- Details -->
+      {% render 'routine_start-schedule' %}
+    </section>
   </section>
 
-  <section x-transition x-show="!isLoading">
-    {% render 'routine_header' %}
-
-    <!-- Reminders -->
-    {% render 'routine_reminders' %}
-  </section>
-
-  {% comment %} <div class=" fixed right-1/2 h-[1000px] w-[100px] bg-black"></div> {% endcomment %}
-
-  {% comment %} <section> {% endcomment %}
   {% render 'product_reminder_modal' %}
   {% render 'activity_reminder_modal' %}
-  {% comment %} </section> {% endcomment %}
 
-  <!-- Add To Cart Products -->
-  {% render 'routine_addToCart' %}
-
-  <!-- Reminder Channels -->
-  {% render 'routine_reminder_channels' %}
-
-  <!-- Start Date -->
-  {% render 'routine_start-schedule' %}
   {% render 'routine_start_modal' %}
 </main>
 
-<script src="{{ 'focus.min.js' | asset_url }}" defer></script>
+<script src="{{ 'routine.js' | asset_url }}" defer></script>
+<script src="{{ 'focus.min.js' | asset_url   }}" defer></script>
 <script src="{{ 'alpine.min.js' | asset_url }}" defer></script>
-
-<!-- Alpine Plugins -->
-{% comment %} <script defer src="https://cdn.jsdelivr.net/npm/@alpinejs/focus@3.x.x/dist/cdn.min.js"></script> {% endcomment %}
-{% comment %}  {% endcomment %}
-<!-- Alpine Core -->
-{% comment %} <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script> {% endcomment %}
 
 {% schema %}
 {
   "name": "Routine",
-  "target": "section",
-  "javascript": "routine.js"
+  "target": "section"
 }
 {% endschema %}

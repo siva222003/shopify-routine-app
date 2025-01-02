@@ -1,4 +1,6 @@
-<div x-show="tab===1 && !isLoading" class="xl:max-w-[90%] 2xl:max-w-[70%] mx-auto max-md:mx-3" x-cloak x-transition>
+<div
+  class="xl:max-w-[90%] 2xl:max-w-[70%] mx-auto max-md:mx-3 mb-[100px]"
+>
   <h1 class="font-[500] my-[25px]">
     List of Reminders (<span x-text="routine?.productReminders?.length + routine?.activityReminders?.length"></span>)
   </h1>
@@ -30,7 +32,7 @@
 
           <div class="p-3 rounded-full bg-primaryCream w-fit">
             <p
-              x-text="reminder.productType === 'applicationBased' ? 'Application' : 'Consumable'"
+              x-text="'Product'"
               class="reminder-type-green  text-[13px]"
             ></p>
           </div>
@@ -50,7 +52,7 @@
                 <template x-for="(day, index) in reminder.frequency.slice(0, 3)" :key="index">
                   <div class="flex items-center gap-3">
                     <p class="text-[12px]" x-text="day"></p>
-                    <template x-if="index < reminder.frequency.length-1">
+                    <template x-if="index < reminder.frequency.length-1 && index < 2">
                       <div style="border: 1px solid #A0A0A0; height: 14px;"></div>
                     </template>
                   </div>
@@ -120,6 +122,7 @@
       >
         <img
           :src="reminder.image"
+          style="object-fit: cover; object-position: center; aspect-ratio: 1/1;"
           class="xsm:h-[80px] xsm:w-[80px] h-[70px] w-[70px] self-start rounded-2xl"
           alt=""
           width=""
@@ -131,7 +134,7 @@
 
           <div class="p-3 rounded-full bg-primaryCream w-fit">
             <p
-              x-text="reminder.activityType === 'mental' ? 'Mental' : 'Physical'"
+              x-text="'Activity'"
               class="reminder-type-green  text-[13px]"
             ></p>
           </div>
@@ -195,18 +198,5 @@
         >
       </div>
     </template>
-  </div>
-
-  <!-- Buttons -->
-  <div
-    x-show="!isUserRoutine"
-    class="mt-[80px] mb-[60px] text-center flex justify-center gap-[18px]"
-  >
-    <button
-      @click="changeTab(tab + 1)"
-      class="px-14 py-3 rounded-lg bg-[#3A643B] text-white text-[16px] shadow-lg"
-    >
-      Next
-    </button>
   </div>
 </div>

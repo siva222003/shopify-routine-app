@@ -6,44 +6,56 @@
     overflow: hidden;
     text-overflow: ellipsis;
   }
+  .read-more:hover {
+    text-decoration: underline;
+    background-color: white !important;
+    color: #3a643b !important;
+  }
 </style>
 
 <section
-  x-show="tab===1"
-  class=" flex max-md:flex-col max-md:items-center md:justify-center my-10 gap-10 md:gap-6 lg:gap-14"
-  x-transition:enter="transition ease-out duration-200"
-  x-transition:enter-start="opacity-0 scale-90"
-  x-transition:enter-end="opacity-100 scale-100"
-  x-transition:leave="transition ease-in duration-200"
-  x-transition:leave-start="opacity-100 scale-100"
-  x-transition:leave-end="opacity-0 scale-90"
-  x-cloak
+  class="slide-in-bottom flex max-md:flex-col max-md:items-center md:justify-center my-10 gap-10 md:gap-6 lg:gap-8"
 >
   <!-- Routine Thumbnail -->
 
-  <img
-    width="100"
-    height="100"
-    :src="routine.image"
-    style="object-fit: cover; object-position: center; aspect-ratio: 1/1;"
-    alt="Routine Thumbnail"
-    class="rounded-2xl max-md:min-w-[100%] md:h-[33rem] md:w-[33rem] lg:h-[47rem] lg:w-[47rem] lMd:h-[40rem] lMd:w-[40rem] xl:h-[50rem] xl:w-[50rem] "
-    alt=""
+  <div
+    class="relative rounded-2xl max-md:w-[97vw] md:h-[36rem] md:w-[36rem] lg:h-[47rem] lg:w-[47rem] lMd:h-[44rem] lMd:w-[44rem] xl:h-[50rem] xl:w-[50rem] "
   >
+    <div
+      x-show="!routine.loaded"
+      class="absolute inset-0 bg-primaryCream"
+    ></div>
+    <img
+      loading="lazy"
+      width="100"
+      height="100"
+      :src="routine.image"
+      style="object-fit: cover; object-position: center; aspect-ratio: 1/1;"
+      alt="Routine Thumbnail"
+      class="w-full h-full rounded-2xl transition-transform duration-700 ease-out scale-95"
+      :class="{ 'scale-100': routine.loaded }"
+      @load="routine.loaded = true;"
+      @error="routine.loaded = true;"
+    >
+  </div>
 
   <div class="flex flex-col gap-[2rem] max-md:mx-3">
     <h1 class="text-4xl font-[500] text-primaryGreen" x-text="routine.name"></h1>
 
-    <!-- Imports & Likes -->
-    <div class="flex gap-1 items-center">
-      <p class="text-primaryGrey text-[13px]">Followed by 49 others</p>
-
-      <div class="border h-[18px] border-[#D0D0D0] mx-2"></div>
-
-      <div class="flex items-center gap-2">
-        <p class="text-primaryGreen fomt-[600]  text-[13px]">why?</p>
-      </div>
-    </div>
+    <p
+      x-ref="description"
+      class="text-[13px] text-[#464646] md:max-w-2xl -mt-[10px] lg:max-w-3xl line-clamp-3"
+      x-text="routine.description"
+      x-effect="if (expanded) { $refs.description.style.webkitLineClamp = 'unset'; } else { $refs.description.style.webkitLineClamp = 3; }"
+    ></p>
+    <button
+      x-show="routine?.description?.length > 200"
+      @click="expanded = !expanded"
+      x-text="expanded ? 'Read Less' : 'Read More'"
+      class="text-primaryGreen read-more font-[500] text-[13px] text-left -mt-[18px]"
+    >
+      Read More
+    </button>
 
     <!-- Weeks, Type, Created -->
     <div class=" flex gap-4 w-fit ">
@@ -62,80 +74,58 @@
 
       <div class="flex flex-col bg-[#fff7e2]  w-[70px] py-4 rounded-xl justify-evenly   items-center gap-3">
         <img width="" height="" class="" src="{{ "by-amrutam.svg" | asset_url }}" alt="">
-        <h4 class="text-[#A0A0A0] text-[10px]">Created</h4>
-        <p class="text-[11px] text-primaryGreen font-[500]">Amrutam</p>
+        <h4 class="text-[#A0A0A0] text-[10px]">Reminders</h4>
+        <p
+          class="text-[11px] text-primaryGreen font-[500]"
+          x-text="routine?.productReminders?.length + routine?.activityReminders?.length"
+        ></p>
       </div>
     </div>
 
     <!-- Products Used -->
-    <div class="flex flex-col  gap-3">
-      <h3 class="text-primaryGreen text-[13px] ml-2">Products Used</h3>
-      <div class="flex gap-3">
-        <template x-for="product in products">
-          <div class="flex flex-col items-center  gap-3">
-            <section
-              x-cloak
-              x-transition
-              x-show="!product.loaded"
-              class="h-[70px] w-[70px] rounded-full bg-skeletonCream animate-pulse"
-            ></section>
-
+    <div class="flex md:w-[45rem] lg:w-[60rem] w-[93vw] flex-col mt-[16px]">
+      <template x-for="(product, index) in products" :key="index">
+        <div>
+          <div class="flex gap-[10px] sm:gap-[20px] w-fit">
+            <!-- Product content -->
             <img
-              x-cloak
-              x-transition
-              x-show="product.loaded"
-              width="50"
-              height="50"
+              width=""
+              height=""
+              loading="lazy"
               :src="product.image"
               style="object-fit: cover; object-position: center; aspect-ratio: 1/1;"
-              class="h-[70px] w-[70px] rounded-full"
+
+              class="rounded-2xl h-[80px] w-[80px]"
               alt="Product Image"
-              @load="product.loaded = true"
-              @error="product.loaded = true"
             >
-            <p x-text="product.name.slice(0,10) + '...'" class="text-[11px] text-primaryGreen"></p>
+
+            <div class="flex flex-col max-sm:gap-6 ssmd:gap-[10px]  ssmd:py-3">
+              <div class="flex flex-col gap-2 sm:gap-4">
+                <h1
+                  class="text-[15px] ssmd:text-[16px] font-[500] ssmd:-mt-[10px] text-primaryGreen"
+                  x-text="product.name"
+                ></h1>
+              </div>
+              <h1 class="text-[14px] ssmd:text-[16px] font-[500] text-[#5e5e5e]">₹ 1,112</h1>
+            </div>
           </div>
-        </template>
-      </div>
+
+          <!-- Border div inside each product iteration -->
+          <div
+            style="border-top: 1px solid #D0D0D0;"
+            class="  sm:w-full my-[20px]"
+          ></div>
+        </div>
+      </template>
     </div>
 
     <!-- Description & Weekly Benfits -->
-    <div class="flex flex-col gap-1 px-[20px] md:w-[50rem] lg:w-[60rem] bg-primaryCream  md:px-[18px] lg:px-[24px] py-[22px] rounded-2xl w-[93vw] ">
-      <!-- Description -->
-
-      <div class="flex flex-col gap-4">
-        <div class="flex  items-center  gap-4">
-          <img
-            width="50"
-            height="50"
-            :src="routine.image"
-            style="object-fit: cover; object-position: center; aspect-ratio: 1/1;"
-            class="h-[50px] w-[50px] rounded-full"
-            alt=""
-          >
-          <p x-text="routine.name" class="text-[15px] font-[500]  text-primaryGreen" x-text="routine?.name"></p>
-        </div>
-
-        <!-- Description -->
-        <p
-          x-ref="description"
-          class="text-[13px] text-[#464646] md:max-w-2xl lg:max-w-3xl line-clamp-3"
-          x-text="routine.description"
-          x-effect="if (expanded) { $refs.description.style.webkitLineClamp = 'unset'; } else { $refs.description.style.webkitLineClamp = 3; }"
-        ></p>
-        <button
-          x-show="routine?.description?.length > 200"
-          @click="expanded = !expanded"
-          x-text="expanded ? 'Read Less' : 'Read More'"
-          class="text-primaryGreen font-[500] text-[13px] text-left"
-        >
-          Read More
-        </button>
-      </div>
-
+    <div
+      class="flex flex-col gap-1 px-[20px] md:w-[45rem] lg:w-[60rem] bg-primaryCream  md:px-[18px] lg:px-[24px] py-[22px] rounded-2xl w-[93vw] "
+    >
       <!-- Weekly Benfits -->
 
-      <h1 class="text-primaryBlack text-[18px] font-[500] my-4">Weekly Benefits</h1>
+      <h1 class="text-primaryBlack text-[18px] font-[500] mb-4">Weekly Benefits</h1>
 
       <div class="flex flex-col gap-8">
         <template x-for="weeklyBenefit in weeklyBenefits">
@@ -158,3 +148,12 @@
     </div>
   </div>
 </section>
+
+<style>
+  .scale-105 {
+    transform: scale(0.99);
+  }
+  .scale-100 {
+    transform: scale(1);
+  }
+</style>

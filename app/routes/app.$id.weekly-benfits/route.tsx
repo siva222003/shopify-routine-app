@@ -110,7 +110,7 @@ const WeeklyBenfits = () => {
         backAction={{
           content: "Back",
           onAction: () => navigate(`/app/routine/${id}`,{
-            unstable_viewTransition: true,
+            viewTransition: true,
           }),
         }}
         primaryAction={{

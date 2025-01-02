@@ -49,3 +49,31 @@ input[type="checkbox"] {
   padding-right: 0 !important;
   padding-left: 0 !important;
 }
+
+@keyframes slide-in-bottom {
+  0% {
+    transform: translateY(2%);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.slide-in-bottom {
+  animation: slide-in-bottom 0.6s ease-out forwards;
+}
+
+.modal {
+  position: fixed !important;
+  z-index: 999999 !important;
+  top: 0;
+  left: 0;
+  width: 100% !important;
+  height: calc(100% - var(--parent-start-offset, 0px)) !important;
+  display: flex;
+  justify-content: center;
+  overflow: auto;
+  background-color: rgba(0, 0, 0, 0.5);
+}

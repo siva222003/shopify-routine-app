@@ -1,41 +1,43 @@
 <link rel="stylesheet" href="{{ 'style.css' | asset_url }}">
 <link rel="stylesheet" href="{{ 'conflict.css' | asset_url }}">
 
-<main x-data="userRoutine" class=" rounded-2xl mx-2 ssm:mx-4  sm:mx-6 ">
-  <section x-transition x-show="isLoading" class="flex flex-col justify-center items-center min-h-screen">
-    <h1>Loading...</h1>
+<main
+  x-data="userRoutine"
+>
+  <section
+    class="slide-in-bottom"
+  >
+    <!-- Skeleton -->
+    {% render 'routine_header_skeleton' %}
+
+    <section
+      x-show="!isLoading"
+      x-transition.duration.300ms
+      x-cloak
+    >
+      <!-- Header -->
+
+      {% render 'user_routine_header' %}
+    </section>
+
+    <!-- Reminder Summary -->
+
+    {% render 'reminder_summary' %}
   </section>
+  {% render 'mark_complete_modal' %}
 
-  <section x-show="!isLoading">
-    <!-- Header -->
-
-    {% render 'routine_header' %}
-
-    <!-- Reminders -->
-    {% render 'routine_reminders' %}
-  </section>
-  {% render 'product_reminder_modal' %}
-  {% render 'activity_reminder_modal' %}
-
-  <!-- Reminder Summary -->
-
-  {% render 'reminder_summary' %}
+  <div
+    class="mt-[200px]"
+  ></div>
 </main>
 
+<script src="{{ 'user-routine.js' | asset_url }}" defer></script>
 <script src="{{ 'focus.min.js' | asset_url }}" defer></script>
 <script src="{{ 'alpine.min.js' | asset_url }}" defer></script>
 
-<!-- Alpine Plugins -->
-{% comment %}
-  <script defer src="https://cdn.jsdelivr.net/npm/@alpinejs/focus@3.x.x/dist/cdn.min.js"></script>
-
-  <!-- Alpine Core -->
-  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
-{% endcomment %}
 {% schema %}
 {
   "name": "User Routine",
-  "target": "section",
-  "javascript": "user-routine.js"
+  "target": "section"
 }
 {% endschema %}

@@ -153,7 +153,7 @@ const AddActivityReminder = () => {
         actionData.toast === "Reminder deleted successfully"
       ) {
         navigate(`/app/routine/${routineId}`, {
-          unstable_viewTransition: true,
+          viewTransition: true,
         });
       }
     }
@@ -166,7 +166,7 @@ const AddActivityReminder = () => {
         content: "Back",
         onAction: () => {
           navigate(`/app/routine/${routineId}`, {
-            unstable_viewTransition: true,
+            viewTransition: true,
           });
         },
       }}

@@ -92,7 +92,7 @@ export default function WeeklyBenfitsGrid({ benfits }: WeeklyBenfitsListProps) {
           <Button
             variant="primary"
             onClick={() => navigate(`/app/${id}/benfits/${benfits._id}`,{
-              unstable_viewTransition : true,
+              viewTransition : true,
             })}
             accessibilityLabel="Add tracking number"
           >

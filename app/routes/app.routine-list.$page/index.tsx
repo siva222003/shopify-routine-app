@@ -264,7 +264,7 @@ export default function IndexFiltersDefault() {
         onClick={() => {
           if (!isRoutinesLoading && !isOptimistic) {
             navigate(`/app/routine/${_id}`, {
-              unstable_viewTransition: true,
+              viewTransition: true,
             });
           }
         }}
@@ -272,7 +272,14 @@ export default function IndexFiltersDefault() {
         <IndexTable.Cell>
           <img
             src={image}
-            style={{ width: "50px", height: "50px", borderRadius: "8px" }}
+            style={{
+              width: "50px",
+              height: "50px",
+              borderRadius: "8px",
+              objectFit: "cover",
+              objectPosition: "center",
+              aspectRatio: "1/1",
+            }}
             alt={"product thumbnail" + name}
           />
         </IndexTable.Cell>
@@ -309,7 +316,7 @@ export default function IndexFiltersDefault() {
         content: "Add Routine",
         onAction: () => {
           navigate("/app/add-routine/", {
-            unstable_viewTransition: true,
+            viewTransition: true,
           });
         },
       }}
@@ -357,12 +364,12 @@ export default function IndexFiltersDefault() {
             hasPrevious: pageData.hasPrevPage,
             onNext: () => {
               navigate(`/app/routine-list/${pageData.page + 1}`, {
-                unstable_viewTransition: true,
+                viewTransition: true,
               });
             },
             onPrevious: () => {
               navigate(`/app/routine-list/${pageData.page - 1}`, {
-                unstable_viewTransition: true,
+                viewTransition: true,
               });
             },
           }}

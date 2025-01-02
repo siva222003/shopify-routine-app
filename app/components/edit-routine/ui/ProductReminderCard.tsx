@@ -39,7 +39,7 @@ export default function ProductReminderCard({ reminder }: Props) {
         content: "Customize",
         onAction: () => {
           navigate(`/app/${reminder.reminderListId}/product/${reminder._id}`, {
-            unstable_viewTransition: true,
+            viewTransition: true,
           });
         },
       }}
