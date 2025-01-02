@@ -24,7 +24,7 @@
   },
   "dependencies": {
     "@google-cloud/local-auth": "^3.0.1",
-    "@prisma/client": "^6.1.0",
+    "@prisma/client": "^5.22.0",
     "@remix-run/dev": "^2.7.1",
     "@remix-run/node": "^2.15.2",
     "@remix-run/react": "^2.15.2",
