@@ -1,7 +1,7 @@
 # Learn more about configuring your app at https://shopify.dev/docs/apps/tools/cli/configuration
 
 client_id = "ef23185581da98cf2243867d465215f8"
-application_url = "https://authorization-tricks-sender-fountain.trycloudflare.com"
+application_url = "https://futures-covering-establishment-enabling.trycloudflare.com"
 embedded = true
 name = "Minga Routines"
 handle = "minga-routines"
@@ -25,13 +25,13 @@ scopes = "read_files,read_orders"
 
 [auth]
 redirect_urls = [
-  "https://authorization-tricks-sender-fountain.trycloudflare.com/auth/callback",
-  "https://authorization-tricks-sender-fountain.trycloudflare.com/auth/shopify/callback",
-  "https://authorization-tricks-sender-fountain.trycloudflare.com/api/auth/callback"
+  "https://futures-covering-establishment-enabling.trycloudflare.com/auth/callback",
+  "https://futures-covering-establishment-enabling.trycloudflare.com/auth/shopify/callback",
+  "https://futures-covering-establishment-enabling.trycloudflare.com/api/auth/callback"
 ]
 
 [app_proxy]
-url = "https://authorization-tricks-sender-fountain.trycloudflare.com"
+url = "https://futures-covering-establishment-enabling.trycloudflare.com"
 subpath = "routine"
 prefix = "apps"
 
