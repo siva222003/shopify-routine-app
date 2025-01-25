@@ -24,6 +24,16 @@
   </script>
 {% endcomment %}
 
+<script>
+  // document.addEventListener('DOMContentLoaded', (event) => {
+  //   const modal = document.getElementById('markCompleteModal');
+  //   console.log({ modal });
+  //   modal.style.display = 'block';
+  // });
+
+  // window.location.href = 'https://shopify.com/{{ shop.id }}/account';
+</script>
+
 <main
   class="slide-in-bottom"
 >
@@ -34,6 +44,8 @@
       Routines
     </h1>
   </div>
+
+  {% comment %} <a href="https://shopify.com/{{ shop.id }}/account">Go to Account</a> {% endcomment %}
 
   {% render 'routine_list_skeleton' %}
 
@@ -50,12 +62,15 @@
       ></button>
     </div>
 
+    {% render 'mark_complete_modal' %}
+
     <div
       class="mt-[300px]"
     ></div>
   </section>
 </main>
 
+<script src="{{ 'common.js' | asset_url }}" defer></script>
 <script src="{{ 'routine-list.js' | asset_url }}" defer></script>
 <script src="{{ 'alpine.min.js' | asset_url }}" defer></script>
 

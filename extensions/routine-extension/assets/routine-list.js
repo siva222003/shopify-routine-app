@@ -12,6 +12,7 @@ document.addEventListener("alpine:init", () => {
 
     // Initialize component
     async init() {
+      hello();
       this.updateColumnCount(); // Adjust columns based on screen size
       await this.exploreRoutines(); // Fetch routines from API
     },

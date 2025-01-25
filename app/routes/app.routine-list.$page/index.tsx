@@ -280,6 +280,7 @@ export default function IndexFiltersDefault() {
               objectPosition: "center",
               aspectRatio: "1/1",
             }}
+            loading="lazy"
             alt={"product thumbnail" + name}
           />
         </IndexTable.Cell>

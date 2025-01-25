@@ -215,9 +215,10 @@ export default function Routine() {
       title="Customize Routine"
       backAction={{
         content: "Back",
-        onAction: () => navigate(`/app/routine-list/1`,{
-          viewTransition: true
-        }),
+        onAction: () =>
+          navigate(`/app/routine-list/1`, {
+            viewTransition: true,
+          }),
       }}
       titleMetadata={
         <Badge tone={form.value("draft") === "draft" ? "info" : "success"}>
@@ -334,18 +335,22 @@ export default function Routine() {
             <InlineStack gap={"400"}>
               <Button
                 icon={NotificationIcon}
-                onClick={() => navigate(`/app/${id}/reminder`,{
-                  viewTransition: true
-                })}
+                onClick={() =>
+                  navigate(`/app/${id}/reminder`, {
+                    viewTransition: true,
+                  })
+                }
               >
                 Add Reminder
               </Button>
               {resolvedRoutineData.benefits ? null : (
                 <Button
                   icon={RewardIcon}
-                  onClick={() => navigate(`/app/${id}/weekly-benfits`,{
-                    viewTransition: true
-                  })}
+                  onClick={() =>
+                    navigate(`/app/${id}/weekly-benfits`, {
+                      viewTransition: true,
+                    })
+                  }
                 >
                   Add Weekly Benfits
                 </Button>

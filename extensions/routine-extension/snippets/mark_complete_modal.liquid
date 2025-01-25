@@ -1,11 +1,13 @@
 <div>
   <div
-    x-cloak
-    x-show="isMarkCompleteModalOpen"
+    id="markCompleteModal"
+    {% comment %} x-cloak {% endcomment %}
+    style="display: none;"
+    {% comment %} x-show="isMarkCompleteModalOpen" {% endcomment %}
     x-transition.opacity.duration.200ms
-    x-trap.inert.noscroll="isMarkCompleteModalOpen"
-    @keydown.esc.window="isMarkCompleteModalOpen = false"
-    @click.self="isMarkCompleteModalOpen = false"
+    {% comment %} x-trap.inert.noscroll="isMarkCompleteModalOpen" {% endcomment %}
+    {% comment %} @keydown.esc.window="isMarkCompleteModalOpen = false" {% endcomment %}
+    {% comment %} @click.self="isMarkCompleteModalOpen = false" {% endcomment %}
     class="modal flex items-center"
     role="dialog"
     aria-modal="true"
@@ -13,7 +15,7 @@
   >
     <!-- Modal Dialog -->
     <div
-      x-show="isMarkCompleteModalOpen"
+      {% comment %} x-show="isMarkCompleteModalOpen" {% endcomment %}
       x-transition:enter="transition ease-out duration-200 delay-100 motion-reduce:transition-opacity"
       x-transition:enter-start="opacity-0 scale-50"
       x-transition:enter-end="opacity-100 scale-100"
