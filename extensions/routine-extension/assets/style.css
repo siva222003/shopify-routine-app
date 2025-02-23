@@ -883,6 +883,10 @@ video {
   -webkit-line-clamp: 3;
 }
 
+.block {
+  display: block;
+}
+
 .inline {
   display: inline;
 }

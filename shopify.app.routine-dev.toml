@@ -1,0 +1,43 @@
+      {% comment %} <div style="border: 1px solid #3A643B;" class="flex items-center max-md:py-2 gap-4 rounded-lg min-w-[13rem] justify-between px-3">
+                                                                                                                <button
+                                                                                                                  :disabled="product.quantity <= 1"
+                                                                                                                  @click="product.quantity -= 1;"
+                                                                                                                  class="px-4 py-2 rounded-lg text-[13px]">
+                                                                                                                  -
+                                                                                                                </button>
+                                                                                                                <p x-text="product.quantity" class="text-[13px] font-[500]"></p>
+                                                                                                                <button @click="product.quantity += 1" class="px-4 py-2 rounded-lg text-[13px]">
+                                                                                                                  +
+                                                                                                                </button>
+                                                                                                  </div> {% endcomment %}
+                                                                                                  
+                                                                                                  
+                                                                                                  
+                                                                                                  
+                                                                                                  
+
+
+
+<div class="flex flex-col gap-1 px-[20px] md:w-[45rem] lg:w-[60rem] bg-primaryCream  md:px-[18px] lg:px-[24px] py-[22px] rounded-2xl w-[93vw] ">
+  <!-- Weekly Benfits -->
+
+  <h1 class="text-primaryBlack text-[18px] font-[500] mb-4">Weekly Benefits</h1>
+
+  <div class="flex flex-col gap-8">
+    <template x-for="weeklyBenefit in weeklyBenefits">
+      <div class="mt-[10px]">
+        <h2 class="text-primaryGreen text-[16px] font-[500] mb-2" x-text="`Week: ${weeklyBenefit.weekRange}`"></h2>
+        <ul class="list-disc pl-6 text-[#464646] flex flex-col gap-4">
+          <template x-for="benefit in weeklyBenefit.benefits">
+            <li class="text-[14px] leading-relaxed ">
+              <span class="font-[600]" x-text="`${benefit.split(':')[0]} : `"></span>
+              <span x-text="benefit.split(':')[1]"></span>
+            </li>
+          </template>
+        </ul>
+      </div>
+    </template>
+  </div>
+  
+</div>
+
